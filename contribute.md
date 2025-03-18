@@ -19,8 +19,8 @@ Write your code inside this branch.
 ### Create a PR in OmnAIView from your own forked repository
 
 Once you have commited your changes and pushed them to your forked repository, you can create a PR. 
-Click on the "Contribute" button which appears above the file structure in Github. Here click the green "Open pull request"
-button. 
+Click on the "Contribute" button or the "Compare & pull request" button which appear above the file structure in Github. 
+If you choose the "Contribute" button click the green "Open pull request" button. 
 
 A new page will open. On the upper left side you can select the "base" branch to compare your changes against. It should automatically 
 be "base repository: AI-Grupp/OmnAIView". If not click on the button "base:master" or "base:main" and switch the base branch to the original repository. 
