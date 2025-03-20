@@ -1,11 +1,13 @@
 asyncapi: 3.0.0
 id: 'urn:com:example:devicesamplingapi'
 info:
-  title: Data Source Interface for OmnAIView
-  version: 2.0.0
+  title: Data Source Interface of OmnAIScopes
+  version: 0.1.0
   description: |
+    This interface description documents the interface to the OmnAIScope-Backend v0.4.0: https://github.com/AI-Gruppe/OmnAIScope-DataServer/releases/tag/v0.4.0 . 
     The interface consists of a REST API endpoint and a WebSocket connection.
     A data source has one or more data streams, each data stream has a UUID and a color.
+    Currently the port on which OmnAIView is running is set to 8080. 
     
     1. **Data Source List (HTTP GET)**
        - **URL:** `http://<ip>:8080/UUID`
