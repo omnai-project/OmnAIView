@@ -1,0 +1,43 @@
+# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# Compiled output
+angular-frontend/dist
+angular-frontend/tmp
+angular-frontend/out-tsc
+angular-frontend/bazel-out
+
+# Node
+angular-frontend/node_modules
+angular-frontend/npm-debug.log
+angular-frontend/yarn-error.log
+
+# IDEs and editors
+angular-frontend/.idea/
+angular-frontend/.project
+angular-frontend/.classpath
+angular-frontend/.c9/
+angular-frontend/*.launch
+angular-frontend/.settings/
+angular-frontend/*.sublime-workspace
+
+# Visual Studio Code
+angular-frontend/.vscode/*
+!angular-frontend/.vscode/settings.json
+!angular-frontend/.vscode/tasks.json
+!angular-frontend/.vscode/launch.json
+!angular-frontend/.vscode/extensions.json
+angular-frontend/.history/*
+
+# Miscellaneous
+angular-frontend/.angular/*
+angular-frontend/.angular/cache
+angular-frontend/.sass-cache/
+angular-frontend/connect.lock
+angular-frontend/coverage
+angular-frontend/libpeerconnection.log
+angular-frontend/testem.log
+angular-frontend/typings
+
+# System files
+angular-frontend/.DS_Store
+angular-frontend/Thumbs.db
