@@ -135,3 +135,5 @@ electron/.vite/
 
 # Electron-Forge output
 electron/out/
+electron/dist/
+electron/res/
