@@ -1,5 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from "path";
+import { omnaiscopeBackendManager } from './omnaiBackend';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -20,6 +21,8 @@ const createWindow = (): void => {
   mainWindow.loadFile(indexPath).catch(err => console.error("Fehler beim Laden der HTML-Datei:", err));
 };
 
+omnaiscopeBackendManager.startBackend(); 
+
 app.whenReady().then(() => {
   createWindow();
 
@@ -31,6 +34,8 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
+  
+  omnaiscopeBackendManager.stopBackend(); 
   if (process.platform !== "darwin") {
     app.quit();
   }
