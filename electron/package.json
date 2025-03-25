@@ -1,13 +1,13 @@
 {
-  "name": "electron",
-  "productName": "electron",
+  "name": "OmnAIView",
+  "productName": "OmnAIView",
   "version": "0.1.0",
   "description": "OmnAIView electron App",
   "main": "dist/main.js",
   "scripts": {
     "start": "tsc && electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make",
+    "make": "tsc && electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
