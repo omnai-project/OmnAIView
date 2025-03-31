@@ -86,7 +86,7 @@ The output is an installer for the application in : electron/out/make/squirrel.w
 
 ## Technical Information about Datasources 
 
-OmnAIView is using different data sources. Some are started externally from the application, while oters are started together with the application. 
+OmnAIView is using different data sources. Some are started externally from the application, while others are started together with the application. 
 
 ### OmnAIScope Dataserver
 
