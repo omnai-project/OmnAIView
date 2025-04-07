@@ -1,14 +1,13 @@
 import {spawn, ChildProcess } from "child_process"; 
 import {join} from "path"; 
-import { existsSync } from "fs-extra";
+import { existsSync } from "fs";
 import {app} from "electron"; 
 import * as net from 'net';
-import { AddressInfo } from 'net';
 
 export const omnaiscopeBackendManager = (()=> { // singelton for only one possible encapsulated instance of the backend 
     let backendProcess : ChildProcess | null = null; 
 
-    function isAddressInfo(address: string | AddressInfo | null): address is AddressInfo {
+    function isAddressInfo(address: string | net.AddressInfo | null): address is net.AddressInfo {
         return typeof address === 'object' && address !== null && typeof address.port === 'number';
     }    
 
@@ -22,10 +21,9 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
                 if (!isAddressInfo(address)) { // check that server.adress is from type AddressInfo
                     return reject(new Error('Error: Port either does not exist or address is not an AddressInfo.'));
                 }
-                else {
-                    const port = (address as net.AddressInfo).port;
-                    server.close(() => resolve(port));
-                }
+
+                const port = (address as net.AddressInfo).port;
+                server.close(() => resolve(port));
             });
         });
     }
