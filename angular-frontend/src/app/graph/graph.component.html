@@ -1,0 +1,54 @@
+<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)">
+    <g [attr.transform]="marginTransform()">
+
+        <g #xAxis [attr.transform]="xAxisTransformString()">
+          
+        </g>
+        <g #yAxis [attr.transform]="yAxisTransformString()"></g>
+        @for (path of dataservice.paths(); track $index) {
+        <path [attr.d]="path.d" fill="none" stroke="steelblue" stroke-width="2" />
+        }
+    </g>
+</svg>
+<app-start-data-button />
+<app-device-list />
+
+<div style="display: none;">
+    <h4>Debug Output</h4>
+
+    <div>
+        <strong>X Scale Domain:</strong>
+        <pre>{{ dataservice.xScale().domain() | json }}</pre>
+    </div>
+
+    <div>
+        <strong>X Scale Range:</strong>
+        <pre>{{ dataservice.xScale().range() | json }}</pre>
+    </div>
+
+    <div>
+        <strong>Y Scale Domain:</strong>
+        <pre>{{ dataservice.yScale().domain() | json }}</pre>
+    </div>
+
+    <div>
+        <strong>Y Scale Range:</strong>
+        <pre>{{ dataservice.yScale().range() | json }}</pre>
+    </div>
+
+    <div>
+        <strong>X Axis Transform:</strong>
+        <pre>{{ xAxisTransformString() }}</pre>
+    </div>
+
+    <div>
+        <strong>Y Axis Transform:</strong>
+        <pre>{{ yAxisTransformString() }}</pre>
+    </div>
+
+    <div>
+        <strong>Graph Dimensions:</strong>
+        <pre>{{ dataservice.graphDimensions() | json }}</pre>
+    </div>
+
+</div>

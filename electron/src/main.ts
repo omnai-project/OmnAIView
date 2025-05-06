@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import * as path from "path";
 import { omnaiscopeBackendManager } from './omnaiBackend';
 
@@ -15,13 +15,18 @@ const createWindow = (): void => {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
     },
   });
   const indexPath: string = path.join(__dirname, "..", "res", "angular", "browser", "index.html");
   mainWindow.loadFile(indexPath).catch(err => console.error("Fehler beim Laden der HTML-Datei:", err));
 };
 
-omnaiscopeBackendManager.startBackend(); 
+omnaiscopeBackendManager.startBackend();
+
+ipcMain.handle('get-omnaiscope-backend-port', async () => {
+  return omnaiscopeBackendManager.getPort();
+});
 
 app.whenReady().then(() => {
   createWindow();
@@ -34,8 +39,8 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
-  
-  omnaiscopeBackendManager.stopBackend(); 
+
+  omnaiscopeBackendManager.stopBackend();
   if (process.platform !== "darwin") {
     app.quit();
   }

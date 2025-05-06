@@ -5,7 +5,8 @@ import {app} from "electron";
 import * as net from 'net';
 
 export const omnaiscopeBackendManager = (()=> { // singelton for only one possible encapsulated instance of the backend 
-    let backendProcess : ChildProcess | null = null; 
+    let backendProcess : ChildProcess | null = null;
+    let port : number = 0;  
 
     function isAddressInfo(address: string | net.AddressInfo | null): address is net.AddressInfo {
         return typeof address === 'object' && address !== null && typeof address.port === 'number';
@@ -39,7 +40,7 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
     async function startBackend(): Promise<void> {
         const exePath : string = getBackendPath(); 
 
-        const port : number = await getFreePort(); 
+        port = await getFreePort(); 
 
         if(existsSync(exePath)){
             backendProcess = spawn(exePath, ["-w", "-p", port.toString()]); 
@@ -54,8 +55,13 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
         }
     }
 
+    function getPort(): number {
+        return port; 
+    }
+
     return {
         startBackend, 
-        stopBackend
+        stopBackend, 
+        getPort
     }; 
 })(); 

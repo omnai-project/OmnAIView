@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Select Data Source</h1>
+
+<mat-dialog-content>
+    <ul>
+        @for (source of sources(); track source.id) {
+        <li (click)="select(source)">
+            <strong>{{ source.name }}</strong>
+            @if (source.description; as description) {
+            <p>{{ description }}</p>
+            }
+            @if (selected()?.id === source.id) {
+            <span>[selected]</span>
+            }
+        </li>
+        }
+    </ul>
+
+    <button mat-button color="warn" (click)="clear()">Clear Selection</button>
+    
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-button [mat-dialog-close]="selected()" color="primary" [disabled]="!selected()" >Start</button>
+</mat-dialog-actions>
