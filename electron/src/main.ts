@@ -18,7 +18,7 @@ const createWindow = (): void => {
       preload: path.join(__dirname, 'preload.js')
     },
   });
-  const indexPath: string = path.join(__dirname, "..", "res", "angular", "browser", "index.html");
+  const indexPath: string = path.join(__dirname, "..", "res", "angular", "browser", "index.csr.html");
   mainWindow.loadFile(indexPath).catch(err => console.error("Fehler beim Laden der HTML-Datei:", err));
 };
 
