@@ -2,6 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { DataSource } from '../../source-selection/data-source-selection.service';
+import { BackendPortService } from './backend-port.service';
 
 interface DeviceInformation {
   UUID: string;
@@ -27,21 +28,7 @@ interface DeviceOverview {
 })
 export class OmnAIScopeDataService implements DataSource{
 
-  private serverUrl = '127.0.0.1:8080';
-
-  constructor() {
-    this.init();
-  }
-
-  async init(): Promise<void> {
-    const port = await window.electronAPI?.getOmnAIScopeBackendPort();
-    if (port) {
-      this.setServerUrl(`127.0.0.1:${port}`);
-    } else {
-      console.error('unable to set backend port');
-    }
-  }
-  
+  constructor(private backendPortService: BackendPortService){}
   private socket: WebSocket | null = null;
 
   readonly isConnected = signal<boolean>(false);
@@ -59,11 +46,16 @@ export class OmnAIScopeDataService implements DataSource{
   });
 
   readonly #httpClient = inject(HttpClient);
-
+  readonly port = inject(BackendPortService).port;
+  readonly serverUrl = computed(() => {
+    const port = this.port();
+    if (port === null) throw new Error('Port not initialized');
+    return `127.0.0.1:${port}`;
+  });
 
   // Abrufen der verfügbaren Geräte vom Server
   getDevices(): void {
-    const url = `http://${this.serverUrl}/UUID`;
+    const url = `http://${this.serverUrl()}/UUID`;
     this.#httpClient.get<DeviceOverview>(url).subscribe({
       next: (response) => {
         console.log("got response", response)
@@ -87,7 +79,7 @@ export class OmnAIScopeDataService implements DataSource{
       return;
     }
 
-    const wsUrl = `ws://${this.serverUrl}/ws`;
+    const wsUrl = `ws://${this.serverUrl()}/ws`;
     this.socket = new WebSocket(wsUrl);
 
     this.socket.addEventListener('open', () => {
@@ -153,9 +145,9 @@ export class OmnAIScopeDataService implements DataSource{
   }
 
   // Server-URL ändern
-  setServerUrl(url: string): void {
-    this.serverUrl = url;
-  }
+  /*setServerUrl(url: string): void {
+    this.serverUrl.set(url); 
+  }*/
 
   // Typprüfung für OmnAI-Daten-Nachrichten
   private isOmnAIDataMessage(message: any): boolean {
