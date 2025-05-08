@@ -28,7 +28,6 @@ interface DeviceOverview {
 })
 export class OmnAIScopeDataService implements DataSource{
 
-  constructor(private backendPortService: BackendPortService){}
   private socket: WebSocket | null = null;
 
   readonly isConnected = signal<boolean>(false);
@@ -144,11 +143,6 @@ export class OmnAIScopeDataService implements DataSource{
       this.isConnected.set(false);
     }
   }
-
-  // Server-URL ändern
-  /*setServerUrl(url: string): void {
-    this.serverUrl.set(url); 
-  }*/
 
   // Typprüfung für OmnAI-Daten-Nachrichten
   private isOmnAIDataMessage(message: any): boolean {
