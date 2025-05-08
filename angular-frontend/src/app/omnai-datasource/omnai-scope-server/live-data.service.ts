@@ -55,6 +55,7 @@ export class OmnAIScopeDataService implements DataSource{
 
   // Abrufen der verfügbaren Geräte vom Server
   getDevices(): void {
+    console.log("Current OmnAIScope Datatserver Backend URL (Angular):", this.serverUrl());
     const url = `http://${this.serverUrl()}/UUID`;
     this.#httpClient.get<DeviceOverview>(url).subscribe({
       next: (response) => {
@@ -88,7 +89,7 @@ export class OmnAIScopeDataService implements DataSource{
 
       // Send start message
       const deviceUuids = this.devices().map(device => device.UUID).join(" ");
-      this.socket?.send(JSON.stringify(deviceUuids));
+      this.socket?.send(deviceUuids);
     });
 
     let ignoreCounter = 0;
