@@ -26,7 +26,22 @@ interface DeviceOverview {
   providedIn: 'root'
 })
 export class OmnAIScopeDataService implements DataSource{
+
   private serverUrl = '127.0.0.1:8080';
+
+  constructor() {
+    this.init();
+  }
+
+  async init(): Promise<void> {
+    const port = await window.electronAPI?.getOmnAIScopeBackendPort();
+    if (port) {
+      this.setServerUrl(`127.0.0.1:${port}`);
+    } else {
+      console.error('unable to set backend port');
+    }
+  }
+  
   private socket: WebSocket | null = null;
 
   readonly isConnected = signal<boolean>(false);
