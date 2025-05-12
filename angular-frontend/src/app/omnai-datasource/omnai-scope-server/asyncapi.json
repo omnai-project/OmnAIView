@@ -1,0 +1,342 @@
+{
+  "asyncapi": "3.0.0",
+  "info": {
+    "title": "OmnAI WebSocket API",
+    "version": "1.0.0",
+    "description": "WebSocket API zur Steuerung und Datenerfassung von OmnAI-Messgeräten.\nErmöglicht die Verbindung zu Omniscope-Geräten, deren Steuerung und Empfang von Messdaten in verschiedenen Formaten.\n"
+  },
+  "servers": {
+    "production": {
+      "host": "localhost",
+      "protocol": "ws",
+      "description": "OmnAI WebSocket Server"
+    }
+  },
+  "channels": {
+    "/ws": {
+      "address": "/ws",
+      "messages": {
+        "publish.message.0": {
+          "$ref": "#/components/messages/deviceConfig"
+        },
+        "publish.message.1": {
+          "$ref": "#/components/messages/getDownsampledInRange"
+        },
+        "subscribe.message.0": {
+          "$ref": "#/components/messages/welcomeMessage"
+        },
+        "subscribe.message.1": {
+          "$ref": "#/components/messages/jsonDataMessage"
+        },
+        "subscribe.message.2": {
+          "$ref": "#/components/messages/csvDataMessage"
+        },
+        "subscribe.message.3": {
+          "$ref": "#/components/messages/binaryDataMessage"
+        },
+        "subscribe.message.4": {
+          "$ref": "#/components/messages/downsampledDataResponse"
+        }
+      }
+    }
+  },
+  "operations": {
+    "/ws.publish": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/~1ws"
+      },
+      "summary": "Senden von Befehlen zur Gerätesteuerung",
+      "description": "Kanal zum Senden von Befehlen zur Konfiguration und Steuerung der Messungen.\n",
+      "messages": [
+        {
+          "$ref": "#/channels/~1ws/messages/publish.message.0"
+        },
+        {
+          "$ref": "#/channels/~1ws/messages/publish.message.1"
+        }
+      ]
+    },
+    "/ws.subscribe": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/~1ws"
+      },
+      "summary": "Empfang von Messdaten und Systemnachrichten",
+      "description": "Kanal zum Empfang von Messdaten vom Server im gewählten Format (JSON, CSV oder binär/Protobuf),\nsowie Systemnachrichten und Bestätigungen.\n",
+      "messages": [
+        {
+          "$ref": "#/channels/~1ws/messages/subscribe.message.0"
+        },
+        {
+          "$ref": "#/channels/~1ws/messages/subscribe.message.1"
+        },
+        {
+          "$ref": "#/channels/~1ws/messages/subscribe.message.2"
+        },
+        {
+          "$ref": "#/channels/~1ws/messages/subscribe.message.3"
+        },
+        {
+          "$ref": "#/channels/~1ws/messages/subscribe.message.4"
+        }
+      ]
+    }
+  },
+  "components": {
+    "messages": {
+      "welcomeMessage": {
+        "name": "welcomeMessage",
+        "title": "Willkommensnachricht",
+        "summary": "Bestätigung der erfolgreichen WebSocket-Verbindung",
+        "contentType": "text/plain",
+        "payload": {
+          "type": "string",
+          "example": "Hello, connection to websocket established. To start a measurement send the wished UUID, optional send a sampling rate between 10 and 100000"
+        }
+      },
+      "deviceConfig": {
+        "name": "deviceConfig",
+        "title": "Gerätekonfiguration",
+        "summary": "Konfiguration der zu messenden Geräte und Messparameter",
+        "contentType": "text/plain",
+        "payload": {
+          "type": "string",
+          "example": "E12345 E67890 10000 json",
+          "description": "Liste von UUIDs, gefolgt von optionaler Samplingrate und Datenformat (json, csv, binary)"
+        }
+      },
+      "jsonDataMessage": {
+        "name": "jsonDataMessage",
+        "title": "JSON-Messdaten",
+        "summary": "Messdaten im JSON-Format",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "metadata": {
+              "type": "object",
+              "properties": {
+                "devices": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "UUID": {
+                        "type": "string",
+                        "description": "Eindeutige ID des Messgeräts"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timestamp": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Zeitstempel der Messung in Sekunden"
+                  },
+                  "value": {
+                    "type": "array",
+                    "items": {
+                      "type": "number",
+                      "format": "float"
+                    },
+                    "description": "Messwerte der verbundenen Geräte"
+                  }
+                }
+              }
+            }
+          },
+          "example": {
+            "metadata": {
+              "devices": [
+                {
+                  "UUID": "E12345"
+                },
+                {
+                  "UUID": "E67890"
+                }
+              ]
+            },
+            "data": [
+              {
+                "timestamp": 1650123456.789,
+                "value": [
+                  45.67,
+                  78.12
+                ]
+              },
+              {
+                "timestamp": 1650123456.889,
+                "value": [
+                  45.89,
+                  77.98
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "csvDataMessage": {
+        "name": "csvDataMessage",
+        "title": "CSV-Messdaten",
+        "summary": "Messdaten im CSV-Format",
+        "contentType": "text/csv",
+        "payload": {
+          "type": "string",
+          "description": "CSV-formatierte Daten mit Zeitstempel und Messwerten",
+          "example": "1650123456.789, 45.67, 78.12\n1650123456.889, 45.89, 77.98\n"
+        }
+      },
+      "binaryDataMessage": {
+        "name": "binaryDataMessage",
+        "title": "Protobuf-Messdaten",
+        "summary": "Messdaten im binären Protobuf-Format",
+        "contentType": "application/octet-stream",
+        "payload": {
+          "type": "string",
+          "format": "binary",
+          "description": "Binäre Darstellung von Messdaten im Protobuf-Format (Sample-Message)"
+        }
+      },
+      "getDownsampledInRange": {
+        "name": "getDownsampledInRange",
+        "title": "Anfrage für heruntergesampelte Daten",
+        "summary": "Anfrage für einen bestimmten Zeitbereich mit reduzierter Datenpunktanzahl",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "required": [
+            "command",
+            "tmin",
+            "tmax",
+            "desired_number_of_samples"
+          ],
+          "properties": {
+            "command": {
+              "type": "string",
+              "enum": [
+                "get_downsampled_in_range"
+              ]
+            },
+            "tmin": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Startzeitstempel für den angeforderten Bereich"
+            },
+            "tmax": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Endzeitstempel für den angeforderten Bereich"
+            },
+            "desired_number_of_samples": {
+              "type": "integer",
+              "description": "Gewünschte Anzahl von Datenpunkten"
+            }
+          },
+          "example": {
+            "command": "get_downsampled_in_range",
+            "tmin": "2025-04-14T12:00:00Z",
+            "tmax": "2025-04-14T13:00:00Z",
+            "desired_number_of_samples": 100
+          }
+        }
+      },
+      "downsampledDataResponse": {
+        "name": "downsampledDataResponse",
+        "title": "Heruntergesampelte Daten",
+        "summary": "Antwort mit heruntergesampelten Daten für den angeforderten Zeitbereich",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "properties": {
+            "meta": {
+              "type": "object",
+              "properties": {
+                "responce_to": {
+                  "type": "string",
+                  "enum": [
+                    "get_downsampled_in_range"
+                  ]
+                },
+                "channel_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "example": {
+            "meta": {
+              "responce_to": "get_downsampled_in_range",
+              "channel_ids": [
+                "14352",
+                "123456"
+              ]
+            },
+            "data": [
+              [
+                [
+                  "2025-04-14T12:34:56.123456789Z",
+                  45.67
+                ],
+                [
+                  "2025-04-14T12:34:56.223456789Z",
+                  78.12
+                ],
+                [
+                  "2025-04-14T12:34:56.323456789Z",
+                  23.45
+                ]
+              ],
+              [
+                [
+                  "2025-04-14T12:34:57.423456789Z",
+                  91.34
+                ],
+                [
+                  "2025-04-14T12:34:57.523456789Z",
+                  12.89
+                ],
+                [
+                  "2025-04-14T12:34:57.623456789Z",
+                  67.01
+                ]
+              ]
+            ]
+          }
+        }
+      }
+    }
+  }
+}
