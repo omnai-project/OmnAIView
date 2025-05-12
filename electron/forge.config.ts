@@ -27,8 +27,6 @@ const config: ForgeConfig = {
       // # This must be publicly accessible and will then be loaded at _installation time_. It must not be a file://
       // # https://js.electronforge.io/interfaces/_electron_forge_maker_squirrel.InternalOptions.SquirrelWindowsOptions.html
       // # It controls the icon, which can be found under Programs.
-
-Translated with DeepL.com (free version)
     }, ["win32"]), 
     new MakerZIP({}, ['darwin']), 
     new MakerRpm({}), 
