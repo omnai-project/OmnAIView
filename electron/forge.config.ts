@@ -22,11 +22,13 @@ const config: ForgeConfig = {
     new MakerSquirrel({
       setupIcon: './images/icon.ico',
       // iconUrl: 'https://url/to/icon.ico', 
-      //  # Es sollte hier nach Möglichkeit eine durch euch gehostete .ico Datei auf einem Webserver eingetragen werden.
-      //  # Es würde sich empfehlen die Datei aus ./images/icon.ico zu nehmen.
-      //  # Diese muss öffentlich erreichbar sein und wird dann zur _Installationszeit_ geladen. Es darf kein file://
-      //  # sein. https://js.electronforge.io/interfaces/_electron_forge_maker_squirrel.InternalOptions.SquirrelWindowsOptions.html
-      //  # Es steuert das Icon, welches unter Programme zu finden ist.
+      // # If possible, a .ico file hosted by you on a web server should be entered here.
+      // # It would be advisable to use the file from ./images/icon.ico.
+      // # This must be publicly accessible and will then be loaded at _installation time_. It must not be a file://
+      // # https://js.electronforge.io/interfaces/_electron_forge_maker_squirrel.InternalOptions.SquirrelWindowsOptions.html
+      // # It controls the icon, which can be found under Programs.
+
+Translated with DeepL.com (free version)
     }, ["win32"]), 
     new MakerZIP({}, ['darwin']), 
     new MakerRpm({}), 
