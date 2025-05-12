@@ -5,6 +5,7 @@ angular-frontend/dist
 angular-frontend/tmp
 angular-frontend/out-tsc
 angular-frontend/bazel-out
+angular-frontend/documentation 
 
 # Node
 angular-frontend/node_modules
