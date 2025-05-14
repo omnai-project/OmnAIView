@@ -10,8 +10,7 @@
     "serve:ssr:OmnAIView": "node ../electron/res/angular/server/server.mjs",
     "compodoc:build": "compodoc -p tsconfig.doc.json",
     "compodoc:build-and-serve": "compodoc -p tsconfig.doc.json -s",
-    "compodoc:serve": "compodoc -s",
-    "compodoc": "npx compodoc -p tsconfig.doc.json"
+    "compodoc:serve": "compodoc -s"
   },
   "private": true,
   "dependencies": {
