@@ -25,7 +25,7 @@ We are very happy about contributions. If you want to contribute just follow the
 
 ## How to get the Code Documentation : 
 
-The Code is documented with compodoc. To see the documentation follow these steps: 
+The Code is documented with compodoc [Compodoc](https://compodoc.app/). To see the documentation follow these steps: 
 
 1. Clone the project 
 2. Run ``` npm ci ``` in the root directory of the project 
@@ -33,7 +33,7 @@ The Code is documented with compodoc. To see the documentation follow these step
 4. Run 
 ´´´ npm run compodoc:build-and-serve ´´´ 
 in your console 
-5. Open the documentation on http://127.0.0.1:8080
+5. Open the documentation with the link compodoc generates 
 
 ## How to run the project
 
