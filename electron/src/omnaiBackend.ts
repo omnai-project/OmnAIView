@@ -4,14 +4,28 @@ import { existsSync } from "fs";
 import {app} from "electron"; 
 import * as net from 'net';
 
+/**
+ * @description BackendManager handles the starting and stopping process for the omnaiscope backend
+ * 
+ * @version implements v0.5.1 of the backend interface 
+ */
 export const omnaiscopeBackendManager = (()=> { // singelton for only one possible encapsulated instance of the backend 
     let backendProcess : ChildProcess | null = null;
     let port : number = 0;  
 
+    /**
+     * @description Typeguard for the Addressinfo of the port 
+     * @param address 
+     * @returns 
+     */
     function isAddressInfo(address: string | net.AddressInfo | null): address is net.AddressInfo {
         return typeof address === 'object' && address !== null && typeof address.port === 'number';
     }    
-
+    /**
+     * @description gets a free port for the backend from the OS
+     * @usage should be used before starting the backend 
+     * @returns 
+     */
     async function getFreePort() : Promise<number>{
         return new Promise((resolve, reject) => {
             const server = net.createServer(); 
@@ -28,7 +42,10 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
             });
         });
     }
-
+    /**
+     * 
+     * @returns Path in which the MiniOmni.exe is saved
+     */
     function getBackendPath(): string {
         const exePath: string = app.isPackaged 
         ? join(process.resourcesPath, "MiniOmni.exe") // production mode 
@@ -36,7 +53,9 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
 
         return exePath; 
     }
-
+    /**
+     * @description starts the omnaiscope backend on a free port 
+     */
     async function startBackend(): Promise<void> {
         const exePath : string = getBackendPath(); 
 
@@ -44,22 +63,26 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
 
         if(existsSync(exePath)){
             backendProcess = spawn(exePath, ["-w", "-p", port.toString()], {
-                detached: true,
                 stdio: ['ignore', 'pipe', 'pipe'],
             });
-    
-            backendProcess.stdout.on('data', () => {}); // read console buffer from BE , temporary fix
+            // read console buffer from BE because the backend does not delete the console buffer by itself
+            // therefore the programm backend stops when the console buffer is full, temporary fix
+            backendProcess.stdout.on('data', () => {}); 
             backendProcess.stderr.on('data', () => {});
         }
     }
-
+    /**
+     * @description stops the omnaiscope backend when the programm is closed 
+     */
     function stopBackend(): void {
         if(backendProcess) {
             backendProcess.kill(); 
             console.log("Backend process stopped");
         }
     }
-
+    /**
+     * @returns port of the omnaiscope backend 
+     */
     function getPort(): number {
         return port; 
     }
