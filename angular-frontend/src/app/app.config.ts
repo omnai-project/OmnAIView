@@ -13,6 +13,6 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(
       async() => {
         const portService = inject(BackendPortService); 
-        await portService.init();
-    })]
+        await portService.init(); // receive port of OmnAI-Backend, does not change at runtime and is needed before the first user interaction 
+    })]                        
 };

@@ -1,11 +1,8 @@
 import { Injectable, signal } from "@angular/core";
 
 /**
- * Initialize and save the port of the local started OmnAIScope Backend. 
- * 
- * The port is saved as a signal and can be used throughout the whole application. 
- * 
- * If no electron environment is used a warning is printed. 
+ * @classdesc This class handles the logic to find and save the dynamically determined port of the OmnAI Backend 
+ * It provides the currently determined port as a signal. The state can be updated by calling the init() function. 
  */
 @Injectable({
     providedIn: 'root',
@@ -13,7 +10,9 @@ import { Injectable, signal } from "@angular/core";
 export class BackendPortService {
   port = signal<number | null>(null); 
   /**
-   * Init function: Async receiving of Backend Port via IPC from the electron app 
+   * @description receiving of Backend Port via IPC from the electron app 
+   * If no electron environment is used a warning is printed. 
+   * @async 
    * @usage Init function should only be used once in the app initializer context (app.config.ts)
    */
   async init():Promise<void>{

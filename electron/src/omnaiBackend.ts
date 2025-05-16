@@ -5,8 +5,8 @@ import {app} from "electron";
 import * as net from 'net';
 
 /**
- * @description BackendManager handles the starting and stopping process for the omnaiscope backend
- * 
+ * @description BackendManager handles the logic needed to start and stop the local OmnAI-Backend.
+ * It provides a function to start and stop the backend, as well as receiving the port on which the backend currently runs. 
  * @version implements v0.5.1 of the backend interface 
  */
 export const omnaiscopeBackendManager = (()=> { // singelton for only one possible encapsulated instance of the backend 
@@ -14,7 +14,7 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
     let port : number = 0;  
 
     /**
-     * @description Typeguard for the Addressinfo of the port 
+     * @description Typeguard for the AddressInfo of a port
      * @param address 
      * @returns 
      */
@@ -23,6 +23,7 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
     }    
     /**
      * @description gets a free port for the backend from the OS
+     * @async
      * @usage should be used before starting the backend 
      * @returns 
      */
@@ -43,8 +44,9 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
         });
     }
     /**
-     * 
-     * @returns Path in which the MiniOmni.exe is saved
+     * @description Receive the path for the MiniOmni.exe in production and dev mode. 
+     * !!! Path is hardcoded for both cases
+     * @returns hardcoded path for production and dev mode in which the miniomni.exe is currently saved 
      */
     function getBackendPath(): string {
         const exePath: string = app.isPackaged 
@@ -54,7 +56,9 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
         return exePath; 
     }
     /**
-     * @description starts the omnaiscope backend on a free port 
+     * @description Starts the local omnai backend on a free port given by the OS
+     *  if the exe is available in the hardcoded path and a free port is available
+     * @async
      */
     async function startBackend(): Promise<void> {
         const exePath : string = getBackendPath(); 
@@ -72,7 +76,7 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
         }
     }
     /**
-     * @description stops the omnaiscope backend when the programm is closed 
+     * @description Stops the omnai backend process if the process exists 
      */
     function stopBackend(): void {
         if(backendProcess) {
@@ -81,7 +85,7 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
         }
     }
     /**
-     * @returns port of the omnaiscope backend 
+     * @returns port of the omnaiscope backend if available , else 0
      */
     function getPort(): number {
         return port; 
