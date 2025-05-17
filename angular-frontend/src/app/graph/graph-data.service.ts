@@ -101,11 +101,16 @@ export class DataSourceService {
   }
 
   readonly worker = new Worker(new URL('./webworker', import.meta.url));
+  private lastWorkerRequestDone:boolean = true;
   updatePaths = effect(()=>{
     const dimensions = this.$graphDimensions();
     const domain = this.$domain();
     const series = this.dummySeries();
-     this.worker.postMessage({
+
+    //don't overwhelm the WebWorker.
+    if (!this.lastWorkerRequestDone) return;
+    this.lastWorkerRequestDone = false;
+    this.worker.postMessage({
       dimensions,
       domain,
       series,
@@ -114,6 +119,7 @@ export class DataSourceService {
   readonly paths = signal<{id:string, d:string}[]>([]);
   constructor() {
     this.worker.addEventListener("message", (e) =>{
+      this.lastWorkerRequestDone = true;
       if (!Array.isArray(e.data)) {
         console.error("recieved invalid path data from webworker: ", e.data);
         return;
@@ -121,6 +127,7 @@ export class DataSourceService {
       this.paths.set(e.data);
     })
     this.worker.addEventListener("messageerror", (e) =>{
+      this.lastWorkerRequestDone = true;
       console.error("recieved error from webworker: ", e);
     })
   }
