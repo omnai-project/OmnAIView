@@ -9,7 +9,7 @@ import { SourceSelectModalComponent } from './source-select-modal.component';
     standalone: true,
     imports: [CommonModule, MatDialogModule],
     template: `
-    <button (click)="openModal()">Start Data</button>
+    <button (click)="openModal()">Measurement Settings</button>
   `
 })
 export class StartDataButtonComponent {
@@ -19,13 +19,6 @@ export class StartDataButtonComponent {
     openModal() {
         const dialogRef = this.dialog.open(SourceSelectModalComponent, {
             width: '60vw'
-        });
-
-        dialogRef.afterClosed().subscribe(() => {
-            if (this.datasource.hasSelection()) {
-                // This should always be true as hasSelection is true when current Source is set
-                this.datasource.currentSource()?.connect();
-            }
         });
     }
 }

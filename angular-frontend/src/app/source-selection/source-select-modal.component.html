@@ -1,24 +1,61 @@
 <h1 mat-dialog-title>Select Data Source</h1>
 
 <mat-dialog-content>
-    <ul>
-        @for (source of sources(); track source.id) {
-        <li (click)="select(source)">
-            <strong>{{ source.name }}</strong>
-            @if (source.description; as description) {
-            <p>{{ description }}</p>
+    <mat-vertical-stepper linear>
+        <mat-step [stepControl]="step1Form">
+            <form [formGroup] ="step1Form">
+            <ng-template matStepLabel>Select Data Source</ng-template>
+            <mat-form-field appearance="fill" label="Datenquelle auswählen">
+                <mat-label> Select a Data Source</mat-label>
+                <mat-select
+                formControlName="source"
+                (selectionChange)="onSourceSelected($event.value)">
+                    @for (source of sources(); track source.id){
+                        <mat-option [value]="source">
+                            <strong> {{source.name}}</strong>
+                            @if (source.description; as desc) {
+                                <small> {{desc}}</small>
+                            }
+                        </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            @if (isOmnAIScopeSelected){
+                <div> 
+                    <button mat-button matStepperNext> Next</button>
+                </div>
             }
-            @if (selected()?.id === source.id) {
-            <span>[selected]</span>
-            }
-        </li>
+            </form>
+        </mat-step>
+        @if (isOmnAIScopeSelected) {
+            <mat-step [stepControl]="step2Form">
+                <form [formGroup]="step2Form">
+                    <ng-template matStepLabel>Select UUIDs</ng-template>
+                    <p><strong>Select Devices</strong></p>
+                        <div class="checkbox-group">
+                        @if (devices().length > 0) {
+                            @for (device of devices(); track device.UUID) {
+                            <mat-checkbox 
+                                (change)="onCheckboxChange($event, device.UUID)"
+                                [checked]="step2Form.value.selectedUUIDs.includes(device.UUID)">
+                                UUID: {{ device.UUID }}
+                            </mat-checkbox>
+                            }
+                        } @else {
+                            <p>No devices found</p>
+                        }
+                        </div>
+                    <div>
+                        <button mat-button matStepperPrevious>Back</button>
+                    </div>
+                </form>
+            </mat-step>
         }
-    </ul>
-
-    <button mat-button color="warn" (click)="clear()">Clear Selection</button>
-    
+    </mat-vertical-stepper> 
 </mat-dialog-content>
 
+ <button mat-button color="warn" (click)="clear()">Clear Selection</button>
+
 <mat-dialog-actions align="end">
-    <button mat-button mat-button [mat-dialog-close]="selected()" color="primary" [disabled]="!selected()" >Start</button>
+    <button mat-button mat-button color="primary" [disabled]="!selected()" (click)="save()" >Save settings</button>
 </mat-dialog-actions>
