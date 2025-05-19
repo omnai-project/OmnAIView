@@ -2,6 +2,15 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { DataSource } from '../../source-selection/data-source-selection.service';
+import {map} from 'rxjs/operators'
+import { timer, Subject } from 'rxjs';
+import { switchMap, takeUntil} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { MeasurementService } from '../../measurement/measurment-state.service';
+import { withLatestFrom } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 interface DeviceInformation {
   UUID: string;
@@ -29,8 +38,9 @@ export class OmnAIScopeDataService implements DataSource{
 
   private serverUrl = '127.0.0.1:8080';
 
-  constructor() {
+  constructor(private http:HttpClient) {
     this.init();
+    this.startDevicePolling(); 
   }
 
   async init(): Promise<void> {
@@ -59,6 +69,7 @@ export class OmnAIScopeDataService implements DataSource{
   });
 
   readonly #httpClient = inject(HttpClient);
+  private readonly destroy$ = new Subject<void>(); 
 
 
   // Abrufen der verfügbaren Geräte vom Server
@@ -182,5 +193,39 @@ export class OmnAIScopeDataService implements DataSource{
     }
 
     return true;
+  }
+  private startDevicePolling(): void {
+    timer(0,15_000).pipe(
+      withLatestFrom(this.measurementService.getMeasurementRunning$()),
+      filter(([, isRunning]) => !isRunning),
+      switchMap(()=>this.fetchDevices()), // switch the old http request with the new one 
+      takeUntil(this.destroy$)
+    ).subscribe(devices => this.devices.set(devices)); 
+  }
+
+  private fetchDevices(): Observable<DeviceInformation[]> {
+  const url = `http://${this.serverUrl}/UUID`;
+
+  return this.http.get<Partial<DeviceOverview>>(url).pipe( // get new devices list else default empty devices list 
+    map(resp => {
+      const devs   = resp.devices ?? [];   // fallback
+      const colors = resp.colors  ?? [];
+
+      return devs.map((d, i) => ({
+        UUID : d.UUID,
+        color: colors[i]?.color ?? { r: 0, g: 0, b: 0 }
+      }));
+    }),
+
+    catchError(err => {
+      console.warn('[fetchDevices] failed:', err); // stream runs even if no scopes are connected or an error occurs in the http request 
+      return of([]);                      
+    })
+  );
+}
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
