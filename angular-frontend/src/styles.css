@@ -1,4 +1,68 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+:root {
+    --primary-color: #e93b3a; /* Hauptbuttons, Icons, interaktive Schlüsselelemente */
+    --primary-color-light: #f16564;
+    --primary-color-dark: #c22d2c;
+    --secondary-color: #b80008; /* Warnungen, Hervorhebungen, sekundäre Handlungsaufrufe */
+    --secondary-color-light: #d40909;
+    --secondary-color-dark: #8f0004;
+    --accent-color: #ff5959; /* Badges, Labels, Hover-Effekte */
+    --accent-color-light: #ff8b8b;
+    --accent-color-dark: #cc4747;
+    /* --background-color: #000; */
+    --background-color: #fafafa;
+    --text-color: #fff;
+    --h1-color: #fff;
+    --h2-color: #e5e5e5;
+    --h3-color: #ccc;
+    --h4-color: #b3b3b3;
+    --h5-color: #999;
+    --h6-color: #808080;
+    --font-head-buttons: "Maven Pro"; /* Überschriften, Buttons */
+    --font-text: inter; /* lange Texte, Beschreibungen */
+}
+
+html, body { 
+    height: 100%; 
+}
+body {
+    background-color: var(--background-color);
+    /* color: var(--text-color); */
+    margin: 0; 
+    /* font-family: Roboto, "Helvetica Neue", sans-serif; */
+    font-family: var(--font-text), sans-serif;
+}
+h1 {
+    color: var(--h1-color);
+}
+h2 {
+    color: var(--h2-color);
+}
+h3 {
+    color: var(--h3-color);
+}
+h4 {
+    color: var(--h4-color);
+}
+h5 {
+    color: var(--h5-color);
+}
+h6 {
+    color: var(--h6-color);
+}
+
+
+h1, h2, h3, h4, h5, h6,
+button {
+    font-family: var(--font-text), sans-serif;
+}
+
+button {
+    /* background-color: var(--primary-color);
+    color: var(--text-color); */
+}
+button:hover,
+button:focus {
+    background-color: var(--accent-color);
+}
