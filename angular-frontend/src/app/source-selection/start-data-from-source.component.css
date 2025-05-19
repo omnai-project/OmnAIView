@@ -1,0 +1,7 @@
+.settings-button {
+    margin: 5%; 
+    display: flex; 
+    align-items: center;
+    gap: 8px; 
+    padding:5%;
+}

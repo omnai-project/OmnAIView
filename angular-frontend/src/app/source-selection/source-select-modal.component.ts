@@ -21,6 +21,7 @@ import { SettingsService } from './settings-for-source.service';
     imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, MatStepperModule, MatFormFieldModule, MatSelectModule, MatInputModule, ReactiveFormsModule, MatCheckboxModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './source-select-modal.component.html',
+    styleUrls: ['./source-select-modal.component.css']
 })
 export class SourceSelectModalComponent {
     private readonly datasourceService = inject(DataSourceSelectionService);

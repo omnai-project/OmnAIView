@@ -1,0 +1,33 @@
+::ng-deep .mat-vertical-stepper-header {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+::ng-deep .mat-step-header.mat-active {
+  background-color: var(--primary-color);
+  font-weight: bold;
+}
+
+::ng-deep .mat-step-icon {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+::ng-deep .mat-step-icon.mat-step-icon-selected {
+  background-color: var(--secondary-color);
+}
+
+::ng-deep .mat-step-label {
+  font-family: var(--font-head-buttons);
+  color: var(--h2-color);
+}
+
+::ng-deep .mat-form-field {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+
