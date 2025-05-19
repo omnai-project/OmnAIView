@@ -10,7 +10,9 @@ export interface DataPoint {
 
 /** Your expected DataSource interface */
 export interface DataSource {
-    connect(): unknown;
+    connect(config?: unknown): unknown;
+    disconnect(): void;
+    clearData(): void;
     data: Signal<Record<string, DataFormat[]>>
 }
 
@@ -34,6 +36,8 @@ export class DataSourceSelectionService {
             name: 'OmnAIScope',
             description: 'Live data from connected OmnAIScope devices',
             connect: this.liveDataService.connect.bind(this.liveDataService),
+            disconnect: this.liveDataService.disconnect.bind(this.liveDataService),
+            clearData: this.liveDataService.clearData.bind(this.liveDataService),
             data: this.liveDataService.data
         },
         {
@@ -41,6 +45,8 @@ export class DataSourceSelectionService {
             name: 'Random Dummy Data',
             description: 'Random generated data points',
             connect: this.dummyDataService.connect.bind(this.dummyDataService),
+            disconnect: this.dummyDataService.disconnect.bind(this.dummyDataService),
+            clearData: this.dummyDataService.clearData.bind(this.dummyDataService),
             data: this.dummyDataService.data
         }
     ]);

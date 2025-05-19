@@ -38,6 +38,8 @@ export class OmnAIScopeDataService implements DataSource{
 
   private serverUrl = '127.0.0.1:8080';
 
+  private readonly measurementService = inject(MeasurementService);
+
   constructor(private http:HttpClient) {
     this.init();
     this.startDevicePolling(); 
@@ -92,7 +94,7 @@ export class OmnAIScopeDataService implements DataSource{
     });
   }
 
-  connect(): void {
+  connect(config?: {UUIDS: string[]}): void {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       console.log('WebSocket ist bereits verbunden.');
       return;
@@ -106,8 +108,14 @@ export class OmnAIScopeDataService implements DataSource{
       this.data.set({});
 
       // Send start message
-      const deviceUuids = this.devices().map(device => device.UUID).join(" ");
-      this.socket?.send(JSON.stringify(deviceUuids));
+      if(config){
+        const deviceConfig = config.UUIDS.join("");
+        this.socket?.send(deviceConfig) 
+      }
+      else {
+        const deviceUuids = this.devices().map(device => device.UUID).join(" "); 
+        this.socket?.send(deviceUuids);
+      }
     });
 
     let ignoreCounter = 0;
@@ -194,6 +202,7 @@ export class OmnAIScopeDataService implements DataSource{
 
     return true;
   }
+
   private startDevicePolling(): void {
     timer(0,15_000).pipe(
       withLatestFrom(this.measurementService.getMeasurementRunning$()),
@@ -227,5 +236,10 @@ export class OmnAIScopeDataService implements DataSource{
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  clearData(): void {
+    this.disconnect();
+    this.data.set({});
   }
 }

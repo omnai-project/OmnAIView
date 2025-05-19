@@ -16,6 +16,7 @@ import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devi
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { StartDataButtonComponent } from "../source-selection/start-data-from-source.component";
 import { DataSourceService } from './graph-data.service';
+import { MeasurementComponent } from '../measurement/measurement.component';
 
 @Component({
   selector: 'app-graph',
@@ -23,7 +24,7 @@ import { DataSourceService } from './graph-data.service';
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [ResizeObserverDirective, JsonPipe, StartDataButtonComponent, DeviceListComponent],
+  imports: [ResizeObserverDirective, JsonPipe, StartDataButtonComponent, DeviceListComponent, MeasurementComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphComponent {
