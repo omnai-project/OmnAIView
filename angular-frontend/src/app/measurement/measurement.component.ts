@@ -30,11 +30,12 @@ export class MeasurementComponent {
     private readonly dataSourceSelection = inject(DataSourceSelectionService); 
     private readonly measurementService = inject(MeasurementService);
 
+    // Getter to read properties of the buttons in html file
     get buttonList() {
       return this.buttons
     }
   
-  startMeasurement(): void {
+    startMeasurement(): void {
   
       this.measurementService.setMeasurementRunning(!this.measurementService.getMeasurementRunning()); // start stop handling 
       const source_id      = this.settings.selectedSourceId(); // gets source from the settings 
@@ -81,6 +82,7 @@ export class MeasurementComponent {
       }
       // Dummy function
       this.startMeasurement();
+      /** @todo: implement the rest of the if clause */
       // 1. inactive:
       // Change Picogram of button to stop, disable Start and Save
         // Open window for settings (runtime, path)
@@ -108,7 +110,7 @@ export class MeasurementComponent {
         this.buttons[2].isDisabled = false;
       }
       this.startMeasurement();
-      
+      /** @todo: implement the rest of the if clause */
       // 1. inactive:
       // Change Pictogram to stop, disable save, record
       // Show graph evolving
@@ -118,6 +120,7 @@ export class MeasurementComponent {
     }
 
     clickSaveButton() {
+      /** @todo: implement saving window */
       // open save window for naming and saving chunk of data selected (or new selection?)
       // Save or Cancel
       // delete Graph
@@ -125,6 +128,7 @@ export class MeasurementComponent {
     }
 
     clickDeleteButton() {
+      /** @todo: implement delete button with if clause */
       // 1. case record active:
       // Cancel record (Disconnect)
       // Delete file written by record if there is
