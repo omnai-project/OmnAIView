@@ -10,7 +10,6 @@
     --accent-color: #ff5959; /* Badges, Labels, Hover-Effekte */
     --accent-color-light: #ff8b8b;
     --accent-color-dark: #cc4747;
-    /* --background-color: #000; */
     --background-color: #fafafa;
     --text-color: #fff;
     --h1-color: #fff;
@@ -28,9 +27,7 @@ html, body, app-root{
 }
 body {
     background-color: var(--background-color);
-    /* color: var(--text-color); */
     margin: 0; 
-    /* font-family: Roboto, "Helvetica Neue", sans-serif; */
     font-family: var(--font-text), sans-serif;
 }
 h1 {
@@ -56,14 +53,4 @@ h6 {
 h1, h2, h3, h4, h5, h6,
 button {
     font-family: var(--font-text), sans-serif;
-}
-
-button {
-    
-    /* background-color: var(--primary-color);
-    color: var(--text-color); */
-}
-button:hover,
-button:focus {
-    background-color: var(--accent-color);
 }

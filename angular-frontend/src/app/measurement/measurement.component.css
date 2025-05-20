@@ -1,6 +1,5 @@
 .button-wrapper-wrapper {
     width: 50%;
-    border: 2px solid green;
     border-radius: 5px;
     display: flex;
     flex-direction: column;
@@ -8,7 +7,6 @@
     margin: 0 auto;
 }
 .button-wrapper {
-    border: 2px dotted blue;
     margin: 1rem auto;
     display: flex;
     justify-content: space-between;

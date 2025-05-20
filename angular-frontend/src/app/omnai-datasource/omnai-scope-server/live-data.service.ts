@@ -239,7 +239,6 @@ export class OmnAIScopeDataService implements DataSource{
   }
 
   clearData(): void {
-    this.disconnect();
     this.data.set({});
   }
 }
