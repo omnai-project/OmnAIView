@@ -1,18 +1,24 @@
 <div class="button-wrapper-wrapper">
     <div class="button-wrapper">
         <button class="start-button"
-            (click)="startMeasurement()">
-            <mat-icon class="material-symbols-outlined" fontIcon="play_arrow" />
+            (click)="clickStartButton()"
+            [disabled]=buttonList[0].isDisabled>
+            <mat-icon class="material-symbols-outlined" [fontIcon]=buttonList[0].fontIcon />
         </button>
-            <button class="stop-button">
-            <mat-icon class="material-symbols-outlined" fontIcon="save" />
+        <button class="save-button"
+            (click)="clickSaveButton()"
+            [disabled]=buttonList[1].isDisabled>
+            <mat-icon class="material-symbols-outlined" [fontIcon]=buttonList[1].fontIcon />
         </button>
-            <button class="stop-button">
-            <mat-icon class="material-symbols-outlined" fontIcon="radio_button_checked" />
+            <button class="record-button"
+                (click)="clickRecordButton()"
+                [disabled]=buttonList[2].isDisabled>
+            <mat-icon class="material-symbols-outlined" [fontIcon]=buttonList[2].fontIcon />
         </button>
             <button class="delete-button"
-                (click)="deleteMeasurementData()">
-            <mat-icon class="material-symbols-outlined" fontIcon="delete" />
+                (click)="deleteMeasurementData()"
+                [disabled]=buttonList[3].isDisabled>
+            <mat-icon class="material-symbols-outlined" [fontIcon]=buttonList[3].fontIcon />
         </button>
     </div>
 </div>

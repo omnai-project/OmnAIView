@@ -19,8 +19,20 @@ export class MeasurementComponent {
       private scope   : OmnAIScopeDataService   // für devices()
     ) {}
 
+    private readonly buttonsDefault = [
+      { fontIcon: "play_arrow", isActive: false, isDisabled: false},
+      { fontIcon: "save", isActive: false, isDisabled: false},
+      { fontIcon: "radio_button_checked", isActive: false, isDisabled: false},
+      { fontIcon: "delete", isActive: false, isDisabled: false}
+    ]
+    private buttons = this.buttonsDefault;
+
     private readonly dataSourceSelection = inject(DataSourceSelectionService); 
     private readonly measurementService = inject(MeasurementService);
+
+    get buttonList() {
+      return this.buttons
+    }
   
   startMeasurement(): void {
   
@@ -36,7 +48,7 @@ export class MeasurementComponent {
       
       let configOfUUIDS: unknown = undefined; 
   
-      if(this.measurementService.getMeasurementRunning()){
+      if (this.measurementService.getMeasurementRunning()) {
   
         if (source_id  === 'omnaiscope') {  // Create config of UUIDS from OmnAIScopes 
           const available = this.scope.devices().map(d => d.UUID); 
@@ -56,15 +68,81 @@ export class MeasurementComponent {
       }       
     }
 
-    stopMeasurement(){
+    clickRecordButton() {
+      this.buttons[2].isActive = !this.buttons[2].isActive;
+      if (this.buttons[2].isActive) {
+        this.buttons[2].fontIcon = "stop";
+        this.buttons[0].isDisabled = true;
+        this.buttons[1].isDisabled = true;
+      } else {
+        this.buttons[2].fontIcon = "radio_button_checked";
+        this.buttons[0].isDisabled = false;
+        this.buttons[1].isDisabled = false;
+      }
+      // Dummy function
+      this.startMeasurement();
+      // 1. inactive:
+      // Change Picogram of button to stop, disable Start and Save
+        // Open window for settings (runtime, path)
+        // Start or cancel
+      // Clear all data in Graph
+      // Show graph evolving
+        // show timer when it will stop, file size
+        // save data to file in batches (check if still able to save if not, abort)
+        // Toast data written successfully 
+      // 2. active (does record):
+      // Disconnect source
+      // if data is not written to file write it to file
+      // change button to default state
+    }
+
+    clickStartButton() {
+      this.buttons[0].isActive = !this.buttons[0].isActive;
+      if (this.buttons[0].isActive) {
+        this.buttons[0].fontIcon = "stop"
+        this.buttons[1].isDisabled = true;
+        this.buttons[2].isDisabled = true;
+      } else {
+        this.buttons[0].fontIcon = "play_arrow"
+        this.buttons[1].isDisabled = false;
+        this.buttons[2].isDisabled = false;
+      }
+      this.startMeasurement();
+      
+      // 1. inactive:
+      // Change Pictogram to stop, disable save, record
+      // Show graph evolving
+      // 2. active (does measure):
+      // Disconnect source
+      // Change pictogram to default, enable save
+    }
+
+    clickSaveButton() {
+      // open save window for naming and saving chunk of data selected (or new selection?)
+      // Save or Cancel
+      // delete Graph
+      this.deleteMeasurementData();
+    }
+
+    clickDeleteButton() {
+      // 1. case record active:
+      // Cancel record (Disconnect)
+      // Delete file written by record if there is
+      // 2. case start active:
+      // disconnect source, delete measurement data
+      // clear selection (?)
+    }
+
+    stopMeasurement() {
       this.measurementService.setMeasurementRunning(false);
       this.dataSourceSelection.currentSource()?.disconnect(); 
     }
 
     deleteMeasurementData() {
-    this.measurementService.setMeasurementRunning(false);
-    this.dataSourceSelection.currentSource()?.clearData();
-    this.dataSourceSelection.clearSelection();
-    // Clear all data (in future data selection also)
+      this.measurementService.setMeasurementRunning(false);
+      this.buttons = [...this.buttonsDefault];
+      this.dataSourceSelection.currentSource()?.clearData();
+      this.dataSourceSelection.clearSelection();
+      // Clear all data (in future data selection also)
     }
 }
