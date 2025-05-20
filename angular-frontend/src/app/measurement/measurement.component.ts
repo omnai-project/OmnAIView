@@ -5,10 +5,11 @@ import { OmnAIScopeDataService } from '../omnai-datasource/omnai-scope-server/li
 import { MatIconModule } from '@angular/material/icon';
 import { inject } from '@angular/core';
 import { MeasurementService } from './measurment-state.service';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-measurement',
-  imports: [MatIconModule],
+  imports: [MatIconModule, MatButtonModule],
   templateUrl: './measurement.component.html',
   styleUrl: './measurement.component.css'
 })

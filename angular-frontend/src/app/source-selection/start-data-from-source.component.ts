@@ -9,7 +9,7 @@ import { MatIcon } from '@angular/material/icon';
 @Component({
     selector: 'app-start-data-button',
     standalone: true,
-    imports: [CommonModule, MatDialogModule, MatIcon],
+    imports: [CommonModule, MatDialogModule, MatIcon, MatButtonModule],
     styleUrls:['./start-data-from-source.component.css'],
     template: `
     <button mat-raised-button class ="settings-button" color="accent" (click)="openModal()" >

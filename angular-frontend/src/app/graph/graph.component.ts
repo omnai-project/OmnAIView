@@ -21,6 +21,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import { MatIcon } from '@angular/material/icon';
 import { SidenavComponent } from "../sidenav/sidenav.component";
 import { NavbarComponent } from '../navbar/navbar.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-graph',
