@@ -23,7 +23,7 @@
     --font-text: inter; /* lange Texte, Beschreibungen */
 }
 
-html, body { 
+html, body, app-root{ 
     height: 100%; 
 }
 body {

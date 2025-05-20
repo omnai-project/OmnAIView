@@ -20,6 +20,7 @@ import { MeasurementComponent } from '../measurement/measurement.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { MatIcon } from '@angular/material/icon';
 import { SidenavComponent } from "../sidenav/sidenav.component";
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-graph',
@@ -27,7 +28,7 @@ import { SidenavComponent } from "../sidenav/sidenav.component";
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [ResizeObserverDirective, JsonPipe, StartDataButtonComponent, DeviceListComponent, MeasurementComponent, MatSidenavModule, MatIcon, SidenavComponent],
+  imports: [ResizeObserverDirective, JsonPipe, StartDataButtonComponent, NavbarComponent, DeviceListComponent, MeasurementComponent, MatSidenavModule, MatIcon, SidenavComponent, MatButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphComponent {

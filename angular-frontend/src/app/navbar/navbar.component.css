@@ -1,0 +1,6 @@
+.menu-bar {
+  padding: 1rem;
+  background: #eee;
+  display: flex;
+  gap: 1rem;
+}
