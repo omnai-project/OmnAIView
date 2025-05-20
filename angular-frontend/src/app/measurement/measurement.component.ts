@@ -143,7 +143,7 @@ export class MeasurementComponent {
     }
 
     deleteMeasurementData() {
-      this.measurementService.setMeasurementRunning(false);
+      this.stopMeasurement();
       this.buttons = [...this.buttonsDefault];
       this.dataSourceSelection.currentSource()?.clearData();
       this.dataSourceSelection.clearSelection();
