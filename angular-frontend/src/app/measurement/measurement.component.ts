@@ -25,7 +25,7 @@ export class MeasurementComponent {
       { fontIcon: "radio_button_checked", isActive: false, isDisabled: false},
       { fontIcon: "delete", isActive: false, isDisabled: false}
     ]
-    private buttons = this.buttonsDefault;
+    private buttons = this.buttonsDefault.map(b => ({ ...b }));
 
     private readonly dataSourceSelection = inject(DataSourceSelectionService); 
     private readonly measurementService = inject(MeasurementService);
@@ -144,9 +144,13 @@ export class MeasurementComponent {
 
     deleteMeasurementData() {
       this.stopMeasurement();
-      this.buttons = [...this.buttonsDefault];
+      this.resetButtons(); 
       this.dataSourceSelection.currentSource()?.clearData();
       this.dataSourceSelection.clearSelection();
       // Clear all data (in future data selection also)
+    }
+
+    resetButtons(): void {
+    this.buttons = this.buttonsDefault.map(b => ({ ...b }));
     }
 }
