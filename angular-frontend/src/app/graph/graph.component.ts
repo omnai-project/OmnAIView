@@ -12,7 +12,7 @@ import {
 import { transition } from 'd3';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
-import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devicelist.component";
+import { DeviceListComponent } from "../data-servers/omnai-scope-server/devicelist.component";
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { StartDataButtonComponent } from "../source-selection/start-data-from-source.component";
 import { DataSourceService } from './graph-data.service';
