@@ -1,7 +1,7 @@
 import { computed, effect, inject, Injectable, linkedSignal, signal, untracked } from '@angular/core';
 import { scaleLinear as d3ScaleLinear, scaleUtc as d3ScaleUtc } from 'd3-scale';
 import { line as d3Line } from 'd3-shape';
-import {  OmnAIScopeDataService } from '../omnai-datasource/omnai-scope-server/live-data.service';
+import {DataFormat, OmnAIScopeDataService} from '../omnai-datasource/omnai-scope-server/live-data.service';
 import { type GraphComponent } from './graph.component';
 import {DataInfo, DataSourceSelectionService} from '../source-selection/data-source-selection.service';
 
@@ -46,7 +46,7 @@ export class DataSourceService {
 
   private readonly dummySeries = computed(() => {
     const selectedSource = this.dataSourceSelectionService.currentSource();
-    if (!selectedSource) return {};
+    if (!selectedSource) return {data: new Map<string, DataFormat[]>()};
 
     return selectedSource.data();
   });
@@ -111,18 +111,21 @@ export class DataSourceService {
         .x(d => xScale(d.time))
         .y(d => yScale(d.value));
 
-      return Object.entries(series).map(([key, points]) => {
+      let paths = new Array(series.data.size);
+      let i = 0;
+      for (const [key, points] of series.data.entries()) {
         const parsedValues = points.map(({ timestamp, value }) => ({
           time: new Date(timestamp),
           value,
         }));
 
         const pathData = lineGen(parsedValues) ?? '';
-        return {
+        paths[i++] = {
           id: key,
           d: pathData,
         };
-      });
+      }
+      return paths;
     },
   });
 

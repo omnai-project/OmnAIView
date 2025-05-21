@@ -23,7 +23,7 @@ export class DataInfo {
 /** Your expected DataSource interface */
 export interface DataSource {
     connect(): unknown;
-    data: Signal<Record<string, DataFormat[]>>
+    data: Signal<{data: Map<string, DataFormat[]>}>
     info: Signal<{info: DataInfo}>
 }
 

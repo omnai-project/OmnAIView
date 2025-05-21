@@ -7,7 +7,7 @@ import { DataFormat } from '../omnai-scope-server/live-data.service';
 
 @Injectable({ providedIn: 'root' })
 export class DummyDataService implements DataSource {
-    private readonly _data = signal<Record<string, DataFormat[]>>({});
+    private readonly _data = signal({data: new Map()});
 
     readonly data = this._data.asReadonly();
     readonly info = signal({info: new DataInfo()});
@@ -28,10 +28,11 @@ export class DummyDataService implements DataSource {
                 if (point.value < initial.info.minValue) initial.info.minValue = point.value;
                 return {info: initial.info};
               });
-                this._data.update(current => ({
-                    ...current,
-                    dummy: [...(current['dummy'] ?? []), point]
-                }));
+              this._data.update(current => {
+                if (!current.data.has(uuid)) current.data.set(uuid, []);
+                current.data.get(uuid)!.push(point);
+                return {data: current.data};
+              });
             });
     }
 }
