@@ -20,6 +20,7 @@ import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { StartDataButtonComponent } from "../source-selection/start-data-from-source.component";
 import { DataSourceService } from './graph-data.service';
 import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils';
+import { DevDataChannelList } from '../omnai-datasource/dev-data-server/dev-data-channellist.component';
 
 @Component({
   selector: 'app-graph',
@@ -27,7 +28,7 @@ import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [ResizeObserverDirective, JsonPipe, StartDataButtonComponent, DeviceListComponent, MatSlideToggleModule],
+  imports: [ResizeObserverDirective, JsonPipe, StartDataButtonComponent, DeviceListComponent, DevDataChannelList, MatSlideToggleModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphComponent {
