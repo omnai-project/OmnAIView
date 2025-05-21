@@ -100,35 +100,29 @@ export class DataSourceService {
     }
   }
 
-  readonly paths = linkedSignal({
-    source: () => ({
-      xScale: this.xScale(),
-      yScale: this.yScale(),
-      series: this.dummySeries(),
-    }),
-    computation: ({ xScale, yScale, series }) => {
-      const lineGen = d3Line<{ time: Date; value: number }>()
-        .x(d => xScale(d.time))
-        .y(d => yScale(d.value));
-
-      let paths = new Array(series.data.size);
-      let i = 0;
-      for (const [key, points] of series.data.entries()) {
-        const parsedValues = points.map(({ timestamp, value }) => ({
-          time: new Date(timestamp),
-          value,
-        }));
-
-        const pathData = lineGen(parsedValues) ?? '';
-        paths[i++] = {
-          id: key,
-          d: pathData,
-        };
+  readonly worker = new Worker(new URL('./webworker', import.meta.url));
+  updatePaths = effect(()=>{
+    const dimensions = this.$graphDimensions();
+    const domain = this.$domain();
+    const series = this.dummySeries();
+     this.worker.postMessage({
+      dimensions,
+      domain,
+      series,
+    })
+  })
+  readonly paths = signal<{id:string, d:string}[]>([]);
+  constructor() {
+    this.worker.addEventListener("message", (e) =>{
+      if (!Array.isArray(e.data)) {
+        console.error("recieved invalid path data from webworker: ", e.data);
+        return;
       }
-      return paths;
-    },
-  });
-
-
+      this.paths.set(e.data);
+    })
+    this.worker.addEventListener("messageerror", (e) =>{
+      console.error("recieved error from webworker: ", e);
+    })
+  }
 
 }
