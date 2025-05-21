@@ -16,6 +16,7 @@ import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devi
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { StartDataButtonComponent } from "../source-selection/start-data-from-source.component";
 import { DataSourceService } from './graph-data.service';
+import { timeFormat } from 'd3-time-format';
 
 @Component({
   selector: 'app-graph',
@@ -65,12 +66,13 @@ export class GraphComponent {
     return `translate(${xScale.range()[0]}, 0)`;
   });
 
-
   updateXAxisInCanvas = effect(() => {
     if (!this.isInBrowser) return;
+    const formatElapsed = timeFormat('%M:%S');
     const x = this.dataservice.xScale()
     const g = this.axesContainer().nativeElement;
-    select(g).transition(transition()).duration(300).call(axisBottom(x));
+    select(g).transition(transition()).duration(300).call(axisBottom(x).tickFormat(d => 
+                                                  formatElapsed(new Date(d as number))));
   });
 
   updateYAxisInCanvas = effect(() => {
@@ -79,5 +81,4 @@ export class GraphComponent {
     const g = this.axesYContainer().nativeElement;
     select(g).transition(transition()).duration(300).call(axisLeft(y));
   });
-
 }
