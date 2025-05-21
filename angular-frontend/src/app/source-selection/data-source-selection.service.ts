@@ -8,10 +8,23 @@ export interface DataPoint {
     y: number;
 }
 
+export class DataInfo {
+  constructor() {
+    this.minValue = Number.POSITIVE_INFINITY;
+    this.maxValue = Number.NEGATIVE_INFINITY;
+    this.minTimestamp = Number.POSITIVE_INFINITY;
+    this.maxTimestamp = Number.NEGATIVE_INFINITY;
+  }
+  minValue: number;
+  maxValue: number;
+  minTimestamp: number;
+  maxTimestamp: number;
+}
 /** Your expected DataSource interface */
 export interface DataSource {
     connect(): unknown;
     data: Signal<Record<string, DataFormat[]>>
+    info: Signal<{info: DataInfo}>
 }
 
 
@@ -34,14 +47,16 @@ export class DataSourceSelectionService {
             name: 'OmnAIScope',
             description: 'Live data from connected OmnAIScope devices',
             connect: this.liveDataService.connect.bind(this.liveDataService),
-            data: this.liveDataService.data
+            data: this.liveDataService.data,
+            info: this.liveDataService.info,
         },
         {
             id: 'dummydata',
             name: 'Random Dummy Data',
             description: 'Random generated data points',
             connect: this.dummyDataService.connect.bind(this.dummyDataService),
-            data: this.dummyDataService.data
+            data: this.dummyDataService.data,
+            info: this.dummyDataService.info,
         }
     ]);
     readonly availableSources = this._availableSources.asReadonly();

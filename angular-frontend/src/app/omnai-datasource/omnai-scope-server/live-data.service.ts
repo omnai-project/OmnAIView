@@ -1,7 +1,7 @@
 // server-communication.service.ts
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { DataSource } from '../../source-selection/data-source-selection.service';
+import { DataInfo, DataSource } from '../../source-selection/data-source-selection.service';
 import { BackendPortService } from './backend-port.service';
 
 interface DeviceInformation {
@@ -33,6 +33,7 @@ export class OmnAIScopeDataService implements DataSource{
   readonly isConnected = signal<boolean>(false);
   readonly devices = signal<DeviceInformation[]>([]);
   readonly data = signal<Record<string, DataFormat[]>>({});
+  readonly info = signal({info: new DataInfo()});
   readonly dataAsList = computed(() => {
     const allDataPoints: DataFormat[] = [];
     const dataRecord = this.data();
@@ -85,13 +86,14 @@ export class OmnAIScopeDataService implements DataSource{
     this.socket.addEventListener('open', () => {
       this.isConnected.set(true);
       this.data.set({});
+      this.info.set({info: new DataInfo()});
 
       // Send start message
       const deviceUuids = this.devices().map(device => device.UUID).join(" ");
       if(!this.socket){
-        throw new Error("Websocket is not defined"); 
+        throw new Error("Websocket is not defined");
       }
-      this.socket.send(deviceUuids); 
+      this.socket.send(deviceUuids);
     });
 
     let ignoreCounter = 0;
@@ -119,7 +121,17 @@ export class OmnAIScopeDataService implements DataSource{
             }));
             records[uuid] = existingData.concat(newDataPoints);
           });
-
+        const info = this.info().info;
+        let updateChangedInfo = false;
+        parsedMessage.data.forEach((currentValue:any) => {
+          currentValue.value.forEach((currentValue:number) => {
+            if (currentValue > info.maxValue) {info.maxValue = currentValue; updateChangedInfo = true; }
+            if (currentValue < info.minValue) {info.minValue = currentValue; updateChangedInfo = true; }
+          });
+          if (currentValue.timestamp < info.minTimestamp) {info.minTimestamp = currentValue.timestamp; updateChangedInfo = true; }
+          if (currentValue.timestamp > info.maxTimestamp) {info.maxTimestamp = currentValue.timestamp; updateChangedInfo = true; }
+        });
+        if (updateChangedInfo) this.info.set({info: info});
           return { ...records };
         });
       } else {

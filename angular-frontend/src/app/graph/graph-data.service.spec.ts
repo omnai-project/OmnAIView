@@ -14,21 +14,16 @@ describe('GraphDataService', () => {
     expect(service).toBeTruthy();
   });
   it('should correctly scale axis based on data', () => {
-    const mockData = {
-      device1: [
-        { timestamp: 1000, value: 10 },
-        { timestamp: 2000, value: 20 },
-      ],
-      device2: [
-        { timestamp: 1500, value: 15 },
-      ],
-    };
+    (service as any).info.set({
+      minValue: 10,
+      maxValue: 20,
+      minTimestamp: 1000,
+      maxTimestamp: 2000,
+    });
 
-    // scaleAxisToData ist private -> Aufruf über cast
-    (service as any).scaleAxisToData(mockData);
-
-    const xDomain = service['$xDomain']();
-    const yDomain = service['$yDomain']();
+    const domain = service['$domain']();
+    const xDomain = domain.xDomain;
+    const yDomain = domain.yDomain;
 
     // xDomain und yDomain sollten angepasst sein
     expect(xDomain[0].getTime()).toBeLessThanOrEqual(1000);
