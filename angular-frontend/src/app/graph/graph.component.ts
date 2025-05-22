@@ -50,8 +50,6 @@ export class GraphComponent {
     this.dataservice.updateGraphDimensions(dimension)
   }
 
-  // Axes related computations and
-
   marginTransform = computed(() => {
     return `translate(${this.dataservice.margin.left}, ${this.dataservice.margin.top})`
   })
@@ -68,11 +66,14 @@ export class GraphComponent {
 
   updateXAxisInCanvas = effect(() => {
     if (!this.isInBrowser) return;
-    const formatElapsed = timeFormat('%M:%S');
+    const formatElapsed = timeFormat('%M.%S.%L');
     const x = this.dataservice.xScale()
     const g = this.axesContainer().nativeElement;
-    select(g).transition(transition()).duration(300).call(axisBottom(x).tickFormat(d => 
-                                                  formatElapsed(new Date(d as number))));
+    select(g)
+      .transition(transition())
+      .duration(300).
+      call(axisBottom(x).tickFormat(d =>
+        formatElapsed(new Date(Number(d)))));
   });
 
   updateYAxisInCanvas = effect(() => {

@@ -13,7 +13,7 @@ type UnwrapSignal<T> = T extends import('@angular/core').Signal<infer U> ? U : n
 @Injectable()
 export class DataSourceService {
   private readonly $graphDimensions = signal({ width: 800, height: 600 });
-  private readonly $xDomain = signal([new Date(0), new Date()]); // wtf why do we init x axis with date objects!!!!
+  private readonly $xDomain = signal([new Date(0), new Date(0)]); // wtf why do we init x axis with date objects!!!!
   private readonly $yDomain = signal([0, 100]); 
   private readonly dataSourceSelectionService = inject(DataSourceSelectionService);
   private firstTimestamp = 0;
@@ -54,6 +54,7 @@ export class DataSourceService {
       return d3ScaleLinear()
         .domain(yDomain)
         .range([height, 0]);
+
     },
   });
 
@@ -98,11 +99,18 @@ export class DataSourceService {
     this.firstTimestamp = result.minTimestamp;
     const xDomainRange = result.maxTimestamp - result.minTimestamp;
     const xExpansion = xDomainRange * expandBy;
-
-    this.$xDomain.set([
-      new Date(0),
-      new Date(xDomainRange + xExpansion),
-    ]);
+    if (xDomainRange === 0) {
+      this.$xDomain.set([
+        new Date(0),
+        new Date(1000),
+      ]);
+    }
+    else {
+      this.$xDomain.set([
+        new Date(0),
+        new Date(xDomainRange + xExpansion)
+      ]);
+    }
 
     const yDomainRange = result.maxValue - result.minValue;
     const yExpansion = yDomainRange * expandBy;
