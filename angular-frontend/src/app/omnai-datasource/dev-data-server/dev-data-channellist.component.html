@@ -2,12 +2,10 @@
 @for (device of devices(); track device.UUID) {
 <ul>
     <li>
-        UUID: {{ device.UUID }} |
-        Color - R: {{ device.color.r }},
+        UUID: {{ device.UUID }} </li>
+    <li>Color- R: {{ device.color.r }},
         G: {{ device.color.g }},
-        B: {{ device.color.b }}
-    </li>
-
+        B: {{ device.color.b }}</li>
 </ul>
 } @empty {
 No known devices found
