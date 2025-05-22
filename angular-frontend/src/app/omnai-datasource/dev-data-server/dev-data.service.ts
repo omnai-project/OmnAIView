@@ -3,8 +3,12 @@ import { DataSource } from "../../source-selection/data-source-selection.service
 import { DataFormat } from "../omnai-scope-server/live-data.service";
 import { HttpClient } from "@angular/common/http";
 import { inject } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { firstValueFrom } from "rxjs";
+import { DeviceSelectionDialogComponent } from "./test-dialog-component";
+import { filter } from "rxjs";
 
-interface DeviceInformation {
+export interface DeviceInformation {
     UUID: string;
     color: {
         r: number;
@@ -14,6 +18,12 @@ interface DeviceInformation {
 }
 interface DeviceOverview {
     datastreams: DeviceInformation[];
+}
+
+interface DevDataMessage {
+    datastreams: string[];
+    data: number[][];
+    timestamp: number;
 }
 
 /**
@@ -31,6 +41,8 @@ export class DevDataService implements DataSource {
     readonly data = signal<Record<string, DataFormat[]>>({});
     readonly devices = signal<DeviceInformation[]>([]);
 
+    private readonly matdialog = inject(MatDialog);
+
     getDevices(): void {
         const url = `http://${this.serverURL}/v1/get_devices`;
         this.#httpClient.get<DeviceOverview>(url).subscribe({
@@ -46,52 +58,79 @@ export class DevDataService implements DataSource {
         });
     }
     connect(): void {
-        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            console.log('Websocket already connected.');
+        // Handle device selection 
+        const devs = this.devices();
+
+        const dialogRef = this.matdialog.open(DeviceSelectionDialogComponent, {
+            data: devs,
+            disableClose: true,
+        });
+
+        dialogRef.afterClosed() // Websocket connection after device selection
+            .pipe(
+                filter((uuids: string[] | undefined): uuids is string[] => !!uuids && uuids.length > 0)
+            )
+            .subscribe(selectedUuids => {
+
+                // if websocket already open send new message 
+                if (this.socket?.readyState === WebSocket.OPEN) {
+                    this.socket?.send(selectedUuids.join(' '));
+                    return;
+                }
+
+                // create new websocket connection 
+                if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
+                    this.socket = new WebSocket(`ws://${this.serverURL}/v1/subscribe_ws`);
+
+                    this.socket.addEventListener('message', this.handleMessage.bind(this));
+                    this.socket.addEventListener('close', () => (this.socket = null));
+                    this.socket.addEventListener('error', e => console.error('WebSocket Fehler:', e));
+                }
+
+
+                if (this.socket.readyState === WebSocket.CONNECTING) {
+                    const onOpen = () => {
+                        this.socket?.removeEventListener('open', onOpen); // make sure the old selectedUUIDs is not send again when opening again 
+                        this.data.set({});
+                        this.socket?.send(selectedUuids.join(' '));
+                    };
+                    this.socket.addEventListener('open', onOpen);
+                }
+            });
+    }
+
+    /** check type of message and parse message from the DevDataServer websocket 
+     */
+    private handleMessage = (event: MessageEvent) => {
+        let parsed: unknown;
+        try { parsed = JSON.parse(event.data); } catch { parsed = event.data; }
+
+        if (!this.isDevDataMessage(parsed)) {
+            console.warn('Unexpected message format:', parsed);
             return;
         }
-        const wsUrl = `ws://${this.serverURL}/v1/subscribe_ws`;
-        this.socket = new WebSocket(wsUrl);
 
-        this.socket.addEventListener('open', () => {
-            this.data.set({});
-
-            const deviceUuids = this.devices().map(device => device.UUID).join(" ");
-            this.socket?.send(deviceUuids);
-        });
-
-        this.socket.addEventListener('message', (event) => {
-            let parsedMessage: any;
-            try {
-                parsedMessage = JSON.parse(event.data);
-            }
-            catch {
-                parsedMessage = event.data;
-            }
-
-            this.data.update(records => {
-                parsedMessage.datastreams.forEach((uuid: string, index: number) => {
-                    const existingData = records[uuid] ?? [];
-
-                    // generate new time series for every data object 
-                    const newDataPoints = parsedMessage.data.map((row: number[]) => ({
-                        timestamp: parsedMessage.timestamp,
-                        value: row[index],
-                    }));
-
-                    records[uuid] = existingData.concat(newDataPoints);
-                });
-
-                return { ...records };
+        this.data.update(records => {
+            parsed.datastreams.forEach((uuid: string, i: number) => {
+                const prev = records[uuid] ?? [];
+                const newPts = parsed.data.map((row: number[]) => ({
+                    timestamp: parsed.timestamp,
+                    value: row[i],
+                }));
+                records[uuid] = prev.concat(newPts);
             });
+            return { ...records };
         });
+    };
 
-        this.socket.addEventListener('close', () => {
-            this.socket = null;
-        });
-
-        this.socket.addEventListener('error', (error) => {
-            console.error('WebSocket Error:', error);
-        });
+    private isDevDataMessage(obj: any): obj is DevDataMessage {
+        return typeof obj === 'object'
+            && obj !== null
+            && Array.isArray(obj.datastreams)
+            && obj.datastreams.every((d: any) => typeof d === 'string')
+            && Array.isArray(obj.data)
+            && obj.data.every((row: any) => Array.isArray(row) && row.every((n: any) => typeof n === 'number'))
+            && typeof obj.timestamp === 'number';
     }
+
 }
