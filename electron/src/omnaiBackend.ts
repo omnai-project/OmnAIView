@@ -44,9 +44,9 @@ export const omnaiscopeBackendManager = (()=> { // singelton for only one possib
         });
     }
     /**
-     * @description Receive the path for the MiniOmni.exe in production and dev mode. 
+     * @description Receive the path for the OmnAIScope Backend in production and dev mode. 
      * !!! Path is hardcoded for both cases
-     * @returns hardcoded path for production and dev mode in which the miniomni.exe is currently saved 
+     * @returns hardcoded path for production and dev mode in which the OmnAIScope Backend is currently saved 
      */
     function getBackendPath(): string {
         const exePath: string = app.isPackaged 
