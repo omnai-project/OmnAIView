@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import {CsvFileImportComponent} from './csv-file-import.component';
@@ -13,9 +13,11 @@ import {CsvFileImportComponent} from './csv-file-import.component';
 export class CsvFileSelectModalComponent {
     private readonly csvFileDialog = inject(CsvFileImportComponent);
     private readonly dialogRef = inject(MatDialogRef<CsvFileSelectModalComponent>);
-    selected(fileList)
-    onFileSelected(fileList:FileList) {
-      if (fileList.length > 0)
-      this.csvFileDialog.file.set(event.target.)
+    selected = computed(()=> this.csvFileDialog.file().length > 0);
+    onFileSelected(fileList:FileList|null) {
+      if (!fileList || fileList.length == 0) return;
+      this.csvFileDialog.file.update(old => {
+        return [ ...old, ...fileList];
+      });
     }
 }
