@@ -1,8 +1,9 @@
-<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)">
+<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" (mousemove)="onMouseMove($event)">
     <g [attr.transform]="marginTransform()">
-
+        <g #grid ></g>
+        <g #guideline ></g>
         <g #xAxis [attr.transform]="xAxisTransformString()">
-          
+
         </g>
         <g #yAxis [attr.transform]="yAxisTransformString()"></g>
         @for (path of dataservice.paths(); track $index) {

@@ -6,10 +6,11 @@ import {
   effect,
   inject,
   PLATFORM_ID,
+  signal,
   viewChild,
   type ElementRef
 } from '@angular/core';
-import { transition } from 'd3';
+import { line, transition } from 'd3';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
 import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devicelist.component";
@@ -31,12 +32,14 @@ export class GraphComponent {
   readonly svgGraph = viewChild.required<ElementRef<SVGElement>>('graphContainer');
   readonly axesContainer = viewChild.required<ElementRef<SVGGElement>>('xAxis');
   readonly axesYContainer = viewChild.required<ElementRef<SVGGElement>>('yAxis');
+  readonly gridContainer = viewChild.required<ElementRef<SVGGElement>>('grid')
+  readonly guideContainer = viewChild.required<ElementRef<SVGGElement>>('guideline')
 
   private readonly platform = inject(PLATFORM_ID);
   isInBrowser = isPlatformBrowser(this.platform);
 
   constructor() {
-    if(this.isInBrowser){
+    if (this.isInBrowser) {
       queueMicrotask(() => {
         const rect = this.svgGraph().nativeElement.getBoundingClientRect(); if (rect.width > 0 && rect.height > 0) {
           this.dataservice.updateGraphDimensions({ width: rect.width, height: rect.height });
@@ -47,6 +50,26 @@ export class GraphComponent {
 
   updateGraphDimensions(dimension: { width: number, height: number }) {
     this.dataservice.updateGraphDimensions(dimension)
+  }
+
+  onMouseMove(hover: MouseEvent) {
+    const topOffset = ((hover.target as HTMLElement).closest("svg")!.getBoundingClientRect().top)
+    const mousePosition = ([{
+      x: 0, y: hover.clientY - topOffset
+    }, { x: 0, y: hover.clientY - topOffset }])
+    const g = this.guideContainer().nativeElement
+    g.innerHTML = ""
+    select(g).attr("stroke", "green")
+      .attr("stroke-opacity", 0.7)
+      .call(g => g.append("g")
+        .selectAll("line")
+        .data(mousePosition)
+        .join("line")
+        .attr("y1", d => (d.y)-20)
+        .attr("y2", d => (d.y)-20)
+        .attr("x1", 0)
+        .attr("x2", "100%"));
+
   }
 
   // Axes related computations and
@@ -74,10 +97,35 @@ export class GraphComponent {
   });
 
   updateYAxisInCanvas = effect(() => {
-    if(!this.isInBrowser) return;
+    if (!this.isInBrowser) return;
     const y = this.dataservice.yScale();
     const g = this.axesYContainer().nativeElement;
     select(g).transition(transition()).duration(300).call(axisLeft(y));
   });
 
+  updateGridInCanvas = effect(() => {
+    if (!this.isInBrowser) return;
+    const x = this.dataservice.xScale()
+    const y = this.dataservice.yScale()
+    const g = this.gridContainer().nativeElement
+    select(g).attr("stroke", "lightgray")
+      .attr("stroke-opacity", 0.7)
+      // vertical grid
+      // .call(g => g.append("g")
+      //       .selectAll("line")
+      //       .data(x.ticks())
+      //       .join("line")
+      //         .attr("x1", d => 0.5 + x(d))
+      //         .attr("x2", d => 0.5 + x(d))
+      //         .attr("y1", 0)
+      //         .attr("y2", 100))
+      .call(g => g.append("g")
+        .selectAll("line")
+        .data(y.ticks())
+        .join("line")
+        .attr("y1", d => 0.5 + y(d))
+        .attr("y2", d => 0.5 + y(d))
+        .attr("x1", 0)
+        .attr("x2", "100%"));
+  });
 }
