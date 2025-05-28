@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add dummy data server for debugging live graph rendering (#18)
 - Add Icon (#19)
 - Adding compodoc (#23)
+- Adding changelog information to the Contribution.md (#41)
 
 ### Changed 
 
