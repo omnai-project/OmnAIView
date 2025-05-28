@@ -54,9 +54,13 @@ export class GraphComponent {
 
   onMouseMove(hover: MouseEvent) {
     const topOffset = ((hover.target as HTMLElement).closest("svg")!.getBoundingClientRect().top)
+    const yaxis = this.dataservice.yScale()
+    const botlimit = yaxis(0) + 20
+    const toplimit = yaxis(100) + 20
+    const ypos = Math.max(Math.min(hover.clientY - topOffset, botlimit), toplimit)
     const mousePosition = ([{
-      x: 0, y: hover.clientY - topOffset
-    }, { x: 0, y: hover.clientY - topOffset }])
+      x: 0, y: ypos
+    }, { x: 0, y: ypos }])
     const g = this.guideContainer().nativeElement
     g.innerHTML = ""
     select(g).attr("stroke", "green")
@@ -65,8 +69,8 @@ export class GraphComponent {
         .selectAll("line")
         .data(mousePosition)
         .join("line")
-        .attr("y1", d => (d.y)-20)
-        .attr("y2", d => (d.y)-20)
+        .attr("y1", d => (d.y) - 20)
+        .attr("y2", d => (d.y) - 20)
         .attr("x1", 0)
         .attr("x2", "100%"));
 
@@ -103,29 +107,33 @@ export class GraphComponent {
     select(g).transition(transition()).duration(300).call(axisLeft(y));
   });
 
-  updateGridInCanvas = effect(() => {
+  updateGridInCanvas = effect((onCleanUp) => {
     if (!this.isInBrowser) return;
     const x = this.dataservice.xScale()
     const y = this.dataservice.yScale()
     const g = this.gridContainer().nativeElement
     select(g).attr("stroke", "lightgray")
       .attr("stroke-opacity", 0.7)
-      // vertical grid
-      // .call(g => g.append("g")
-      //       .selectAll("line")
-      //       .data(x.ticks())
-      //       .join("line")
-      //         .attr("x1", d => 0.5 + x(d))
-      //         .attr("x2", d => 0.5 + x(d))
-      //         .attr("y1", 0)
-      //         .attr("y2", 100))
-      .call(g => g.append("g")
-        .selectAll("line")
-        .data(y.ticks())
-        .join("line")
-        .attr("y1", d => 0.5 + y(d))
-        .attr("y2", d => 0.5 + y(d))
-        .attr("x1", 0)
-        .attr("x2", "100%"));
+    // vertical grid
+    // .call(g => g.append("g")
+    //       .selectAll("line")
+    //       .data(x.ticks())
+    //       .join("line")
+    //         .attr("x1", d => 0.5 + x(d))
+    //         .attr("x2", d => 0.5 + x(d))
+    //         .attr("y1", 0)
+    //         .attr("y2", 100))
+    // Horizontale Linien
+    select(g)
+      .append("g")
+      .attr("class", "horizontal-grid")
+      .selectAll("line")
+      .data(y.ticks())
+      .join("line")
+      .attr("y1", d => 0.5 + y(d))
+      .attr("y2", d => 0.5 + y(d))
+      .attr("x1", 0)
+      .attr("x2", "100%");
+      onCleanUp(()=> g.innerHTML="")
   });
 }
