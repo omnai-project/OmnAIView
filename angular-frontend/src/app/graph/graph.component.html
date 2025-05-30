@@ -1,4 +1,4 @@
-<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" (mousemove)="onMouseMove($event)">
+<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" (mousemove)="onMouseMove($event)" (click)="onClick($event)">
     <g [attr.transform]="marginTransform()">
         <g #grid ></g>
         <g #guideline ></g>
