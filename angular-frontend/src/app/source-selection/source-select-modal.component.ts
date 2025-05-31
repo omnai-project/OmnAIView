@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { type DataSourceInfo, DataSourceSelectionService } from './data-source-selection.service';
+import {MatCardModule, MatCardHeader, MatCardContent, MatCardActions} from '@angular/material/card';
 
 @Component({
     selector: 'app-source-select-modal',
     standalone: true,
-    imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent],
+    imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, MatCardHeader, MatCardContent, MatCardActions],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './source-select-modal.component.html',
 })
