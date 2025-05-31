@@ -7,7 +7,7 @@ import {MatCardModule, MatCardHeader, MatCardContent, MatCardActions} from '@ang
 @Component({
     selector: 'app-source-select-modal',
     standalone: true,
-    imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, MatCardHeader, MatCardContent, MatCardActions],
+    imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, MatCardModule, MatCardHeader, MatCardContent, MatCardActions],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './source-select-modal.component.html',
 })
