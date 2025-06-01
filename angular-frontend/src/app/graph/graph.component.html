@@ -1,7 +1,14 @@
-<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" (mousemove)="onMouseMove($event)" (click)="onClick($event)">
+<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" (mousemove)="onMouseMove($event)" (click)="onClick($event)" (contextmenu)="onRightClick($event)">
     <g [attr.transform]="marginTransform()">
         <g #grid ></g>
         <g #guideline ></g>
+        <g #commentLayer></g>
+        <g *ngFor="let comment of comments()">
+            <rect [attr.x]="comment.x" [attr.y]="comment.y - 20" width="150" height="30" fill="lightyellow" stroke="gray" rx="4" ry="4"/>
+            <text [attr.x]="comment.x + 5" [attr.y]="comment.y" fill="black" font-size="12px" font-family="sans-serif">
+                {{ comment.text }}
+            </text>
+        </g>
         <g #xAxis [attr.transform]="xAxisTransformString()">
 
         </g>

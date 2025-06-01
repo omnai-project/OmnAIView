@@ -17,6 +17,13 @@ import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devi
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { StartDataButtonComponent } from "../source-selection/start-data-from-source.component";
 import { DataSourceService } from './graph-data.service';
+import * as d3 from 'd3'
+
+interface GraphComment {
+  x: number;
+  y: number;
+  text: string;
+}
 
 @Component({
   selector: 'app-graph',
@@ -34,7 +41,9 @@ export class GraphComponent {
   readonly axesYContainer = viewChild.required<ElementRef<SVGGElement>>('yAxis');
   readonly gridContainer = viewChild.required<ElementRef<SVGGElement>>('grid');
   readonly guideContainer = viewChild.required<ElementRef<SVGGElement>>('guideline');
+  readonly commentLayer = viewChild.required<ElementRef<SVGGElement>>('commentLayer');
   readonly fixedGuides = signal<number[]>([]);
+  readonly comments = signal<GraphComment[]>([]);
 
   private readonly platform = inject(PLATFORM_ID);
   isInBrowser = isPlatformBrowser(this.platform);
@@ -99,6 +108,85 @@ export class GraphComponent {
 
     this.fixedGuides.update(lines => [...lines, ypos]);
     this.drawFixedLines();
+  }
+
+  onRightClick(event: MouseEvent) {
+    event.preventDefault();
+
+    const svg = (event.target as HTMLElement).closest("svg")!;
+    const rect = svg.getBoundingClientRect();
+
+    const x = event.clientX - rect.left - this.dataservice.margin.left;
+    const y = event.clientY - rect.top - this.dataservice.margin.top;
+
+    const commentText = prompt("Kommentar eingeben:");
+    if (!commentText) return;
+
+    this.comments.update(c => [...c, { x, y, text: commentText }]);
+
+    this.addComment(x, y, commentText);
+  }
+
+  private addComment(x: number, y: number, text: string): void {
+    const layer = d3.select(this.commentLayer().nativeElement);
+
+    const group = layer
+      .append('g')
+      .attr('transform', `translate(${x},${y})`)
+      .call(
+        d3.drag<SVGGElement, unknown>()
+          .on('drag', function (event) {
+            d3.select(this).attr('transform', `translate(${event.x},${event.y})`);
+          })
+      );
+
+    const textElement = group
+      .append('text')
+      .attr('x', 10)
+      .attr('y', 25)
+      .text(text)
+      .attr('font-size', '14px')
+      .attr('fill', '#333');
+
+    const textNode = textElement.node();
+    const textWidth = textNode ? textNode.getComputedTextLength() : 100;
+
+    const rectWidth = textWidth + 30; 
+    const rectHeight = 40;
+      
+    group
+      .insert('rect', 'text') 
+      .attr('width', rectWidth)
+      .attr('height', rectHeight)
+      .attr('fill', 'rgba(255, 255, 204, 0.9)') 
+      .attr('stroke', '#ccc')
+      .attr('stroke-width', 1)
+      .attr('rx', 8)
+      .attr('ry', 8)
+      .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))');
+    
+    group.select('text')
+      .attr('font-family', "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif")
+      .attr('font-weight', '500')
+      .attr('fill', '#333');  
+    
+    group
+      .append('text')
+      .attr('x', rectWidth - 15)
+      .attr('y', 15)
+      .text('✖')
+      .attr('font-size', '16px')
+      .attr('fill', '#900')
+      .attr('cursor', 'pointer')
+      .on('mouseover', function () {
+        d3.select(this).attr('fill', '#f44336');
+      })
+      .on('mouseout', function () {
+        d3.select(this).attr('fill', '#900');
+      })
+      .on('click', function () {
+        group.remove();
+    });
   }
 
   drawFixedLines() {
