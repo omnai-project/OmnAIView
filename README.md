@@ -21,7 +21,9 @@ We want to make this better !
 
 ## How to Contribute :
 
-We are very happy about contributions. If you want to contribute just follow the steps in the [CONTRIBUTIONS.md](CONTRIBUTION.md) . We will review your contribution as fast as possible.
+We are very happy about contributions. Before you start, please have a look at our [**DRAFT.md**](draft/DRAFT.md), in which we go more into detail about our goals with this app and our design principles.
+
+If you want to contribute just follow the steps in the [CONTRIBUTIONS.md](CONTRIBUTION.md) . We will review your contribution as fast as possible.
 
 ## How to get the Code Documentation : 
 

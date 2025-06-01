@@ -45,10 +45,10 @@ git add .
 git commit
 ```
 
-It is expected that commits dont only have a header but also 
-1. Why did you add/change something ? 
-2. What did you add/change in the commit ? 
-3. Possible important things to know about the commit 
+It is expected that commits don't only have a header but also 
+1. Why did you add/change something? 
+2. What did you add/change in the commit? 
+3. Possible important things to know about the commit.
 
 ## 6. Push to Your Fork
 
@@ -58,12 +58,12 @@ Push your branch to your fork:
 git push origin \<branchname\>
 ```
 
-# Open a Pull Request
+## 7. Open a Pull Request
 
 1. Go to the original repository on GitHub.
 2. Click **New Pull Request**.
 3. Select your fork and branch.
-4. Provide a **clear description** of your changes.
+4. Provide a **clear description** of your changes. For more information refer to this [discussion](https://github.com/AI-Gruppe/OmnAIView/discussions/27#discussioncomment-13219940).
 5. Submit the pull request.
 
 ## 8. Review & Approval
