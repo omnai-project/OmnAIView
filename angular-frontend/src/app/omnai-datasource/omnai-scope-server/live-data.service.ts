@@ -30,12 +30,10 @@ export class OmnAIScopeDataService implements DataSource{
 
   private socket: WebSocket | null = null;
   lastUpdate: number = 0;
-  lastUpdateChangedInfo = false;
 
   readonly isConnected = signal<boolean>(false);
   readonly devices = signal<DeviceInformation[]>([]);
-  readonly data = signal({data: new Map()});
-  readonly info = signal({info: new DataInfo()});
+  readonly data = signal({data: new Map(), info: new DataInfo()});
   readonly dataAsList = computed(() => {
     const allDataPoints: DataFormat[] = [];
     const dataRecord = this.data();
@@ -87,8 +85,7 @@ export class OmnAIScopeDataService implements DataSource{
 
     this.socket.addEventListener('open', () => {
       this.isConnected.set(true);
-      this.data.set({data: new Map()});
-      this.info.set({info: new DataInfo()});
+      this.data.set({data: new Map(), info: new DataInfo()});
 
       // Send start message
       const deviceUuids = this.devices().map(device => device.UUID).join(" ");
@@ -116,19 +113,20 @@ export class OmnAIScopeDataService implements DataSource{
       if (this.isOmnAIDataMessage(parsedMessage)) {
         let start = performance.now();
         const timeToUpdate = 250;
+        const dataInfo = this.data();
 
         //Update info and Data, without causing any updates
-        const info = this.info().info;
+        const info = dataInfo.info;
         parsedMessage.data.forEach((currentValue:any) => {
           currentValue.value.forEach((currentValue:number) => {
-            if (currentValue > info.maxValue) {info.maxValue = currentValue; this.lastUpdateChangedInfo = true; }
-            if (currentValue < info.minValue) {info.minValue = currentValue; this.lastUpdateChangedInfo = true; }
+            if (currentValue > info.maxValue) info.maxValue = currentValue;
+            if (currentValue < info.minValue) info.minValue = currentValue;
           });
-          if (currentValue.timestamp < info.minTimestamp) {info.minTimestamp = currentValue.timestamp; this.lastUpdateChangedInfo = true; }
-          if (currentValue.timestamp > info.maxTimestamp) {info.maxTimestamp = currentValue.timestamp; this.lastUpdateChangedInfo = true; }
+          if (currentValue.timestamp < info.minTimestamp) info.minTimestamp = currentValue.timestamp;
+          if (currentValue.timestamp > info.maxTimestamp) info.maxTimestamp = currentValue.timestamp;
         });
 
-        const data = this.data().data;
+        const data = dataInfo.data;
         parsedMessage.devices.forEach((uuid: string, index: number) => {
           if (!data.has(uuid)) data.set(uuid, []);
           const newDataPoints:DataFormat[] = parsedMessage.data.map((point: any) => ({
@@ -141,9 +139,7 @@ export class OmnAIScopeDataService implements DataSource{
 
         //Update info & data, once every so often.
         if (performance.now() > this.lastUpdate + timeToUpdate) {
-          if (this.lastUpdateChangedInfo)
-            this.info.set({info: info});
-          this.data.set({data: data});
+          this.data.set({data, info});
           this.lastUpdate = performance.now();
         }
         let end = performance.now();

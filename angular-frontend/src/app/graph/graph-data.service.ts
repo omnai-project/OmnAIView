@@ -14,7 +14,7 @@ type UnwrapSignal<T> = T extends import('@angular/core').Signal<infer U> ? U : n
 export class DataSourceService {
   private readonly $graphDimensions = signal({ width: 800, height: 600 });
   private readonly $domain = computed(() => {
-      const info = this.info();
+      const info = this.dummySeries();
       if (!info || !isFinite(info.info.minTimestamp) || !isFinite(info.info.maxTimestamp) || !isFinite(info.info.minValue) || !isFinite(info.info.maxValue))
         return {
           xDomain: [new Date(2020), new Date()],
@@ -46,17 +46,10 @@ export class DataSourceService {
 
   private readonly dummySeries = computed(() => {
     const selectedSource = this.dataSourceSelectionService.currentSource();
-    if (!selectedSource) return {data: new Map<string, DataFormat[]>()};
+    if (!selectedSource) return {data: new Map<string, DataFormat[]>(), info: new DataInfo()};
 
     return selectedSource.data();
   });
-  private readonly info = computed(() => {
-    const selectedSource = this.dataSourceSelectionService.currentSource();
-    if (!selectedSource) return {info: new DataInfo()};
-
-    return selectedSource.info();
-  });
-
 
   readonly margin = { top: 20, right: 30, bottom: 40, left: 60 };
   graphDimensions = this.$graphDimensions.asReadonly();

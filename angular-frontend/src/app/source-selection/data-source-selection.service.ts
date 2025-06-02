@@ -20,11 +20,14 @@ export class DataInfo {
   minTimestamp: number;
   maxTimestamp: number;
 }
+export interface DataSourceData {
+  data: Map<string, DataFormat[]>,
+  info: DataInfo
+}
 /** Your expected DataSource interface */
 export interface DataSource {
     connect(): unknown;
-    data: Signal<{data: Map<string, DataFormat[]>}>
-    info: Signal<{info: DataInfo}>
+    data: Signal<DataSourceData>
 }
 
 
@@ -48,7 +51,6 @@ export class DataSourceSelectionService {
             description: 'Live data from connected OmnAIScope devices',
             connect: this.liveDataService.connect.bind(this.liveDataService),
             data: this.liveDataService.data,
-            info: this.liveDataService.info,
         },
         {
             id: 'dummydata',
@@ -56,7 +58,6 @@ export class DataSourceSelectionService {
             description: 'Random generated data points',
             connect: this.dummyDataService.connect.bind(this.dummyDataService),
             data: this.dummyDataService.data,
-            info: this.dummyDataService.info,
         }
     ]);
     readonly availableSources = this._availableSources.asReadonly();
@@ -83,7 +84,10 @@ export class DataSourceSelectionService {
     }
     readonly data = computed(() => {
         const source = this._currentSource();
-        if (!source) return signal<Record<string, DataFormat[]>>({});
+        if (!source) return signal({
+          data: new Map(),
+          info: new DataInfo(),
+        }).asReadonly();
         return source.data;
     });
 }
