@@ -47,25 +47,10 @@ Our **ideas and requirements** for the frontend and backend are presented in the
 The frontend should be as **simple and intuitive** as possible. The emphasis is on a **BIG graph** with a **toolbar** to start/stop a measurement (grey button as placeholder for scheduled measurement), save measurement data or reset data/cancel measurement and further **settings menu** like selecting sources to be measured or files to be displayed. In a first draft it could look like this:
 
 ```mermaid
----
-config:
-  look: handDrawn
----
-graph TD
-    A
-    Start(<img src='img/play_arrow_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg'/>)
-    Save(<img src='img/save_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg' />)
-    Delete(<img src='img/delete_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg'/>)
-    Record(<img src='img/radio_button_checked_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg' style="opacity:0.5" />)
-    B
-    C
-    D
-    E
-    Settings(<img src='img/settings_24dp_1F1F1F_FILL0_wght400_GRAD0_opsz24.svg'/>)
+block-beta
 
-    classDef space fill:#fff,stroke:#fff,color:#fff
-    class A,B,C,D,E space
-    style Record opacity:0.5, fill:#ddd, stroke: #ddd
+space A("▶") B("💾") C("🗑️") D("⏺") space:10 E("⚙️")
+style D opacity:0.5, fill:#ddd, stroke: #ddd
 ```
 
 ```mermaid
@@ -80,7 +65,7 @@ xychart-beta
     line [1, 1, -1, -1, 1]
 ```
 
-The settings menu would consist of a section for source selection from **live data** or **file data** and **analysis** part which needs to be defined. It could look like this:
+The **settings menu** would consist of a section for source selection from **live data** or **file data** and **analysis** part which needs to be defined. It could look like this:
 ```mermaid
 block-beta
     columns 3
