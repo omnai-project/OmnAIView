@@ -4,7 +4,7 @@
 
 1. What problem does this PR solve? Which concept, bug, or requirement does it address?
 
-2. Please add context to the improvement: reference an issue ("Resolves #<your issue id here>"), a user story, or explain the improvement in documentation, code, or UX.
+2. Please add context to the improvements: reference an issue ("Resolves #<your issue id here>"), a user story, or explain the improvements in documentation, code, or UX.
 
 ## Design Decisions
 
@@ -16,7 +16,7 @@ Which are the main files and concepts you changed or introduced?
 
 **Briefly explain how it can be tested—either with commands, manual steps, or test files.**
 
-1. Always provide a description of the expected behavior.
+1. Provide a description of the expected behavior.
 
 2. Describe how you tested the changes.
 
