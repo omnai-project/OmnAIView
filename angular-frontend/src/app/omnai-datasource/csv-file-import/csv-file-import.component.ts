@@ -15,7 +15,8 @@ export class CsvFileImportComponent implements DataSource {
   }
   private readonly $data = signal<Record<string, DataFormat[]>>({});
   readonly data = this.$data.asReadonly();
-  private readonly dataFileChanged = effect(async ()=>{
+
+  private async processFile() {
     const files = this.file();
     let out:Record<string, DataFormat[]> = {};
     for(let file of files) {
@@ -36,15 +37,17 @@ export class CsvFileImportComponent implements DataSource {
 
       let name = info[4];
 
-      out[name] = [];
+      out[name] = new Array(Math.ceil(length/samplingSpeed*1000));
+      let arrayIndex = 0;
       for (let [index, sample] of lines.slice(1).entries()) {
         if (keepEvery !== 0 && index % keepEvery !== 0) continue;
-        out[name].push({
+        out[name][arrayIndex++] = {
           timestamp: index/samplingSpeed*1000,
           value: Number(sample),
-        });
+        };
       }
     }
     this.$data.set(out);
-  });
+  }
+  private readonly dataFileChanged = effect(this.processFile.bind(this));
 }
