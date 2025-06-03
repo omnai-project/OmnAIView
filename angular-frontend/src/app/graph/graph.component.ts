@@ -17,6 +17,8 @@ import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devi
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { StartDataButtonComponent } from "../source-selection/start-data-from-source.component";
 import { DataSourceService } from './graph-data.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import * as d3 from 'd3'
 
 interface GraphComment {
@@ -31,7 +33,7 @@ interface GraphComment {
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [ResizeObserverDirective, JsonPipe, StartDataButtonComponent, DeviceListComponent],
+  imports: [CommonModule, ResizeObserverDirective, JsonPipe, FormsModule, StartDataButtonComponent, DeviceListComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphComponent {
@@ -44,6 +46,10 @@ export class GraphComponent {
   readonly commentLayer = viewChild.required<ElementRef<SVGGElement>>('commentLayer');
   readonly fixedGuides = signal<number[]>([]);
   readonly comments = signal<GraphComment[]>([]);
+
+  commentInputVisible = signal(false);
+  commentInputPosition = signal({ x: 0, y: 0 });
+  commentInputText = signal('');
 
   private readonly platform = inject(PLATFORM_ID);
   isInBrowser = isPlatformBrowser(this.platform);
@@ -119,12 +125,9 @@ export class GraphComponent {
     const x = event.clientX - rect.left - this.dataservice.margin.left;
     const y = event.clientY - rect.top - this.dataservice.margin.top;
 
-    const commentText = prompt("Kommentar eingeben:");
-    if (!commentText) return;
-
-    this.comments.update(c => [...c, { x, y, text: commentText }]);
-
-    this.addComment(x, y, commentText);
+    this.commentInputPosition.set({ x, y });
+    this.commentInputText.set('');
+    this.commentInputVisible.set(true);
   }
 
   private addComment(x: number, y: number, text: string): void {
@@ -187,6 +190,22 @@ export class GraphComponent {
       .on('click', function () {
         group.remove();
     });
+  }
+
+  submitComment() {
+    const { x, y } = this.commentInputPosition();
+    const text = this.commentInputText().trim();
+
+    if (!text) return;
+
+    this.comments.update(c => [...c, { x, y, text }]);
+    this.addComment(x, y, text);
+    this.commentInputVisible.set(false);
+  }
+
+  cancelComment() {
+    this.commentInputVisible.set(false);
+    this.commentInputText.set('');
   }
 
   drawFixedLines() {
