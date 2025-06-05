@@ -7,7 +7,7 @@ import {CsvFileSelectModalComponent} from './csv-file-select-modal.component';
 @Injectable({
   providedIn: 'root'
 })
-export class CsvFileImportComponent implements DataSource {
+export class CsvFileImportService implements DataSource {
   private readonly dialog = inject(MatDialog);
   readonly file = signal<File[]>([]);
   connect() {

@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
-import {CsvFileImportComponent} from './csv-file-import.component';
+import {CsvFileImportService} from './csv-file-import.service';
 
 @Component({
     selector: 'csv-file-select-modal',
@@ -11,7 +11,7 @@ import {CsvFileImportComponent} from './csv-file-import.component';
     templateUrl: './csv-file-select-modal.component.html',
 })
 export class CsvFileSelectModalComponent {
-    private readonly csvFileDialog = inject(CsvFileImportComponent);
+    private readonly csvFileDialog = inject(CsvFileImportService);
     private readonly dialogRef = inject(MatDialogRef<CsvFileSelectModalComponent>);
     selected = computed(()=> this.csvFileDialog.file().length > 0);
     onFileSelected(fileList:FileList|null) {

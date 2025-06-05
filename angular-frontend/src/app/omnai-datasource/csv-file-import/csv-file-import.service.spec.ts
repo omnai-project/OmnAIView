@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import {CsvFileImportComponent} from './csv-file-import.component';
+import {CsvFileImportService} from './csv-file-import.service';
 
 describe('CsvFileImport', () => {
-  let service: CsvFileImportComponent;
+  let service: CsvFileImportService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(CsvFileImportComponent);
+    service = TestBed.inject(CsvFileImportService);
   });
 
   it('should be created', () => {
