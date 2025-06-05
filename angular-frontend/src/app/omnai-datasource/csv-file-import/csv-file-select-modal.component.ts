@@ -17,7 +17,7 @@ export class CsvFileSelectModalComponent {
     onFileSelected(fileList:FileList|null) {
       if (!fileList || fileList.length == 0) return;
       this.csvFileDialog.files.update(old => {
-        return [ ...old, ...fileList];
+        return [ ...fileList];
       });
     }
 }
