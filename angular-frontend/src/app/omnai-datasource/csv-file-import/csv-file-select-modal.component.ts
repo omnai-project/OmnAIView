@@ -13,10 +13,10 @@ import {CsvFileImportService} from './csv-file-import.service';
 export class CsvFileSelectModalComponent {
     private readonly csvFileDialog = inject(CsvFileImportService);
     private readonly dialogRef = inject(MatDialogRef<CsvFileSelectModalComponent>);
-    selected = computed(()=> this.csvFileDialog.file().length > 0);
+    selected = computed(()=> this.csvFileDialog.files().length > 0);
     onFileSelected(fileList:FileList|null) {
       if (!fileList || fileList.length == 0) return;
-      this.csvFileDialog.file.update(old => {
+      this.csvFileDialog.files.update(old => {
         return [ ...old, ...fileList];
       });
     }

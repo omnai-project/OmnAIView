@@ -49562,7 +49562,7 @@ describe('CsvFileImport', () => {
     const fileSamples = fileContents.split("\n").length - 1; //-1 for initial header, containing the metadata
 
     const file = new File([fileContents], "device1-testname-2025-06-02T14-19.csv");
-    service.file.set([file]);
+    service.files.set([file]);
 
     //wait on parse and signal propagation
     await new Promise(r => setTimeout(r, 200));

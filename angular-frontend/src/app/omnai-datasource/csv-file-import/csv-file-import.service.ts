@@ -9,7 +9,7 @@ import {CsvFileSelectModalComponent} from './csv-file-select-modal.component';
 })
 export class CsvFileImportService implements DataSource {
   private readonly dialog = inject(MatDialog);
-  readonly file = signal<File[]>([]);
+  readonly files = signal<File[]>([]);
   connect() {
     this.dialog.open(CsvFileSelectModalComponent)
   }
@@ -17,7 +17,7 @@ export class CsvFileImportService implements DataSource {
   readonly data = this.$data.asReadonly();
 
   private async processFile() {
-    const files = this.file();
+    const files = this.files();
     let out:Record<string, DataFormat[]> = {};
     for(let file of files) {
       let text = await file.text();
