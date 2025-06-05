@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DataSourceService } from './graph-data.service';
+import {signal} from '@angular/core';
+import {DataInfo} from '../source-selection/data-source-selection.service';
 
 describe('GraphDataService', () => {
   let service: DataSourceService;
@@ -14,11 +16,21 @@ describe('GraphDataService', () => {
     expect(service).toBeTruthy();
   });
   it('should correctly scale axis based on data', () => {
-    (service as any).info.set({
-      minValue: 10,
-      maxValue: 20,
-      minTimestamp: 1000,
-      maxTimestamp: 2000,
+    let info = new DataInfo();
+    info.minValue = 10;
+    info.maxValue = 20;
+    info.minTimestamp = 1000;
+    info.maxTimestamp = 2000;
+
+    (service as any).dataSourceSelectionService._currentSource.set({
+      id: 'test-source',
+      name: 'Testing Source',
+      description: 'Data-Source used for testing',
+      connect: ()=> {},
+      data: signal({
+        data: new Map(),
+        info
+      }),
     });
 
     const domain = service['$domain']();

@@ -10,7 +10,9 @@ type UnwrapSignal<T> = T extends import('@angular/core').Signal<infer U> ? U : n
 /**
  * Provide the data to be displayed in the {@link GraphComponent}
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class DataSourceService {
   private readonly $graphDimensions = signal({ width: 800, height: 600 });
   private readonly $domain = computed(() => {
