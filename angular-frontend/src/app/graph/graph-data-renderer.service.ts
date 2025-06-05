@@ -65,6 +65,12 @@ export class GraphDataRendererService {
 
 }
 
+/**
+ * Renders a graph using d3 to a svg path
+ * @param xScale Scale of the xAxis
+ * @param yScale Scale of the yAxis
+ * @param series Data Points
+ */
 export function getPaths(xScale:ScaleTime<number, number>, yScale:ScaleLinear<number, number>, series:Map<string, DataFormat[]>) {
   const lineGen = d3Line<{ time: Date; value: number }>()
     .x(d => xScale(d.time))
