@@ -15,7 +15,7 @@ type UnwrapSignal<T> = T extends import('@angular/core').Signal<infer U> ? U : n
 })
 export class DataSourceService {
   private readonly $graphDimensions = signal({ width: 800, height: 600 });
-  private readonly $domain = computed(() => {
+  readonly domain = computed(() => {
       const info = this.dummySeries();
       if (!info || !isFinite(info.info.minTimestamp) || !isFinite(info.info.maxTimestamp) || !isFinite(info.info.minValue) || !isFinite(info.info.maxValue))
         return {
@@ -46,7 +46,7 @@ export class DataSourceService {
   );
   private readonly dataSourceSelectionService = inject(DataSourceSelectionService);
 
-  private readonly dummySeries = computed(() => {
+  readonly dummySeries = computed(() => {
     const selectedSource = this.dataSourceSelectionService.currentSource();
     if (!selectedSource) return {data: new Map<string, DataFormat[]>(), info: new DataInfo()};
 
@@ -54,13 +54,13 @@ export class DataSourceService {
   });
 
   readonly margin = { top: 20, right: 30, bottom: 40, left: 60 };
-  graphDimensions = this.$graphDimensions.asReadonly();
+  readonly graphDimensions = this.$graphDimensions.asReadonly();
 
 
   xScale = linkedSignal({
     source: () => ({
       dimensions: this.$graphDimensions(),
-      domain: this.$domain(),
+      domain: this.domain(),
     }),
     computation: ({ dimensions, domain }) => {
       const margin = { top: 20, right: 30, bottom: 40, left: 40 };
@@ -74,7 +74,7 @@ export class DataSourceService {
   yScale = linkedSignal({
     source: () => ({
       dimensions: this.$graphDimensions(),
-      domain: this.$domain(),
+      domain: this.domain(),
     }),
     computation: ({ dimensions, domain }) => {
       const margin = { top: 20, right: 30, bottom: 40, left: 40 };
@@ -94,37 +94,4 @@ export class DataSourceService {
       this.$graphDimensions.set({ width: settings.width, height: settings.height });
     }
   }
-
-  readonly worker = new Worker(new URL('./webworker', import.meta.url));
-  private lastWorkerRequestDone:boolean = true;
-  updatePaths = effect(()=>{
-    const dimensions = this.$graphDimensions();
-    const domain = this.$domain();
-    const series = this.dummySeries();
-
-    //don't overwhelm the WebWorker.
-    if (!this.lastWorkerRequestDone) return;
-    this.lastWorkerRequestDone = false;
-    this.worker.postMessage({
-      dimensions,
-      domain,
-      series,
-    })
-  })
-  readonly paths = signal<{id:string, d:string}[]>([]);
-  constructor() {
-    this.worker.addEventListener("message", (e) =>{
-      this.lastWorkerRequestDone = true;
-      if (!Array.isArray(e.data)) {
-        console.error("recieved invalid path data from webworker: ", e.data);
-        return;
-      }
-      this.paths.set(e.data);
-    })
-    this.worker.addEventListener("messageerror", (e) =>{
-      this.lastWorkerRequestDone = true;
-      console.error("recieved error from webworker: ", e);
-    })
-  }
-
 }

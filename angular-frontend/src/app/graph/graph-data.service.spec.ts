@@ -3,12 +3,17 @@ import { TestBed } from '@angular/core/testing';
 import { DataSourceService } from './graph-data.service';
 import {signal} from '@angular/core';
 import {DataInfo} from '../source-selection/data-source-selection.service';
+import {provideHttpClient} from '@angular/common/http';
 
 describe('GraphDataService', () => {
   let service: DataSourceService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient()
+      ],
+    }).compileComponents();
     service = TestBed.inject(DataSourceService);
   });
 
@@ -33,7 +38,7 @@ describe('GraphDataService', () => {
       }),
     });
 
-    const domain = service['$domain']();
+    const domain = service.domain();
     const xDomain = domain.xDomain;
     const yDomain = domain.yDomain;
 

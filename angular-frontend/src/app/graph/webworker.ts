@@ -1,5 +1,5 @@
-import {line as d3Line} from "d3-shape";
 import {scaleLinear as d3ScaleLinear, scaleUtc as d3ScaleUtc} from "d3-scale";
+import {getPaths} from "./graph-data-renderer.service";
 
 onmessage = (e) => {
   const start = performance.now();
@@ -30,24 +30,8 @@ onmessage = (e) => {
       .domain(domain.yDomain)
       .range([height, 0]),
   };
-  const lineGen = d3Line<{ time: Date; value: number }>()
-    .x(d => scale.xScale(d.time))
-    .y(d => scale.yScale(d.value));
 
-  const output = [];
-  let data_points = 0;
-  for (const [key,value] of series.data) {
-    data_points += value.length;
-    const parsedValues = value.map((v) => ({
-      time: new Date(v.timestamp),
-      value: v.value,
-    }));
-    const pathData = lineGen(parsedValues) ?? '';
-    output.push({
-      id: key,
-      d: pathData,
-    })
-  }
+  const output = getPaths(scale.xScale, scale.yScale, series.data);
   // console.log("Updating Paths took: ", performance.now() - start, " for ", data_points, " data-points.");
   postMessage(output);
 }
