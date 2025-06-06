@@ -1,0 +1,27 @@
+name: testaction 
+
+on: 
+  pull_request:
+
+jobs: 
+  build: 
+    name: angular-build 
+    runs-on: windows-latest
+
+    steps: 
+      - name: Checkout repository 
+        uses: actions/checkout@v3 
+
+      - name: Node.js setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: install dependencies
+        run: npm ci
+      
+      - name: build angular project 
+        run: npm run build:angular 
+
+      - name: build electron project 
+        run: npm run build:electron 
