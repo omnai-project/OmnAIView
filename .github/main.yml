@@ -1,0 +1,29 @@
+name: Build-Windows-Binary
+
+permissions:
+  actions: read
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  Build-Windows:
+    runs-on: windows-latest
+    steps:
+      - name: Repository-Checkout
+        uses: actions/checkout@v4
+      - name: Install NPM-Dependencies
+        run: npm run install:all
+      - name: Build Project
+        run: npm run build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OmnaiView-Windows-${{ github.ref_name }}
+          path: |
+            electron\out\make\squirrel.windows\x64\RELEASES
+            electron\out\make\squirrel.windows\x64\*.nupkg
+            electron\out\make\squirrel.windows\x64\*.exe
