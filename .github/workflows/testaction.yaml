@@ -1,0 +1,23 @@
+name: testaction 
+
+on: 
+  pull_request: 
+    [ "**" ]
+
+jobs: 
+  build: 
+    name: angular-build 
+    runs-on: x64 
+
+    steps: 
+      name: Checkout repository 
+      uses: actions/checkout@v3 
+
+      name: Node.js setup
+      uses: actions/setup-node@v3
+      with:
+        node-version: '19.x'
+
+    # 3. Abhängigkeiten installieren
+      name: install dependencies
+      run: npm ci
