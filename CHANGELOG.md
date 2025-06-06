@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Icon (#19)
 - Adding compodoc (#23)
 - Adding changelog information to the Contribution.md (#41)
+- Added version-Script to obtain package.json-Information (#35)
 
 ### Changed 
 
@@ -39,3 +40,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed 
 
 - Deletetion of deprecated Angular 18 patterns (#18)
+- Removed package.json build scripts in subfolders (#35)
