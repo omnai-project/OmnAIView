@@ -1,9 +1,8 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
-import { type DataFormat, OmnAIScopeDataService } from '../data-servers/omnai-scope-server/live-data.service';
+import { type DataFormat, OmnAIScopeDataService } from '../omnai-datasource/omnai-scope-server/live-data.service';
 import { Observable } from 'rxjs';
- import {CsvFileImportService} from '../data-servers/csv-file-import/csv-file-import.service';
-import { DummyDataService } from '../data-servers/random-data-server/random-data.service';
-import { TestDataService } from '../data-servers/test-data-server/test-data.service';
+import { DummyDataService } from '../omnai-datasource/random-data-server/random-data.service';
+ import {CsvFileImportService} from '../omnai-datasource/csv-file-import/csv-file-import.service';
 /** Dummy interface to match your expected shape */
 export interface DataPoint {
     x: number;
@@ -31,7 +30,6 @@ export class DataSourceSelectionService {
     private readonly dummyDataService = inject(DummyDataService);
     private readonly csvDataService = inject(CsvFileImportService);
     private readonly _currentSource = signal<DataSourceInfo | null>(null);
-    private readonly testDataService = inject(TestDataService); 
 
     private readonly _availableSources = signal<DataSourceInfo[]>([
         {
@@ -54,13 +52,6 @@ export class DataSourceSelectionService {
           description: 'Import a CSV file',
           connect: this.csvDataService.connect.bind(this.csvDataService),
           data: this.csvDataService.data
-        }, 
-        {
-            id: 'sinrectestdata',
-            name: 'Test Data Server',
-            description: 'Generate a sinus or rectangular function as testdata for the graph',
-            connect: this.testDataService.connect.bind(this.testDataService),
-            data: this.testDataService.data
         }
     ]);
     readonly availableSources = this._availableSources.asReadonly();

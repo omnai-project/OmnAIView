@@ -12,11 +12,10 @@ import {
 import { transition } from 'd3';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
-import { DeviceListComponent } from "../data-servers/omnai-scope-server/devicelist.component";
+import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devicelist.component";
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { StartDataButtonComponent } from "../source-selection/start-data-from-source.component";
 import { DataSourceService } from './graph-data.service';
-import { DeviceListComponent2 } from '../data-servers/test-data-server/develist2.component';
 
 @Component({
   selector: 'app-graph',
@@ -24,7 +23,7 @@ import { DeviceListComponent2 } from '../data-servers/test-data-server/develist2
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [ResizeObserverDirective, JsonPipe, DeviceListComponent2, StartDataButtonComponent, DeviceListComponent],
+  imports: [ResizeObserverDirective, JsonPipe, StartDataButtonComponent, DeviceListComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphComponent {
