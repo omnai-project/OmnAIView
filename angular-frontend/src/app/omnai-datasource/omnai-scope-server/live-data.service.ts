@@ -64,7 +64,7 @@ export class OmnAIScopeDataService implements DataSource {
 
   readonly #httpClient = inject(HttpClient);
 
-  private getAvailableDevices(): void {
+  private setupDevicePolling(): void {
     const pollInterval_ms = 15 * 1000;
     timer(0, pollInterval_ms ) 
       .pipe(
