@@ -31,13 +31,9 @@ jobs:
       - name: Create version.json, if it doesn't exist
         if: ${{ hashFiles('electron/src/version.json') == '' }}
         run: |
-          set /p dummyName='{"angularVersion\": ' > electron/src/version.json
-          jq '.version' 'angular-frontend/package.json' >> electron/src/version.json
-          set /p dummyName1=', "electronVersion": ' >> electron/src/version.json
-          jq '.version' 'electron/package.json' >> electron/src/version.json
-          set /p dummyName2=', "generatedAt": "' >> electron/src/version.json
-          echo "console.log(new Date().toISOString())" | node - >> electron/src/version.json
-          set /p dummyName3='"}' >> electron/src/version.json
+          $angularVersion = jq '.version' 'angular-frontend/package.json'
+          $electronVersion = jq '.version' 'electron/package.json'
+          echo "console.log(JSON.stringify({generatedAt: new Date().toISOString(), angularVersion: $($angularVersion), electronVersion: $($electronVersion)}))" | node - > electron/src/version.json
           type electron/src/version.json
       - name: Install NPM-Dependencies
         run: npm run install:all
