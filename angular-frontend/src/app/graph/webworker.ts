@@ -6,7 +6,7 @@ import {DataBounds} from '../source-selection/data-source-selection.service';
 interface Data {
   dimensions: {width: number, height: number},
   domain: {xDomain: [number, number], yDomain: [number, number]},
-  series: {data: Map<string, DataFormat[]>, info: DataBounds},
+  series: {data: Map<string, DataFormat[]>, bounds: DataBounds},
 }
 
 onmessage = (e:MessageEvent<Data>) => {
@@ -15,14 +15,15 @@ onmessage = (e:MessageEvent<Data>) => {
   // Therefore, those assumptions should be checked.
   // noinspection SuspiciousTypeOfGuard
   if (
-    !e.data.dimensions || !e.data.domain || !e.data.series || !e.data.series.data || !e.data.series.info ||
+    !e.data.dimensions || !e.data.domain || !e.data.series || !e.data.series.data || !e.data.series.bounds ||
     !e.data.dimensions.width || !e.data.dimensions.height ||
     typeof e.data.dimensions.width !== "number" || typeof e.data.dimensions.height !== "number" ||
 
     !e.data.domain.xDomain || !e.data.domain.yDomain ||
     !Array.isArray(e.data.domain.xDomain) || !Array.isArray(e.data.domain.yDomain) ||
     e.data.domain.xDomain.length !== 2 || e.data.domain.yDomain.length !== 2 ||
-    !e.data.domain.xDomain.every(v => typeof v === "number") || !e.data.domain.yDomain.every(v => typeof v === "number")
+    typeof e.data.domain.xDomain[0] !== "object" || typeof e.data.domain.xDomain[1] !== "object" ||
+    typeof e.data.domain.yDomain[0] !== "number" || typeof e.data.domain.yDomain[1] !== "number"
   ) {
     throw JSON.stringify({error: "Data is not properly formatted", data:e.data})
     return;
