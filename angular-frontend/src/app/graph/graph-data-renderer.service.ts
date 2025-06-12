@@ -4,9 +4,15 @@ import {ScaleLinear, ScaleTime} from 'd3';
 import {DataFormat} from '../omnai-datasource/omnai-scope-server/live-data.service';
 import {line as d3Line} from 'd3-shape';
 
+
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * This class exists to render the Data of a Graph to it's svg path representation.
+ * It uses a WebWorker to keep the main javascript thread free, if possible.
+ * If the WebWorker cannot be loaded (which should only happen during testing), it falls back to rendering it on the main javascript thread.
+ */
 export class GraphDataRendererService {
   //Try to start a WebWorker per new instance.
   constructor() {
@@ -31,7 +37,16 @@ export class GraphDataRendererService {
       console.error('Could not start WebWorker for GraphRendering: ', e);
     }
   }
+
+  /**
+   * Data to render
+   * @private
+   */
   private readonly graphData = inject(DataSourceService);
+  /**
+   * Rendered SVG Paths
+   * @private
+   */
   readonly #paths = signal<{id:string, d:string}[]>([]);
 
   //Set, if the Worker can be constructed, or null.
@@ -40,6 +55,9 @@ export class GraphDataRendererService {
   private lastWorkerRequestDone:boolean = true;
 
 
+  /**
+   * Rendered SVG Paths
+   */
   readonly paths = this.#paths.asReadonly();
   private updatePaths = effect(()=>{
     //we might not have a webworker (e.g. when testing). Handle it properly
