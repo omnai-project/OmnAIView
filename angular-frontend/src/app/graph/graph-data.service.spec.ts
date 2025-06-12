@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { DataSourceService } from './graph-data.service';
 import {signal} from '@angular/core';
-import {DataInfo} from '../source-selection/data-source-selection.service';
+import {DataBounds} from '../source-selection/data-source-selection.service';
 import {provideHttpClient} from '@angular/common/http';
 
 describe('GraphDataService', () => {
@@ -21,7 +21,7 @@ describe('GraphDataService', () => {
     expect(service).toBeTruthy();
   });
   it('should correctly scale axis based on data', () => {
-    let info = new DataInfo();
+    let info = new DataBounds();
     info.minValue = 10;
     info.maxValue = 20;
     info.minTimestamp = 1000;

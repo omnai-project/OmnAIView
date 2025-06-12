@@ -1,13 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { interval } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DataInfo, DataSource } from '../../source-selection/data-source-selection.service';
+import { DataBounds, DataSource } from '../../source-selection/data-source-selection.service';
 import { DataFormat } from '../omnai-scope-server/live-data.service';
 
 
 @Injectable({ providedIn: 'root' })
 export class DummyDataService implements DataSource {
-    private readonly _data = signal({data: new Map(), info: new DataInfo()});
+    private readonly _data = signal({data: new Map(), info: new DataBounds()});
 
     readonly data = this._data.asReadonly();
     connect(): void {

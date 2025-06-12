@@ -1,12 +1,12 @@
 import {scaleLinear as d3ScaleLinear, scaleUtc as d3ScaleUtc} from "d3-scale";
 import {getPaths} from "./graph-data-renderer.service";
  import {DataFormat} from '../omnai-datasource/omnai-scope-server/live-data.service';
-import {DataInfo} from '../source-selection/data-source-selection.service';
+import {DataBounds} from '../source-selection/data-source-selection.service';
 
 interface Data {
   dimensions: {width: number, height: number},
   domain: {xDomain: [number, number], yDomain: [number, number]},
-  series: {data: Map<string, DataFormat[]>, info: DataInfo},
+  series: {data: Map<string, DataFormat[]>, info: DataBounds},
 }
 
 onmessage = (e:MessageEvent<Data>) => {

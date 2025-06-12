@@ -3,7 +3,7 @@ import { scaleLinear as d3ScaleLinear, scaleUtc as d3ScaleUtc } from 'd3-scale';
 import { line as d3Line } from 'd3-shape';
 import {DataFormat, OmnAIScopeDataService} from '../omnai-datasource/omnai-scope-server/live-data.service';
 import { type GraphComponent } from './graph.component';
-import {DataInfo, DataSourceSelectionService} from '../source-selection/data-source-selection.service';
+import {DataBounds, DataSourceSelectionService} from '../source-selection/data-source-selection.service';
 
 type UnwrapSignal<T> = T extends import('@angular/core').Signal<infer U> ? U : never;
 
@@ -48,7 +48,7 @@ export class DataSourceService {
 
   readonly dummySeries = computed(() => {
     const selectedSource = this.dataSourceSelectionService.currentSource();
-    if (!selectedSource) return {data: new Map<string, DataFormat[]>(), info: new DataInfo()};
+    if (!selectedSource) return {data: new Map<string, DataFormat[]>(), info: new DataBounds()};
 
     return selectedSource.data();
   });

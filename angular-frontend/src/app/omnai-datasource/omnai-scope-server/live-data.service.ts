@@ -1,7 +1,7 @@
 // server-communication.service.ts
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { DataInfo, DataSource } from '../../source-selection/data-source-selection.service';
+import { DataBounds, DataSource } from '../../source-selection/data-source-selection.service';
 import { BackendPortService } from './backend-port.service';
 
 interface DeviceInformation {
@@ -33,7 +33,7 @@ export class OmnAIScopeDataService implements DataSource{
 
   readonly isConnected = signal<boolean>(false);
   readonly devices = signal<DeviceInformation[]>([]);
-  readonly data = signal({data: new Map(), info: new DataInfo()});
+  readonly data = signal({data: new Map(), info: new DataBounds()});
   readonly dataAsList = computed(() => {
     const allDataPoints: DataFormat[] = [];
     const dataRecord = this.data();
@@ -85,7 +85,7 @@ export class OmnAIScopeDataService implements DataSource{
 
     this.socket.addEventListener('open', () => {
       this.isConnected.set(true);
-      this.data.set({data: new Map(), info: new DataInfo()});
+      this.data.set({data: new Map(), info: new DataBounds()});
 
       // Send start message
       const deviceUuids = this.devices().map(device => device.UUID).join(" ");

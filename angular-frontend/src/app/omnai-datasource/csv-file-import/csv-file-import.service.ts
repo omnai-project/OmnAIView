@@ -1,5 +1,5 @@
 import {computed, effect, inject, Injectable, signal} from '@angular/core';
-import {DataInfo, DataSource, DataSourceData} from '../../source-selection/data-source-selection.service';
+import {DataBounds, DataSource, DataSourceData} from '../../source-selection/data-source-selection.service';
 import {DataFormat} from '../omnai-scope-server/live-data.service';
 import {MatDialog} from '@angular/material/dialog';
 import {CsvFileSelectModalComponent} from './csv-file-select-modal.component';
@@ -24,7 +24,7 @@ export class CsvFileImportService implements DataSource {
   }
   private readonly $data = signal<DataSourceData>({
     data: new Map(),
-    info: new DataInfo(),
+    info: new DataBounds(),
   });
   readonly data = this.$data.asReadonly();
 
@@ -97,7 +97,7 @@ export class CsvFileImportService implements DataSource {
         console.error(`There was an error, whilst parsing the file '${file.name}'. The file will be ignored. Error: ${e}`);
       }
     }
-    let info = DataInfo.newFromData(data);
+    let info = DataBounds.newFromData(data);
     this.$data.set({data, info});
   });
 }

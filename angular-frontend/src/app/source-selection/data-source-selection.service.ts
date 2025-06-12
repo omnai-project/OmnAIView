@@ -9,15 +9,15 @@ export interface DataPoint {
     y: number;
 }
 
-export class DataInfo {
+export class DataBounds {
   constructor() {
     this.minValue = Number.POSITIVE_INFINITY;
     this.maxValue = Number.NEGATIVE_INFINITY;
     this.minTimestamp = Number.POSITIVE_INFINITY;
     this.maxTimestamp = Number.NEGATIVE_INFINITY;
   }
-  static copy(copy: DataInfo) {
-    const newInfo = new DataInfo();
+  static copy(copy: DataBounds) {
+    const newInfo = new DataBounds();
     newInfo.minValue = copy.minValue;
     newInfo.maxValue = copy.maxValue;
     newInfo.minTimestamp = copy.minTimestamp;
@@ -26,7 +26,7 @@ export class DataInfo {
   }
 
   static newFromData(data: Map<string, DataFormat[]>){
-    const newInfo = new DataInfo();
+    const newInfo = new DataBounds();
     for (const values of data.values())
       newInfo.applyDataPoints(values)
     return newInfo;
@@ -52,7 +52,7 @@ export class DataInfo {
 }
 export interface DataSourceData {
   data: Map<string, DataFormat[]>,
-  info: DataInfo
+  info: DataBounds
 }
 /** Your expected DataSource interface */
 export interface DataSource {
@@ -125,7 +125,7 @@ export class DataSourceSelectionService {
         const source = this._currentSource();
         if (!source) return signal({
           data: new Map(),
-          info: new DataInfo(),
+          info: new DataBounds(),
         }).asReadonly();
         return source.data;
     });
