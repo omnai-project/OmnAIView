@@ -52,7 +52,7 @@ export class DataBounds {
 }
 export interface DataSourceData {
   data: Map<string, DataFormat[]>,
-  info: DataBounds
+  bounds: DataBounds
 }
 /** Your expected DataSource interface */
 export interface DataSource {

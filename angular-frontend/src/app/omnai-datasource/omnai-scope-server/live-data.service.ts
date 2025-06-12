@@ -33,7 +33,7 @@ export class OmnAIScopeDataService implements DataSource{
 
   readonly isConnected = signal<boolean>(false);
   readonly devices = signal<DeviceInformation[]>([]);
-  readonly data = signal({data: new Map(), info: new DataBounds()});
+  readonly data = signal({data: new Map(), bounds: new DataBounds()});
   readonly dataAsList = computed(() => {
     const allDataPoints: DataFormat[] = [];
     const dataRecord = this.data();
@@ -85,7 +85,7 @@ export class OmnAIScopeDataService implements DataSource{
 
     this.socket.addEventListener('open', () => {
       this.isConnected.set(true);
-      this.data.set({data: new Map(), info: new DataBounds()});
+      this.data.set({data: new Map(), bounds: new DataBounds()});
 
       // Send start message
       const deviceUuids = this.devices().map(device => device.UUID).join(" ");
@@ -115,15 +115,15 @@ export class OmnAIScopeDataService implements DataSource{
         const timeToUpdate = 250;
         const dataInfo = this.data();
 
-        //Update info and Data, without causing any updates
-        const info = dataInfo.info;
+        //Update bounds and Data, without causing any updates
+        const bounds = dataInfo.bounds;
         parsedMessage.data.forEach((currentValue:any) => {
           currentValue.value.forEach((currentValue:number) => {
-            if (currentValue > info.maxValue) info.maxValue = currentValue;
-            if (currentValue < info.minValue) info.minValue = currentValue;
+            if (currentValue > bounds.maxValue) bounds.maxValue = currentValue;
+            if (currentValue < bounds.minValue) bounds.minValue = currentValue;
           });
-          if (currentValue.timestamp < info.minTimestamp) info.minTimestamp = currentValue.timestamp;
-          if (currentValue.timestamp > info.maxTimestamp) info.maxTimestamp = currentValue.timestamp;
+          if (currentValue.timestamp < bounds.minTimestamp) bounds.minTimestamp = currentValue.timestamp;
+          if (currentValue.timestamp > bounds.maxTimestamp) bounds.maxTimestamp = currentValue.timestamp;
         });
 
         const data = dataInfo.data;
@@ -137,9 +137,9 @@ export class OmnAIScopeDataService implements DataSource{
           record.push(...newDataPoints);
         });
 
-        //Update info & data, once every so often.
+        //Update bounds & data, once every so often.
         if (performance.now() > this.lastUpdate + timeToUpdate) {
-          this.data.set({data, info});
+          this.data.set({data, bounds});
           this.lastUpdate = performance.now();
         }
         let end = performance.now();

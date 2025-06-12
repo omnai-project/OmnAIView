@@ -21,11 +21,11 @@ describe('GraphDataService', () => {
     expect(service).toBeTruthy();
   });
   it('should correctly scale axis based on data', () => {
-    let info = new DataBounds();
-    info.minValue = 10;
-    info.maxValue = 20;
-    info.minTimestamp = 1000;
-    info.maxTimestamp = 2000;
+    let bounds = new DataBounds();
+    bounds.minValue = 10;
+    bounds.maxValue = 20;
+    bounds.minTimestamp = 1000;
+    bounds.maxTimestamp = 2000;
 
     (service as any).dataSourceSelectionService._currentSource.set({
       id: 'test-source',
@@ -34,7 +34,7 @@ describe('GraphDataService', () => {
       connect: ()=> {},
       data: signal({
         data: new Map(),
-        info
+        bounds
       }),
     });
 

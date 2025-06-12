@@ -17,13 +17,13 @@ export class DataSourceService {
   private readonly $graphDimensions = signal({ width: 800, height: 600 });
   readonly domain = computed(() => {
       const info = this.dummySeries();
-      if (!info || !isFinite(info.info.minTimestamp) || !isFinite(info.info.maxTimestamp) || !isFinite(info.info.minValue) || !isFinite(info.info.maxValue))
+      if (!info || !isFinite(info.bounds.minTimestamp) || !isFinite(info.bounds.maxTimestamp) || !isFinite(info.bounds.minValue) || !isFinite(info.bounds.maxValue))
         return {
           xDomain: [new Date(2020), new Date()],
           yDomain: [0, 100],
         };
 
-      const result = info.info;
+      const result = info.bounds;
       const expandBy = 0.1;
 
       const xDomainRange = result.maxTimestamp - result.minTimestamp;
@@ -48,7 +48,7 @@ export class DataSourceService {
 
   readonly dummySeries = computed(() => {
     const selectedSource = this.dataSourceSelectionService.currentSource();
-    if (!selectedSource) return {data: new Map<string, DataFormat[]>(), info: new DataBounds()};
+    if (!selectedSource) return {data: new Map<string, DataFormat[]>(), bounds: new DataBounds()};
 
     return selectedSource.data();
   });

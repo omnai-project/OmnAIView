@@ -24,7 +24,7 @@ export class CsvFileImportService implements DataSource {
   }
   private readonly $data = signal<DataSourceData>({
     data: new Map(),
-    info: new DataBounds(),
+    bounds: new DataBounds(),
   });
   readonly data = this.$data.asReadonly();
 
@@ -98,6 +98,6 @@ export class CsvFileImportService implements DataSource {
       }
     }
     let info = DataBounds.newFromData(data);
-    this.$data.set({data, info});
+    this.$data.set({data, bounds: info});
   });
 }
