@@ -1,15 +1,28 @@
 import {scaleLinear as d3ScaleLinear, scaleUtc as d3ScaleUtc} from "d3-scale";
 import {getPaths} from "./graph-data-renderer.service";
+ import {DataFormat} from '../omnai-datasource/omnai-scope-server/live-data.service';
+import {DataInfo} from '../source-selection/data-source-selection.service';
 
-onmessage = (e) => {
+interface Data {
+  dimensions: {width: number, height: number},
+  domain: {xDomain: [number, number], yDomain: [number, number]},
+  series: {data: Map<string, DataFormat[]>, info: DataInfo},
+}
+
+onmessage = (e:MessageEvent<Data>) => {
   const start = performance.now();
+  // Even-though the parameter is typed to be of type Data, it is not actually guaranteed at runtime.
+  // Therefore, those assumptions should be checked.
+  // noinspection SuspiciousTypeOfGuard
   if (
-    !e.data.dimensions || !e.data.domain || !e.data.series || !e.data.series.data ||
+    !e.data.dimensions || !e.data.domain || !e.data.series || !e.data.series.data || !e.data.series.info ||
     !e.data.dimensions.width || !e.data.dimensions.height ||
     typeof e.data.dimensions.width !== "number" || typeof e.data.dimensions.height !== "number" ||
+
     !e.data.domain.xDomain || !e.data.domain.yDomain ||
     !Array.isArray(e.data.domain.xDomain) || !Array.isArray(e.data.domain.yDomain) ||
-    e.data.domain.xDomain.length !== 2 || e.data.domain.yDomain.length !== 2
+    e.data.domain.xDomain.length !== 2 || e.data.domain.yDomain.length !== 2 ||
+    !e.data.domain.xDomain.every(v => typeof v === "number") || !e.data.domain.yDomain.every(v => typeof v === "number")
   ) {
     throw JSON.stringify({error: "Data is not properly formatted", data:e.data})
     return;
