@@ -5,9 +5,6 @@ import {DataFormat} from '../omnai-datasource/omnai-scope-server/live-data.servi
 import {line as d3Line} from 'd3-shape';
 
 
-@Injectable({
-  providedIn: 'root',
-})
 /**
  * This class exists to render the Data of a Graph to it's svg path representation.
  * It uses a WebWorker to keep the main javascript thread free, if possible.
@@ -15,7 +12,8 @@ import {line as d3Line} from 'd3-shape';
  */
 export class GraphDataRendererService {
   //Try to start a WebWorker per new instance.
-  constructor() {
+  constructor(graphData: DataSourceService) {
+    this.graphData = graphData;
     try{
       this.worker = new Worker(new URL('./webworker', import.meta.url));
 
@@ -42,7 +40,7 @@ export class GraphDataRendererService {
    * Data to render
    * @private
    */
-  private readonly graphData = inject(DataSourceService);
+  private readonly graphData;
   /**
    * Rendered SVG Paths
    * @private
