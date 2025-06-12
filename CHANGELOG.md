@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adding compodoc (#23)
 - Adding changelog information to the Contribution.md (#41)
 - Add import for csv-files (#39)
+- Adding the DevDataServer (#69)
 Formatting needs to be similar to the dataformat of the old OmnAIView data exports. For more infos, see comments in code.
 
 ### Changed 
