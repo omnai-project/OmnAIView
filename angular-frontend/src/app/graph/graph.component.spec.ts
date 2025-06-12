@@ -13,8 +13,7 @@ describe('GraphComponent', () => {
       providers: [
         provideHttpClient()
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(GraphComponent);
     component = fixture.componentInstance;

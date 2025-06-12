@@ -12,7 +12,7 @@ describe('GraphDataService', () => {
     await TestBed.configureTestingModule({
       providers: [
         provideHttpClient()
-      ],
+      ]
     }).compileComponents();
     service = TestBed.inject(DataSourceService);
   });
