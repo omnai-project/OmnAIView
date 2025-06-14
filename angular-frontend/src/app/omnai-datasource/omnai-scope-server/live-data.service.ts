@@ -34,7 +34,7 @@ export class OmnAIScopeDataService implements DataSource {
 
   constructor() {
     this.init();
-    this.getAvailableDevices();
+    this.setupDevicePolling();
   }
 
   async init(): Promise<void> {
