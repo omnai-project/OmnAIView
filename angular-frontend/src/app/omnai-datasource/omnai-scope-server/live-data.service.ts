@@ -1,6 +1,6 @@
 // server-communication.service.ts
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal, DestroyRef } from '@angular/core';
 import { DataSource } from '../../source-selection/data-source-selection.service';
 import {catchError, Observable, of, Subject, switchMap, takeUntil, timer} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -66,10 +66,10 @@ export class OmnAIScopeDataService implements DataSource {
 
   private setupDevicePolling(): void {
     const pollInterval_ms = 15 * 1000;
-    timer(0, pollInterval_ms ) 
+    timer(0, pollInterval_ms )
       .pipe(
         switchMap(() => this.getDevices()),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(devices => {
         this.devices.set(devices);
