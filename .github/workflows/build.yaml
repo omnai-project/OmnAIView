@@ -1,4 +1,4 @@
-name: testaction 
+name: Build-check-for-PR 
 
 on: 
   pull_request:
@@ -24,4 +24,4 @@ jobs:
         run: npm run build:angular 
 
       - name: build electron project 
-        run: npm run build:electron 
+        run: npm run build:electron  
