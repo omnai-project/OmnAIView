@@ -45,7 +45,7 @@ export class GraphDataRendererService {
    * Rendered SVG Paths
    * @private
    */
-  readonly #paths = signal<{id:string, d:string}[]>([]);
+  readonly #paths = signal<{id:string, data:string}[]>([]);
 
   //Set, if the Worker can be constructed, or null.
   //During testing the Worker will always be null.
@@ -103,7 +103,7 @@ export function getPaths(xScale:ScaleTime<number, number>, yScale:ScaleLinear<nu
     const pathData = lineGen(parsedValues) ?? '';
     output.push({
       id: key,
-      d: pathData,
+      data: pathData,
     })
   }
   return output;
