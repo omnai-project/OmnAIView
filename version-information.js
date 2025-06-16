@@ -1,3 +1,6 @@
+// This script fetches the current version in the package.json File and writes into
+// /electron/src/version.json. This is used for debug reasons and in the Electron App.
+
 const fs = require('fs');
 const path = require('path');
 
