@@ -28,6 +28,18 @@ jobs:
             package-lock.json
             angular-frontend/package-lock.json
             electron/package-lock.json
+      - name: Cache angular-frontend
+        id: cache-angular-frontend
+        uses: actions/cache@v4
+        with:
+          path: angular-frontend/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('angular-frontend/package-lock.json') }}
+      - name: Cache electron
+        id: cache-electron
+        uses: actions/cache@v4
+        with:
+          path: electron/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('electron/package-lock.json') }}
       - name: Create version.json, if it doesn't exist
         if: ${{ hashFiles('electron/src/version.json') == '' }}
         run: |
@@ -35,8 +47,14 @@ jobs:
           $electronVersion = jq '.version' 'electron/package.json'
           echo "console.log(JSON.stringify({generatedAt: new Date().toISOString(), angularVersion: $($angularVersion), electronVersion: $($electronVersion)}))" | node - > electron/src/version.json
           type electron/src/version.json
-      - name: Install NPM-Dependencies
-        run: npm run install:all
+      - name: Install angular-frontend NPM-Dependencies
+        if: ${{steps.cache-angular-frontend.outputs.cache-hit != 'true'}}
+        working-directory: angular-frontend
+        run: npm ci
+      - name: Install electron NPM-Dependencies
+        if: ${{steps.cache-electron.outputs.cache-hit != 'true'}}
+        working-directory: electron
+        run: npm ci
       - name: Build Project
         run: npm run build
       - name: Test Angular
