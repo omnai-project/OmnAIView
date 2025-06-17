@@ -1,0 +1,52 @@
+name: Build-Windows-Binary
+
+permissions:
+  actions: read
+
+on:
+  pull_request:
+    branches:
+      - "**"
+  push:
+    branches:
+      - "**"
+    tags:
+      - '**'
+  workflow_dispatch:
+
+jobs:
+  Build-Windows:
+    runs-on: windows-latest
+    steps:
+      - name: Repository-Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            package-lock.json
+            angular-frontend/package-lock.json
+            electron/package-lock.json
+      - name: Create version.json, if it doesn't exist
+        if: ${{ hashFiles('electron/src/version.json') == '' }}
+        run: |
+          $angularVersion = jq '.version' 'angular-frontend/package.json'
+          $electronVersion = jq '.version' 'electron/package.json'
+          echo "console.log(JSON.stringify({generatedAt: new Date().toISOString(), angularVersion: $($angularVersion), electronVersion: $($electronVersion)}))" | node - > electron/src/version.json
+          type electron/src/version.json
+      - name: Install NPM-Dependencies
+        run: npm run install:all
+      - name: Build Project
+        run: npm run build
+      - name: Test Angular
+        working-directory: angular-frontend
+        run: npx ng test --watch=false
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OmnaiView-Windows-${{ github.sha }}
+          path: |
+            electron\out\make\squirrel.windows\x64\RELEASES
+            electron\out\make\squirrel.windows\x64\*.nupkg
+            electron\out\make\squirrel.windows\x64\*.exe
