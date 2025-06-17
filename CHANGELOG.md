@@ -43,5 +43,5 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 
 - Deletion of deprecated Angular 18 patterns (#18)
 - Deletion of duplicated AsyncAPI description for OmnAIBackend 
-- Remove `package.json` build scripts in subfolders (#35)
+- BREAKING CHANGE: Remove `package.json` build scripts in subfolders (#35)
 
