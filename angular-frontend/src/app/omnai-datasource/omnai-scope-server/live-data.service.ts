@@ -5,6 +5,7 @@ import { DataSource } from '../../source-selection/data-source-selection.service
 import {catchError, Observable, of, Subject, switchMap, takeUntil, timer} from 'rxjs';
 import {map} from 'rxjs/operators';
 import { BackendPortService } from './backend-port.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 interface DeviceInformation {
   UUID: string;
@@ -33,7 +34,6 @@ export class OmnAIScopeDataService implements DataSource {
   private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
-    this.init();
     this.setupDevicePolling();
   }
   private socket: WebSocket | null = null;
@@ -61,7 +61,7 @@ export class OmnAIScopeDataService implements DataSource {
         switchMap(() => this.getDevices()),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe(devices => {
+      .subscribe((devices: DeviceInformation[]) => {
         this.devices.set(devices);
       });
   }
