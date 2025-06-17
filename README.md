@@ -30,8 +30,7 @@ The Code is documented with compodoc [Compodoc](https://compodoc.app/). To see t
 1. Clone the project 
 2. Run ``` npm ci ``` in the root directory of the project 
 3. Navigate into the angular folder 
-4. Run 
-´´´ npm run compodoc:build-and-serve ´´´ 
+4. Run ``` npm run compodoc:build-and-serve ```
 in your console 
 5. Open the documentation with the link compodoc generates 
 
@@ -85,8 +84,8 @@ This will compile your project and store the build artifacts in the `dist/` dire
 
 #### Technical infos about the angular project
 
-    The project was generated using angular v19.1.4.
-    For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The project was generated using angular v19.1.4.
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
 ### How to run the electron project
 
