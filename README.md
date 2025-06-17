@@ -28,11 +28,10 @@ The Code is documented with [Compodoc](https://compodoc.app/). To see the docume
 
 1. Clone the project 
 2. Run ``` npm ci ``` in the root directory of the project 
-3. Navigate into the angular folder 
-4. Run 
+3. Run 
 ``` npm run compodoc:build-and-serve ``` 
 in your console 
-5. Open the documentation with the link compodoc generates 
+4. Open the documentation with the link compodoc generates 
 
 ## How to run the project
 
@@ -49,7 +48,7 @@ The project currently contains two separat parts: An angular app and an electron
 
 ## Package Installation
 
-To install the angular and electron packages, you run ```npm run install:all``` in the root directory.
+To install the angular and electron packages, you run ```npm install```, and then ```npm ci```in the root directory.
 
 #### Development Mode
 
@@ -57,13 +56,15 @@ If you want to run the angular frontend in development mode, you can do so by ru
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-If you want to run the electron application separately in development mode, you can do so by running ```npm run start:electron```.
+If you want to run the electron application separately in development mode, you can do so by first running ```npm run build:angular``` then ```npm run start:electron```.
 
 #### Building
 
 To build the full project you can do so by running ```npm run build```. 
 
 This will compile the angular frontend and electron project and store the build artifacts of the frontend in the `dist/` directory. By default, the production build optimizes your application for performance and speed. The electron build installer can be found in the `electron/out/make/squirrel.windows/x64/`, the application that can be run without installation `electron\out\OmnAIView-win32-x64`.
+
+Otherwise it is possible to build the angular frontend or the electron project seperately via ```npm run build:angular``` or ```npm run build:electron```.
 
 #### Technical Information
   
