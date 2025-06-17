@@ -19,7 +19,8 @@
     "package:electron": "npm exec -w electron electron-forge package",
     "publish:electron": "npm exec -w electron electron-forge publish",
     "build": "npm run build:angular && npm run build:electron",
-    "lint": "eslint \"{angular-frontend,electron}/**/*.{ts,js,html,tsx}\""
+    "lint":       "eslint \"{angular-frontend,electron}/src/**/*.{ts,js,html,tsx}\"",
+    "lint:fix":   "npm run lint -- --fix"
   },
   "devDependencies": {
     "@eslint/css": "^0.9.0",
