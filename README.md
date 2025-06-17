@@ -22,7 +22,7 @@ We want to make this better!
 
 We are very happy about contributions. If you want to contribute just follow the steps in the [CONTRIBUTIONS.md](CONTRIBUTION.md). We will review your contribution as fast as possible.
 
-## How to get the Code Documentation : 
+## How to get the Code Documentation :
 
 The Code is documented with [Compodoc](https://compodoc.app/). To see the documentation follow these steps: 
 

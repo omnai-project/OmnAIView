@@ -9,13 +9,11 @@ export const routes: Routes = [
       {
         path: 'main',
         component: GraphComponent,
-        
-      }
+      },
     ],
   },
   {
-  path: '**',
-  redirectTo: 'graph/main'
-}
-
+    path: '**',
+    redirectTo: 'graph/main',
+  },
 ];

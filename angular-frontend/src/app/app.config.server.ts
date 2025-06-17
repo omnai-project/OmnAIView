@@ -5,7 +5,7 @@ import { serverRoutes } from './app.routes.server';
 import { provideHttpClient } from '@angular/common/http';
 
 const serverConfig: ApplicationConfig = {
-  providers: [provideServerRendering(withRoutes(serverRoutes)), provideHttpClient()]
+  providers: [provideServerRendering(withRoutes(serverRoutes)), provideHttpClient()],
 };
 
 export const config = mergeApplicationConfig(appConfig, serverConfig);
