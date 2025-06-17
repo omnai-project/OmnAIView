@@ -30,7 +30,6 @@ interface DeviceOverview {
 })
 export class OmnAIScopeDataService implements DataSource {
 
-  private serverUrl = '127.0.0.1:8080';
   private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
