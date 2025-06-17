@@ -19,11 +19,5 @@
     "package:electron":         "npm exec -w electron electron-forge package",
     "publish:electron":         "npm exec -w electron electron-forge publish",
     "build":                    "npm run prepare && npm run build:angular && npm run build:electron"
-  },
-  "dependencies": {
-    "@angular-eslint/eslint-plugin": "^20.0.0"
-  },
-  "devDependencies": {
-    "prettier": "3.5.3"
   }
 }
