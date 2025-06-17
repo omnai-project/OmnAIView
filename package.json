@@ -15,7 +15,7 @@
     "compodoc:serve":           "npm exec -w angular-frontend compodoc -s",
     "serve:ssr":                "node electron/res/angular/server/server.mjs",
     "start:electron":           "npm exec -w electron tsc && npm exec -w electron electron-forge start",
-    "build:electron":           "npm exec -w electron tsc && npm exec -w electron electron-forge make",
+    "build:electron":           "npm run prepare && npm exec -w electron tsc && npm exec -w electron electron-forge make",
     "package:electron":         "npm exec -w electron electron-forge package",
     "publish:electron":         "npm exec -w electron electron-forge publish",
     "build":                    "npm run prepare && npm run build:angular && npm run build:electron"
