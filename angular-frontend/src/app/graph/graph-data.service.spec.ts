@@ -1,16 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DataSourceService } from './graph-data.service';
-import {provideHttpClient} from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('GraphDataService', () => {
   let service: DataSourceService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient()
-      ]
+      providers: [provideHttpClient()],
     }).compileComponents();
     service = TestBed.inject(DataSourceService);
   });
@@ -24,9 +22,7 @@ describe('GraphDataService', () => {
         { timestamp: 1000, value: 10 },
         { timestamp: 2000, value: 20 },
       ],
-      device2: [
-        { timestamp: 1500, value: 15 },
-      ],
+      device2: [{ timestamp: 1500, value: 15 }],
     };
 
     // scaleAxisToData ist private -> Aufruf über cast

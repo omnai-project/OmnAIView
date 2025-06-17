@@ -7,9 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added 
+### Added
+
 - Initial Angular Setup (#8)
-- Initial Electron Setup (#10) 
+- Initial Electron Setup (#10)
 - Autostart of OmnAIScope Backend (#11)
 - Start OmnAIScope Backend on a free port (#13)
 - Initial README.md and CONTRIBUTION.md (#14)
@@ -30,16 +31,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adding changelog information to the Contribution.md (#41)
 - Add version-script to obtain package.json information (#35)
 - Add import for csv-files (#39)
-Formatting needs to be similar to the dataformat of the old OmnAIView data exports. For more infos, see comments in code.
+  Formatting needs to be similar to the dataformat of the old OmnAIView data exports. For more infos, see comments in code.
 
-### Changed 
+### Changed
 
 - BREAKING CHANGE: Update OmnAIScope Dataserver from v0.4.0 to v0.5.0
 - Modernize codebase to Angular 19 (inject, signals, @if/@for, etc.) (#18)
 - Configure Angular Material with a custom theme (#18)
 - Fix the Port selection for the OmnAIScope backend (#19)
 
-### Removed 
+### Removed
 
 - Deletion of deprecated Angular 18 patterns (#18)
 - Deletion of duplicated AsyncAPI description for OmnAIBackend 

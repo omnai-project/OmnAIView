@@ -1,24 +1,24 @@
 // Model description of devices
 interface Color {
-    r: number;
-    g: number;
-    b: number;
+  r: number;
+  g: number;
+  b: number;
 }
 
 export interface Device {
-    uuid: string;
-    color: Color;
+  uuid: string;
+  color: Color;
 }
 
 interface RawDevice {
-    UUID: string;
+  UUID: string;
 }
 
 interface RawColor {
-    color: Color;
+  color: Color;
 }
 
 export interface DeviceListResponse {
-    devices: RawDevice[];
-    colors: RawColor[];
+  devices: RawDevice[];
+  colors: RawColor[];
 }

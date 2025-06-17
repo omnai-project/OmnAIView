@@ -24,10 +24,9 @@ interface DeviceOverview {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class OmnAIScopeDataService implements DataSource{
-
+export class OmnAIScopeDataService implements DataSource {
   private socket: WebSocket | null = null;
 
   readonly isConnected = signal<boolean>(false);
@@ -55,10 +54,10 @@ export class OmnAIScopeDataService implements DataSource{
   // Abrufen der verfügbaren Geräte vom Server
   getDevices(): void {
     const url = `http://${this.serverUrl()}/UUID`;
-    console.log("Current OmnAIScope Datatserver Backend URL (Angular):", url);
+    console.log('Current OmnAIScope Datatserver Backend URL (Angular):', url);
     this.#httpClient.get<DeviceOverview>(url).subscribe({
       next: (response) => {
-        console.log("got response", response)
+        console.log('got response', response);
         if (response.devices && response.colors) {
           const mappedDevices = response.devices.map((device, index) => ({
             UUID: device.UUID,
@@ -69,7 +68,7 @@ export class OmnAIScopeDataService implements DataSource{
       },
       error: (error) => {
         console.error('Fehler beim Abrufen der Geräte:', error);
-      }
+      },
     });
   }
 
@@ -87,11 +86,13 @@ export class OmnAIScopeDataService implements DataSource{
       this.data.set({});
 
       // Send start message
-      const deviceUuids = this.devices().map(device => device.UUID).join(" ");
-      if(!this.socket){
-        throw new Error("Websocket is not defined"); 
+      const deviceUuids = this.devices()
+        .map((device) => device.UUID)
+        .join(' ');
+      if (!this.socket) {
+        throw new Error('Websocket is not defined');
       }
-      this.socket.send(deviceUuids); 
+      this.socket.send(deviceUuids);
     });
 
     let ignoreCounter = 0;
@@ -110,7 +111,7 @@ export class OmnAIScopeDataService implements DataSource{
       }
 
       if (this.isOmnAIDataMessage(parsedMessage)) {
-        this.data.update(records => {
+        this.data.update((records) => {
           parsedMessage.devices.forEach((uuid: string, index: number) => {
             const existingData = records[uuid] ?? [];
             const newDataPoints = parsedMessage.data.map((point: any) => ({
@@ -152,10 +153,7 @@ export class OmnAIScopeDataService implements DataSource{
     if (typeof message !== 'object' || message === null) return false;
 
     if (!('devices' in message) || !('data' in message)) return false;
-    if (
-      !Array.isArray(message.devices) ||
-      !message.devices.every((d: unknown) => typeof d === 'string')
-    ) {
+    if (!Array.isArray(message.devices) || !message.devices.every((d: unknown) => typeof d === 'string')) {
       return false;
     }
 
