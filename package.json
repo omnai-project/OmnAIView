@@ -19,8 +19,10 @@
     "package:electron": "npm exec -w electron electron-forge package",
     "publish:electron": "npm exec -w electron electron-forge publish",
     "build": "npm run build:angular && npm run build:electron",
-    "lint":       "eslint \"{angular-frontend,electron}/src/**/*.{ts,js,html,tsx}\"",
-    "lint:fix":   "npm run lint -- --fix"
+    "lint": "eslint \"{angular-frontend,electron}/src/**/*.{ts,js,html,tsx}\"",
+    "lint:fix": "npm run lint -- --fix",
+    "format":       "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@eslint/css": "^0.9.0",
@@ -29,6 +31,7 @@
     "@eslint/markdown": "^6.5.0",
     "eslint": "^9.29.0",
     "globals": "^16.2.0",
+    "prettier": "^3.5.3",
     "typescript-eslint": "^8.34.1"
   }
 }
