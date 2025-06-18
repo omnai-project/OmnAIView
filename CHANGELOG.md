@@ -38,6 +38,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Modernize codebase to Angular 19 (inject, signals, @if/@for, etc.) (#18)
 - Configure Angular Material with a custom theme (#18)
 - Fix the Port selection for the OmnAIScope backend (#19)
+- Optimized Graph rendering to happen in background, Remove unnecessary computations and Reduce data copying (#25)
 
 ### Removed 
 
