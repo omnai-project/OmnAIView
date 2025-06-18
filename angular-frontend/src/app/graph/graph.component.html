@@ -1,8 +1,10 @@
-<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)">
+<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" (mousemove)="onMouseMove($event)" (click)="onClick($event)" (contextmenu)="onRightClick($event)">
     <g [attr.transform]="marginTransform()">
-
+        <g #grid ></g>
+        <g #guideline ></g>
+        <g #commentLayer></g>
         <g #xAxis [attr.transform]="xAxisTransformString()">
-          
+
         </g>
         <g #yAxis [attr.transform]="yAxisTransformString()"></g>
         @for (path of dataservice.paths(); track $index) {
@@ -10,6 +12,23 @@
         }
     </g>
 </svg>
+
+<div *ngIf="commentInputVisible()" class="comment-input"
+    [style.left.px]="commentInputPosition().x + dataservice.margin.left"
+    [style.top.px]="commentInputPosition().y + dataservice.margin.top">
+    <textarea 
+        [value]="commentInputText()" 
+        (input)="commentInputText.set($any($event.target).value)"
+        placeholder="Enter comment..." 
+        rows="2">
+    </textarea>
+
+    <div class="comment-button-row">
+        <button (click)="submitComment()">Add</button>
+        <button (click)="cancelComment()">Cancel</button>
+    </div>
+</div>
+
 <app-start-data-button />
 <app-device-list />
 
