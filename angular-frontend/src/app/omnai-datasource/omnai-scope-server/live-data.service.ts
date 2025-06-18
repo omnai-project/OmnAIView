@@ -75,7 +75,7 @@ export class OmnAIScopeDataService implements DataSource {
   // Abrufen der verfügbaren Geräte vom Server
   public getDevices(): Observable<DeviceInformation[]> {
     console.log("called getDevices")
-    const url = `http://${this.serverUrl}/UUID`;
+    const url = `http://${this.serverUrl()}/UUID`;
 
     return this.#httpClient.get<Partial<DeviceOverview>>(url).pipe(
       map(response => {
@@ -110,9 +110,9 @@ export class OmnAIScopeDataService implements DataSource {
       // Send start message
       const deviceUuids = this.devices().map(device => device.UUID).join(" ");
       if(!this.socket){
-        throw new Error("Websocket is not defined"); 
+        throw new Error("Websocket is not defined");
       }
-      this.socket.send(deviceUuids); 
+      this.socket.send(deviceUuids);
     });
 
     let ignoreCounter = 0;
