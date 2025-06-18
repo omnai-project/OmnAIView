@@ -38,6 +38,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Modernize codebase to Angular 19 (inject, signals, @if/@for, etc.) (#18)
 - Configure Angular Material with a custom theme (#18)
 - Fix the Port selection for the OmnAIScope backend (#19)
+- Wrap electron-squirrel-startup in try/catch and change npm run install:all to npm install (#80)
 
 ### Removed 
 
