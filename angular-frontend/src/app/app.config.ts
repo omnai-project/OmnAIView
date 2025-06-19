@@ -5,7 +5,7 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { BackendPortService } from './omnai-datasource/omnai-scope-server/backend-port.service';
+import { BackendPortService } from './data-servers/omnai-scope-server/backend-port.service';
 
 
 export const appConfig: ApplicationConfig = {
