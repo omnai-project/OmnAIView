@@ -1,7 +1,7 @@
 // server-communication.service.ts
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { DataSource } from '../../source-selection/data-source-selection.service';
+import { DataBounds, DataSource } from '../../source-selection/data-source-selection.service';
 import { BackendPortService } from './backend-port.service';
 
 interface DeviceInformation {
@@ -29,15 +29,16 @@ interface DeviceOverview {
 export class OmnAIScopeDataService implements DataSource{
 
   private socket: WebSocket | null = null;
+  lastUpdate: number = 0;
 
   readonly isConnected = signal<boolean>(false);
   readonly devices = signal<DeviceInformation[]>([]);
-  readonly data = signal<Record<string, DataFormat[]>>({});
+  readonly data = signal({data: new Map(), bounds: new DataBounds()});
   readonly dataAsList = computed(() => {
     const allDataPoints: DataFormat[] = [];
     const dataRecord = this.data();
 
-    for (const deviceData of Object.values(dataRecord)) {
+    for (const deviceData of dataRecord.data.values()) {
       allDataPoints.push(...deviceData);
     }
 
@@ -84,14 +85,14 @@ export class OmnAIScopeDataService implements DataSource{
 
     this.socket.addEventListener('open', () => {
       this.isConnected.set(true);
-      this.data.set({});
+      this.data.set({data: new Map(), bounds: new DataBounds()});
 
       // Send start message
       const deviceUuids = this.devices().map(device => device.UUID).join(" ");
       if(!this.socket){
-        throw new Error("Websocket is not defined"); 
+        throw new Error("Websocket is not defined");
       }
-      this.socket.send(deviceUuids); 
+      this.socket.send(deviceUuids);
     });
 
     let ignoreCounter = 0;
@@ -110,18 +111,40 @@ export class OmnAIScopeDataService implements DataSource{
       }
 
       if (this.isOmnAIDataMessage(parsedMessage)) {
-        this.data.update(records => {
-          parsedMessage.devices.forEach((uuid: string, index: number) => {
-            const existingData = records[uuid] ?? [];
-            const newDataPoints = parsedMessage.data.map((point: any) => ({
-              timestamp: point.timestamp,
-              value: point.value[index],
-            }));
-            records[uuid] = existingData.concat(newDataPoints);
-          });
+        let start = performance.now();
+        const timeToUpdate = 250;
+        const dataInfo = this.data();
 
-          return { ...records };
+        //Update bounds and Data, without causing any updates
+        const bounds = dataInfo.bounds;
+        parsedMessage.data.forEach((currentValue:any) => {
+          currentValue.value.forEach((currentValue:number) => {
+            if (currentValue > bounds.maxValue) bounds.maxValue = currentValue;
+            if (currentValue < bounds.minValue) bounds.minValue = currentValue;
+          });
+          if (currentValue.timestamp < bounds.minTimestamp) bounds.minTimestamp = currentValue.timestamp;
+          if (currentValue.timestamp > bounds.maxTimestamp) bounds.maxTimestamp = currentValue.timestamp;
         });
+
+        const data = dataInfo.data;
+        parsedMessage.devices.forEach((uuid: string, index: number) => {
+          if (!data.has(uuid)) data.set(uuid, []);
+          const newDataPoints:DataFormat[] = parsedMessage.data.map((point: any) => ({
+            timestamp: point.timestamp,
+            value: point.value[index],
+          }));
+          let record = data.get(uuid)!;
+          record.push(...newDataPoints);
+        });
+
+        //Update bounds & data, once every so often.
+        if (performance.now() > this.lastUpdate + timeToUpdate) {
+          this.data.set({data, bounds});
+          this.lastUpdate = performance.now();
+        }
+        let end = performance.now();
+        // console.warn(`Message handing took ${end-start}`)
+
       } else {
         console.warn('Unbekanntes Nachrichtenformat:', parsedMessage);
       }
