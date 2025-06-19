@@ -14,6 +14,8 @@ on:
       - '**'
   workflow_dispatch:
 
+env:
+  NODE_VERSION: 20
 jobs:
   Build-Windows:
     runs-on: windows-latest
@@ -22,12 +24,24 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
           cache-dependency-path: |
             package-lock.json
             angular-frontend/package-lock.json
             electron/package-lock.json
+      - name: Cache angular-frontend
+        id: cache-angular-frontend
+        uses: actions/cache@v4
+        with:
+          path: angular-frontend/node_modules
+          key: node_modules-angular_frontend-${{ runner.os }}-${{runner.arch}}-${{ env.NODE_VERSION }}-${{ hashFiles('angular-frontend/package-lock.json') }}
+      - name: Cache electron
+        id: cache-electron
+        uses: actions/cache@v4
+        with:
+          path: electron/node_modules
+          key: node_modules-electron-${{ runner.os }}-${{runner.arch}}-${{ env.NODE_VERSION }}-${{ hashFiles('electron/package-lock.json') }}
       - name: Create version.json, if it doesn't exist
         if: ${{ hashFiles('electron/src/version.json') == '' }}
         run: |
@@ -35,8 +49,14 @@ jobs:
           $electronVersion = jq '.version' 'electron/package.json'
           echo "console.log(JSON.stringify({generatedAt: new Date().toISOString(), angularVersion: $($angularVersion), electronVersion: $($electronVersion)}))" | node - > electron/src/version.json
           type electron/src/version.json
-      - name: Install NPM-Dependencies
-        run: npm run install:all
+      - name: Install angular-frontend NPM-Dependencies
+        if: ${{steps.cache-angular-frontend.outputs.cache-hit != 'true'}}
+        working-directory: angular-frontend
+        run: npm ci --no-audit
+      - name: Install electron NPM-Dependencies
+        if: ${{steps.cache-electron.outputs.cache-hit != 'true'}}
+        working-directory: electron
+        run: npm ci --no-audit
       - name: Build Project
         run: npm run build
       - name: Test Angular
