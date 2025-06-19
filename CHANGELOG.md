@@ -38,10 +38,11 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Modernize codebase to Angular 19 (inject, signals, @if/@for, etc.) (#18)
 - Configure Angular Material with a custom theme (#18)
 - Fix the Port selection for the OmnAIScope backend (#19)
+- Update root package-lock to reflect workspace setup (#84)
 
 ### Removed 
 
 - Deletion of deprecated Angular 18 patterns (#18)
 - Deletion of duplicated AsyncAPI description for OmnAIBackend 
-- BREAKING CHANGE: Remove `package.json` build scripts in subfolders (#35)
+- BREAKING CHANGE: Remove `package.json` build scripts in subfolders (#35) (#84)
 

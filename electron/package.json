@@ -25,7 +25,6 @@
     "@typescript-eslint/parser": "^5.62.0",
     "@vercel/webpack-asset-relocator-loader": "^1.7.3",
     "css-loader": "^6.11.0",
-    "electron": "35.0.3",
     "eslint": "^8.57.1",
     "eslint-plugin-import": "^2.31.0",
     "fork-ts-checker-webpack-plugin": "^7.3.0",
@@ -33,7 +32,8 @@
     "style-loader": "^3.3.4",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
-    "typescript": "~5.8.2"
+    "typescript": "~5.8.2",
+    "electron": "^35.0.3"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",

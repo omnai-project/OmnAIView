@@ -4,25 +4,28 @@ permissions:
   actions: read
 
 on:
-  pull_request:
-    branches:
-      - "**"
   push:
     branches:
-      - "**"
+      - '**'
     tags:
+      - '**'
+  pull_request:
+    branches:
       - '**'
   workflow_dispatch:
 
 env:
   NODE_VERSION: 20
+
 jobs:
-  Build-Windows:
+  build-windows:
     runs-on: windows-latest
     steps:
-      - name: Repository-Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node.js & cache npm
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -30,43 +33,34 @@ jobs:
             package-lock.json
             angular-frontend/package-lock.json
             electron/package-lock.json
-      - name: Cache angular-frontend
-        id: cache-angular-frontend
-        uses: actions/cache@v4
-        with:
-          path: angular-frontend/node_modules
-          key: node_modules-angular_frontend-${{ runner.os }}-${{runner.arch}}-${{ env.NODE_VERSION }}-${{ hashFiles('angular-frontend/package-lock.json') }}
-      - name: Cache electron
-        id: cache-electron
-        uses: actions/cache@v4
-        with:
-          path: electron/node_modules
-          key: node_modules-electron-${{ runner.os }}-${{runner.arch}}-${{ env.NODE_VERSION }}-${{ hashFiles('electron/package-lock.json') }}
-      - name: Create version.json, if it doesn't exist
+          cache-key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}-v2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create version.json if missing
         if: ${{ hashFiles('electron/src/version.json') == '' }}
         run: |
-          $angularVersion = jq '.version' 'angular-frontend/package.json'
-          $electronVersion = jq '.version' 'electron/package.json'
-          echo "console.log(JSON.stringify({generatedAt: new Date().toISOString(), angularVersion: $($angularVersion), electronVersion: $($electronVersion)}))" | node - > electron/src/version.json
-          type electron/src/version.json
-      - name: Install angular-frontend NPM-Dependencies
-        if: ${{steps.cache-angular-frontend.outputs.cache-hit != 'true'}}
-        working-directory: angular-frontend
-        run: npm ci --no-audit
-      - name: Install electron NPM-Dependencies
-        if: ${{steps.cache-electron.outputs.cache-hit != 'true'}}
-        working-directory: electron
-        run: npm ci --no-audit
-      - name: Build Project
+          angularVersion=$(jq -r '.version' angular-frontend/package.json)
+          electronVersion=$(jq -r '.version' electron/package.json)
+          node -e "console.log(JSON.stringify({
+            generatedAt: new Date().toISOString(),
+            angularVersion: '$angularVersion',
+            electronVersion: '$electronVersion'
+          }))" > electron/src/version.json
+          cat electron/src/version.json
+
+      - name: Build project
         run: npm run build
+
       - name: Test Angular
-        working-directory: angular-frontend
-        run: npx ng test --watch=false
-      - name: Upload Artifact
+        run: npm run test:angular:ci
+
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: OmnaiView-Windows-${{ github.sha }}
           path: |
-            electron\out\make\squirrel.windows\x64\RELEASES
-            electron\out\make\squirrel.windows\x64\*.nupkg
-            electron\out\make\squirrel.windows\x64\*.exe
+            electron/out/make/squirrel.windows/x64/RELEASES
+            electron/out/make/squirrel.windows/x64/*.nupkg
+            electron/out/make/squirrel.windows/x64/*.exe
