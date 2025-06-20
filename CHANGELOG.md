@@ -38,7 +38,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Modernize codebase to Angular 19 (inject, signals, @if/@for, etc.) (#18)
 - Configure Angular Material with a custom theme (#18)
 - Fix the Port selection for the OmnAIScope backend (#19)
-- If electron-squirrel-startup is not avaliable to app crashes without logging. Therefore wrapping in try/catch. (#80)
+- If electron-squirrel-startup is not avaliable the app crashes without logging. Therefore wrapping in try/catch. (#80)
 
 ### Removed 
 
