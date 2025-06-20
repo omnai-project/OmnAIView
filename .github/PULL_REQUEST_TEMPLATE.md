@@ -26,7 +26,6 @@ Which are the main files and concepts you changed or introduced?
 
 Make sure you
 
-- [ ] have read the [contribution guidelines](../CONTRIBUTION.md),
-- [ ] have added necessary unit/e2e tests if necessary,
-- [ ] have added documentation if necessary,
-- [ ] have added your changes to the [changelog](../CHANGELOG.md).
+- [ ] have read the [contribution guidelines](../CONTRIBUTION.md)
+- [ ] have added necessary unit/e2e tests if necessary.
+- [ ] have added documentation if necessary.

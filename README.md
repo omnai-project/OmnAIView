@@ -28,8 +28,8 @@ The Code is documented with [Compodoc](https://compodoc.app/). To see the docume
 
 1. Clone the project 
 2. Run ``` npm ci ``` in the root directory of the project 
-3. Navigate into the angular folder 
-4. Run ``` npm run compodoc:build-and-serve ```
+3. Run 
+``` npm run compodoc:build-and-serve ``` 
 in your console 
 4. Open the documentation with the link compodoc generates 
 
@@ -66,8 +66,8 @@ This will compile the angular frontend and electron project and store the build 
 
 Otherwise it is possible to build the angular frontend or the electron project seperately via ```npm run build:angular``` or ```npm run build:electron```.
 
-#### Technical infos about the angular project
-
+#### Technical Information
+  
 The project was generated using angular v19.1.4.
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
