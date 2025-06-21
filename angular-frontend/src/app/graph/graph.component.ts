@@ -19,6 +19,15 @@ import { StartDataButtonComponent } from "../source-selection/start-data-from-so
 import { DataSourceService } from './graph-data.service';
 import { transition } from 'd3-transition';
 import { zoomIdentity, ZoomTransform } from 'd3-zoom';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import * as d3 from 'd3'
+
+interface GraphComment {
+  x: number;
+  y: number;
+  text: string;
+}
 
 @Component({
   selector: 'app-graph',
@@ -26,7 +35,7 @@ import { zoomIdentity, ZoomTransform } from 'd3-zoom';
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [ResizeObserverDirective, JsonPipe, StartDataButtonComponent, DeviceListComponent],
+  imports: [CommonModule, ResizeObserverDirective, JsonPipe, FormsModule, StartDataButtonComponent, DeviceListComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphComponent implements AfterViewInit {
@@ -36,8 +45,14 @@ export class GraphComponent implements AfterViewInit {
   readonly axesYContainer = viewChild.required<ElementRef<SVGGElement>>('yAxis');
   readonly gridContainer = viewChild.required<ElementRef<SVGGElement>>('grid');
   readonly guideContainer = viewChild.required<ElementRef<SVGGElement>>('guideline');
+  readonly commentLayer = viewChild.required<ElementRef<SVGGElement>>('commentLayer');
   readonly fixedGuides = signal<number[]>([]);
   readonly fixedXGuides = signal<number[]>([]);
+  readonly comments = signal<GraphComment[]>([]);
+
+  commentInputVisible = signal(false);
+  commentInputPosition = signal({ x: 0, y: 0 });
+  commentInputText = signal('');
 
   private readonly platform = inject(PLATFORM_ID);
   isInBrowser = isPlatformBrowser(this.platform);
@@ -229,6 +244,98 @@ export class GraphComponent implements AfterViewInit {
     this.fixedXGuides.update(lines => [...lines, xDataValue]);
 
     this.drawFixedLines();
+  }
+
+  onRightClick(event: MouseEvent) {
+    event.preventDefault();
+
+    const svg = (event.target as HTMLElement).closest("svg")!;
+    const rect = svg.getBoundingClientRect();
+
+    const x = event.clientX - rect.left - this.dataservice.margin.left;
+    const y = event.clientY - rect.top - this.dataservice.margin.top;
+
+    this.commentInputPosition.set({ x, y });
+    this.commentInputText.set('');
+    this.commentInputVisible.set(true);
+  }
+
+  private addComment(x: number, y: number, text: string): void {
+    const layer = d3.select(this.commentLayer().nativeElement);
+
+    const group = layer
+      .append('g')
+      .attr('transform', `translate(${x},${y})`)
+      .call(
+        d3.drag<SVGGElement, unknown>()
+          .on('drag', function (event) {
+            d3.select(this).attr('transform', `translate(${event.x},${event.y})`);
+          })
+      );
+
+    const textElement = group
+      .append('text')
+      .attr('x', 10)
+      .attr('y', 25)
+      .text(text)
+      .attr('font-size', '14px')
+      .attr('fill', '#333');
+
+    const textNode = textElement.node();
+    const textWidth = textNode ? textNode.getComputedTextLength() : 100;
+
+    const rectWidth = textWidth + 30; 
+    const rectHeight = 40;
+      
+    group
+      .insert('rect', 'text') 
+      .attr('width', rectWidth)
+      .attr('height', rectHeight)
+      .attr('fill', 'rgba(255, 255, 204, 0.9)') 
+      .attr('stroke', '#ccc')
+      .attr('stroke-width', 1)
+      .attr('rx', 8)
+      .attr('ry', 8)
+      .style('filter', 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))');
+    
+    group.select('text')
+      .attr('font-family', "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif")
+      .attr('font-weight', '500')
+      .attr('fill', '#333');  
+    
+    group
+      .append('text')
+      .attr('x', rectWidth - 15)
+      .attr('y', 15)
+      .text('✖')
+      .attr('font-size', '16px')
+      .attr('fill', '#900')
+      .attr('cursor', 'pointer')
+      .on('mouseover', function () {
+        d3.select(this).attr('fill', '#f44336');
+      })
+      .on('mouseout', function () {
+        d3.select(this).attr('fill', '#900');
+      })
+      .on('click', function () {
+        group.remove();
+    });
+  }
+
+  submitComment() {
+    const { x, y } = this.commentInputPosition();
+    const text = this.commentInputText().trim();
+
+    if (!text) return;
+
+    this.comments.update(c => [...c, { x, y, text }]);
+    this.addComment(x, y, text);
+    this.commentInputVisible.set(false);
+  }
+
+  cancelComment() {
+    this.commentInputVisible.set(false);
+    this.commentInputText.set('');
   }
 
   drawFixedLines() {

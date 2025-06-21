@@ -16,7 +16,12 @@ import { DataSourceSelectionService } from '../source-selection/data-source-sele
 
 type UnwrapSignal<T> = T extends import('@angular/core').Signal<infer U> ? U : never;
 
-@Injectable()
+/**
+ * Provide the data to be displayed in the {@link GraphComponent}
+ */
+@Injectable({
+  providedIn: 'root',
+})
 export class DataSourceService {
   private readonly $graphDimensions = signal({ width: 800, height: 600 });
   private readonly $xDomain = signal<[Date, Date]>([new Date(2020), new Date()]);
@@ -167,4 +172,7 @@ export class DataSourceService {
       });
     },
   });
+
+
+
 }

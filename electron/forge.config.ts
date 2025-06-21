@@ -14,19 +14,15 @@ const config: ForgeConfig = {
       "./res/omnai_BE/MiniOmni.exe", 
       "./res/omnai_BE/libusb-1.0.dll",
       "./res/omnai_BE/abseil_dll.dll",
-      "./res/omnai_BE/libprotobuf.dll"
+      "./res/omnai_BE/libprotobuf.dll",
+      "./src/version.json"    
     ],
   },
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
       setupIcon: './images/icon.ico',
-      // iconUrl: 'https://url/to/icon.ico', 
-      // # If possible, a .ico file hosted by you on a web server should be entered here.
-      // # It would be advisable to use the file from ./images/icon.ico.
-      // # This must be publicly accessible and will then be loaded at _installation time_. It must not be a file://
-      // # https://js.electronforge.io/interfaces/_electron_forge_maker_squirrel.InternalOptions.SquirrelWindowsOptions.html
-      // # It controls the icon, which can be found under Programs.
+      iconUrl: 'https://lugges.s3.nl-ams.scw.cloud/icon-OmnAIView.ico',
     }, ["win32"]), 
     new MakerZIP({}, ['darwin']), 
     new MakerRpm({}), 
