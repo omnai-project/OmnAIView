@@ -37,6 +37,7 @@ export class GraphComponent implements AfterViewInit {
   readonly gridContainer = viewChild.required<ElementRef<SVGGElement>>('grid');
   readonly guideContainer = viewChild.required<ElementRef<SVGGElement>>('guideline');
   readonly fixedGuides = signal<number[]>([]);
+  readonly fixedXGuides = signal<number[]>([]);
 
   private readonly platform = inject(PLATFORM_ID);
   isInBrowser = isPlatformBrowser(this.platform);
@@ -51,52 +52,6 @@ export class GraphComponent implements AfterViewInit {
       });
     }
   }
-
-  //   private isDragging = false;
-  // private dragStart: { x: number, y: number } | null = null;
-
-  // private initPan() {
-  //   const svgElement = this.svgGraph().nativeElement;
-
-  //   svgElement.addEventListener('mousedown', (event) => {
-  //     if (event.button !== 0) return; // nur linke Maustaste
-  //     this.isDragging = true;
-  //     this.dragStart = { x: event.clientX, y: event.clientY };
-  //   });
-
-  //   window.addEventListener('mousemove', (event) => {
-  //     if (!this.isDragging || !this.dragStart) return;
-
-  //     const dx = event.clientX - this.dragStart.x;
-  //     const dy = event.clientY - this.dragStart.y;
-
-  //     const xScale = this.dataservice.xScale();
-  //     const yScale = this.dataservice.yScale();
-
-  //     const [x0, x1] = xScale.domain().map(d => d.getTime());
-  //     const [y0, y1] = yScale.domain();
-
-  //     const xRange = x1 - x0;
-  //     const yRange = y1 - y0;
-
-  //     const { width, height } = this.dataservice.graphDimensions();
-
-  //     const xShift = (dx / width) * xRange;
-  //     const yShift = (dy / height) * yRange;
-
-  //     this.dataservice.setDomains(
-  //       [new Date(x0 - xShift), new Date(x1 - xShift)],
-  //       [y0 + yShift, y1 + yShift]
-  //     );
-
-  //     this.dragStart = { x: event.clientX, y: event.clientY };
-  //   });
-
-  //   window.addEventListener('mouseup', () => {
-  //     this.isDragging = false;
-  //     this.dragStart = null;
-  //   });
-  // }
 
   private initKeyboardPan() {
     window.addEventListener('keydown', (event) => {
@@ -126,7 +81,6 @@ export class GraphComponent implements AfterViewInit {
       );
     });
   }
-
 
   currentTransform: ZoomTransform = zoomIdentity;
   ngAfterViewInit(): void {
@@ -163,8 +117,7 @@ export class GraphComponent implements AfterViewInit {
     const xValueUnderMouse = xScale.invert(mouseX).getTime();
     const yValueUnderMouse = yScale.invert(mouseY);
 
-    // I'm not sure why mousewheel and touchpad behave inverted but oh well this is a godgiven feature now
-    const zoomFactor = event.deltaY < 0 ? 0.9 : 1.1;
+    const zoomFactor = event.deltaY < 0 ? 1.1 : 0.9;
 
     const newX0 = xValueUnderMouse + (x0 - xValueUnderMouse) * zoomFactor;
     const newX1 = xValueUnderMouse + (x1 - xValueUnderMouse) * zoomFactor;
@@ -179,7 +132,6 @@ export class GraphComponent implements AfterViewInit {
 
     const baseX = this.dataservice.xScale();
     const baseY = this.dataservice.yScale();
-
 
     const newXScale = this.dataservice.xScale();
     const newYScale = this.dataservice.yScale();
@@ -198,65 +150,115 @@ export class GraphComponent implements AfterViewInit {
   }
 
   onMouseMove(hover: MouseEvent) {
-    const topOffset = ((hover.target as HTMLElement).closest("svg")!.getBoundingClientRect().top);
+    const svgRect = (hover.target as HTMLElement).closest("svg")!.getBoundingClientRect();
+    const topOffset = svgRect.top;
+    const leftOffset = svgRect.left;
+
+    const xaxis = this.dataservice.xScale();
     const yaxis = this.dataservice.yScale();
-    const botlimit = yaxis(0) + 20;
-    const toplimit = yaxis(100) + 20;
-    const ypos = Math.max(Math.min(hover.clientY - topOffset, botlimit), toplimit);
+    const margin = this.dataservice.margin;
+
+    const mouseX = hover.clientX - leftOffset - margin.left;
+    const mouseY = hover.clientY - topOffset - margin.top;
+
+    const ypos = Math.max(Math.min(mouseY, yaxis.range()[0]), yaxis.range()[1]);
+    const xpos = Math.max(Math.min(mouseX, xaxis.range()[1]), xaxis.range()[0]);
 
     const g = this.guideContainer().nativeElement;
     const container = select(g);
 
-    const value = yaxis.invert(ypos - 20);
-    const formatted = value.toFixed(1);
+    const yValue = yaxis.invert(ypos);
+    const xValue = xaxis.invert(xpos);
 
-    container.selectAll("line.temporary")
-      .data([ypos])
-      .join("line")
+    container.selectAll("line.temporary").remove();
+    container.selectAll("text.temporary").remove();
+
+    // Horizontale Linie + Label
+    container.append("line")
       .attr("class", "temporary")
       .attr("stroke", "darkgray")
       .attr("stroke-opacity", 0.7)
       .attr("x1", 0)
       .attr("x2", "100%")
-      .attr("y1", d => d - 20)
-      .attr("y2", d => d - 20);
+      .attr("y1", ypos)
+      .attr("y2", ypos);
 
-    container.selectAll("text.temporary")
-      .data([ypos])
-      .join("text")
+    container.append("text")
       .attr("class", "temporary")
       .attr("x", 5)
-      .attr("y", d => d - 25)
+      .attr("y", ypos - 5)
       .attr("fill", "black")
       .attr("font-size", "12px")
       .attr("font-family", "sans-serif")
-      .text(formatted);
+      .text(yValue.toFixed(1));
+
+    // // Vertikale Linie (+ Label) wenn es funktionieren würde
+    // container.append("line")
+    //   .attr("class", "temporary")
+    //   .attr("stroke", "darkgray")
+    //   .attr("stroke-opacity", 0.7)
+    //   .attr("y1", 0)
+    //   .attr("y2", "100%")
+    //   .attr("x1", xpos)
+    //   .attr("x2", xpos);
+
+    // container.append("text")
+    //   .attr("class", "temporary")
+    //   .attr("x", xpos + 5)
+    //   .attr("y", 12)
+    //   .attr("fill", "black")
+    //   .attr("font-size", "12px")
+    //   .attr("font-family", "sans-serif")
+    //   //.text(yValue.toFixed(1))
+    //   ;
   }
 
   onClick(event: MouseEvent) {
-    const topOffset = ((event.target as HTMLElement).closest("svg")!.getBoundingClientRect().top);
+    const svgRect = (event.target as HTMLElement).closest("svg")!.getBoundingClientRect();
+    const xaxis = this.dataservice.xScale();
     const yaxis = this.dataservice.yScale();
-    const svgY = event.clientY - topOffset;
-    const botlimit = yaxis(0) + 20;
-    const toplimit = yaxis(100) + 20;
-    const ypos = Math.max(Math.min(svgY, botlimit), toplimit);
-    const yDataValue = yaxis.invert(ypos - this.dataservice.margin.top);
+    const margin = this.dataservice.margin;
+
+    const svgX = event.clientX - svgRect.left;
+    const svgY = event.clientY - svgRect.top;
+
+    const xDataValue = xaxis.invert(svgX - margin.left).getTime();
+    const yDataValue = yaxis.invert(svgY - margin.top);
 
     this.fixedGuides.update(lines => [...lines, yDataValue]);
+    this.fixedXGuides.update(lines => [...lines, xDataValue]);
+
     this.drawFixedLines();
   }
 
   drawFixedLines() {
     const g = this.guideContainer().nativeElement;
+    const xaxis = this.dataservice.xScale();
     const yaxis = this.dataservice.yScale();
 
-    select(g).selectAll("line.fixed").remove();
-    select(g).selectAll("text.fixed").remove();
-    select(g)
-      .selectAll("line.fixed")
-      .data(this.fixedGuides())
+    const visibleHeight = yaxis.range();
+    const visibleWidth = xaxis.range();
+
+    const visibleYGuides = this.fixedGuides().filter(d => {
+      const yPos = yaxis(d);
+      return yPos >= visibleHeight[1] && yPos <= visibleHeight[0];
+    });
+
+    const visibleXGuides = this.fixedXGuides().filter(d => {
+      const xPos = xaxis(new Date(d));
+      return xPos >= visibleWidth[0] && xPos <= visibleWidth[1];
+    });
+
+    const container = select(g);
+    container.selectAll("line.fixed").remove();
+    container.selectAll("text.fixed").remove();
+
+    // Horizontale Linien
+    container
+      .selectAll("line.fixed-h")
+      .data(visibleYGuides)
       .join("line")
-      .attr("class", "fixed")
+      .attr("class", "fixed fixed-h")
       .attr("stroke", "red")
       .attr("stroke-width", 1)
       .attr("stroke-dasharray", "2,2")
@@ -265,18 +267,43 @@ export class GraphComponent implements AfterViewInit {
       .attr("y1", d => yaxis(d))
       .attr("y2", d => yaxis(d));
 
-    select(g)
-      .selectAll("text.fixed")
-      .data(this.fixedGuides())
+    container
+      .selectAll("text.fixed-h")
+      .data(visibleYGuides)
       .join("text")
-      .attr("class", "fixed")
+      .attr("class", "fixed fixed-h")
       .attr("x", 5)
       .attr("y", d => yaxis(d) - 5)
       .attr("fill", "red")
       .attr("font-size", "12px")
-      .attr("font-family", "sans-serif")
       .text(d => d.toFixed(1));
+
+    // Vertikale Linien
+    // container
+    //   .selectAll("line.fixed-v")
+    //   .data(visibleXGuides)
+    //   .join("line")
+    //   .attr("class", "fixed fixed-v")
+    //   .attr("stroke", "blue")
+    //   .attr("stroke-width", 1)
+    //   .attr("stroke-dasharray", "2,2")
+    //   .attr("x1", d => xaxis(new Date(d)))
+    //   .attr("x2", d => xaxis(new Date(d)))
+    //   .attr("y1", 0)
+    //   .attr("y2", "100%");
+
+    // container
+    //   .selectAll("text.fixed-v")
+    //   .data(visibleXGuides)
+    //   .join("text")
+    //   .attr("class", "fixed fixed-v")
+    //   .attr("x", d => xaxis(new Date(d)) + 5)
+    //   .attr("y", 12)
+    //   .attr("fill", "blue")
+    //   .attr("font-size", "12px")
+    //   .text(d => new Date(d).toLocaleTimeString());
   }
+
 
   marginTransform = computed(() => {
     return `translate(${this.dataservice.margin.left}, ${this.dataservice.margin.top})`;
@@ -326,39 +353,26 @@ export class GraphComponent implements AfterViewInit {
       .attr("x1", 0)
       .attr("x2", "100%");
 
+    // Vertikale Linien
+    // select(g)
+    // .append("g")
+    // .attr("class", "vertical-grid")
+    // .selectAll("line")
+    // .data(x.ticks()) 
+    // .join("line")
+    // .attr("x1", d => 0.5 + x(d))
+    // .attr("x2", d => 0.5 + x(d))
+    // .attr("y1", 0)
+    // .attr("y2", "100%"); 
+
     onCleanUp(() => g.innerHTML = "");
   });
+
+  readonly updateGuidelines = effect(() => {
+    if (!this.isInBrowser) return;
+    this.fixedGuides();
+    this.fixedXGuides();
+    this.drawFixedLines();
+  });
+
 }
-
-// drawGrid() {
-//   const g = this.gridContainer().nativeElement;
-//   const x = this.dataservice.xScale();
-//   const y = this.dataservice.yScale();
-
-//   select(g).attr("stroke", "lightgray").attr("stroke-opacity", 0.7);
-
-//    // vertical grid
-//   // .call(g => g.append("g")
-//   //       .selectAll("line")
-//   //       .data(x.ticks())
-//   //       .join("line")
-//   //         .attr("x1", d => 0.5 + x(d))
-//   //         .attr("x2", d => 0.5 + x(d))
-//   //         .attr("y1", 0)
-//   //         .attr("y2", 100))
-//   // horizontale Linien
-//   select(g)
-//     .append("g")
-//     .attr("class", "horizontal-grid")
-//     .selectAll("line")
-//     .data(y.ticks())
-//     .join("line")
-//     .attr("y1", d => 0.5 + y(d))
-//     .attr("y2", d => 0.5 + y(d))
-//     .attr("x1", 0)
-//     .attr("x2", "100%");
-// }
-
-// clearGrid() {
-//   this.gridContainer().nativeElement.innerHTML = '';
-// }

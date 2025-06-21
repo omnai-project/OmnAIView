@@ -33,6 +33,15 @@ export class DataSourceService {
     return selectedSource.data();
   });
 
+  innerWidth() {
+    const dim = this.graphDimensions();
+    return dim.width - this.margin.left - this.margin.right;
+  }
+
+  innerHeight() {
+    const dim = this.graphDimensions();
+    return dim.height - this.margin.top - this.margin.bottom;
+  }
 
   readonly xScale = linkedSignal({
     source: () => ({
