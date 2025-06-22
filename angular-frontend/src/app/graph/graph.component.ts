@@ -8,6 +8,7 @@ import {
   PLATFORM_ID,
   signal,
   viewChild,
+  ViewChild,
   type ElementRef,
   AfterViewInit
 } from '@angular/core';
@@ -39,6 +40,9 @@ interface GraphComment {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphComponent implements AfterViewInit {
+  @ViewChild('graphContainer', { static: true })
+  graphEl!: ElementRef<SVGSVGElement>;
+
   readonly dataservice = inject(DataSourceService);
   readonly svgGraph = viewChild.required<ElementRef<SVGElement>>('graphContainer');
   readonly axesContainer = viewChild.required<ElementRef<SVGGElement>>('xAxis');
@@ -49,6 +53,7 @@ export class GraphComponent implements AfterViewInit {
   readonly fixedGuides = signal<number[]>([]);
   readonly fixedXGuides = signal<number[]>([]);
   readonly comments = signal<GraphComment[]>([]);
+  hoveredGuide = signal<number | null>(null);
 
   commentInputVisible = signal(false);
   commentInputPosition = signal({ x: 0, y: 0 });
@@ -103,6 +108,9 @@ export class GraphComponent implements AfterViewInit {
       this.initZoom();
       // this.initPan();
       this.initKeyboardPan();
+      setTimeout(() => {
+    this.graphEl.nativeElement.focus();
+  });
     }
   }
 
@@ -246,6 +254,22 @@ export class GraphComponent implements AfterViewInit {
     this.drawFixedLines();
   }
 
+  onKeyDown(event: KeyboardEvent) {
+    console.log('Key pressed:', event.key);
+  if (event.key === 'Backspace') {
+    const y = this.hoveredGuide();
+    if (y !== null) {
+      // Entferne die Y-Linie aus fixedGuides
+      this.fixedGuides.update(lines => lines.filter(val => val !== y));
+      this.hoveredGuide.set(null);
+    }
+
+    // Optional: Standardverhalten unterdrücken
+    event.preventDefault();
+  }
+}
+
+
   onRightClick(event: MouseEvent) {
     event.preventDefault();
 
@@ -361,18 +385,18 @@ export class GraphComponent implements AfterViewInit {
     container.selectAll("text.fixed").remove();
 
     // Horizontale Linien
-    container
-      .selectAll("line.fixed-h")
-      .data(visibleYGuides)
-      .join("line")
-      .attr("class", "fixed fixed-h")
-      .attr("stroke", "red")
-      .attr("stroke-width", 1)
-      .attr("stroke-dasharray", "2,2")
-      .attr("x1", 0)
-      .attr("x2", "100%")
-      .attr("y1", d => yaxis(d))
-      .attr("y2", d => yaxis(d));
+    // container
+    //   .selectAll("line.fixed-h")
+    //   .data(visibleYGuides)
+    //   .join("line")
+    //   .attr("class", "fixed fixed-h")
+    //   .attr("stroke", "red")
+    //   .attr("stroke-width", 1)
+    //   .attr("stroke-dasharray", "2,2")
+    //   .attr("x1", 0)
+    //   .attr("x2", "100%")
+    //   .attr("y1", d => yaxis(d))
+    //   .attr("y2", d => yaxis(d));
 
     container
       .selectAll("text.fixed-h")

@@ -1,5 +1,7 @@
-<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" (mousemove)="onMouseMove($event)"
-    (click)="onClick($event)" (contextmenu)="onRightClick($event)">
+<svg #graphContainer 
+    tabindex="0"
+    (keydown)="onKeyDown($event)" appResizeObserver (resize)="updateGraphDimensions($event)" (mousemove)="onMouseMove($event)"
+    (click)="onClick($event)" (contextmenu)="onRightClick($event)" appResizeObserver (resize)="updateGraphDimensions($event)">>
     <defs>
         <clipPath id="graphClip">
             <rect [attr.x]="0" [attr.y]="-15" [attr.width]="dataservice.innerWidth()"
@@ -9,7 +11,22 @@
     <g [attr.transform]="marginTransform()">
         <g clip-path="url(#graphClip)">
             <g #grid></g>
-            <g #guideline></g>
+            <g #guideline>
+                @for (y of fixedGuides(); track y) {
+                <line [attr.x1]="0" [attr.y1]="dataservice.yScale()(y)" [attr.x2]="dataservice.innerWidth()"
+                    [attr.y2]="dataservice.yScale()(y)" stroke="transparent" stroke-width="13" 
+                    pointer-events="stroke"
+                    (mouseenter)="hoveredGuide.set(y)"
+                    (mouseleave)="hoveredGuide.set(null)"
+                    />
+
+                    <line [attr.x1]="0" [attr.y1]="dataservice.yScale()(y)" [attr.x2]="dataservice.innerWidth()"
+                        [attr.y2]="dataservice.yScale()(y)" stroke="red" stroke-width="1" stroke-dasharray="2,2"
+                        shape-rendering="crispEdges" pointer-events="visible"
+                        [attr.stroke-width]="hoveredGuide() === y ? 3 : 1" stroke-dasharray="4,2"
+                        (mouseenter)="hoveredGuide.set(y)" (mouseleave)="hoveredGuide.set(null)" cursor="ns-resize" />
+                    }
+            </g>
             @for (path of dataservice.paths(); track $index) {
             <path [attr.d]="path.d" fill="none" stroke="steelblue" stroke-width="2" />
             }
