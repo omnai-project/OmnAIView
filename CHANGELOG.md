@@ -42,6 +42,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Fix the Port selection for the OmnAIScope backend (#19)
 - If electron-squirrel-startup is not avaliable the app crashes without logging. Therefore wrapping in try/catch. (#80)
 - Update x-axis labels to use hours, minutes, seconds instead of year (#58)
+- Privacy oriented default setting to not share data with Google (#82)
 
 ### Removed 
 
