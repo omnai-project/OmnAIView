@@ -33,7 +33,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node_modules-${{ runner.os }}-${{runner.arch}}-node_${{ env.NODE_VERSION }}-${{ hashFiles('angular-frontend/package-lock.json') }}
+          key: node_modules-${{ runner.os }}-${{runner.arch}}-node_${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
       - name: Install NPM-Dependencies
         if: ${{steps.cache-node_modules.outputs.cache-hit != 'true'}}
         run: npm ci --no-audit --no-fund
