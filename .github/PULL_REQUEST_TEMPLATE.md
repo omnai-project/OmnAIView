@@ -1,27 +1,38 @@
+<!-- Give your PR a concise, imperative-title, e.g. "Fix memory leak in DeviceService" or "Add dark-mode toggle".-->
+
 ## Summary
+<details><summary> A 1–3 sentence description of what this PR does and *why* </summary>
+>What problem does this PR solve? Which concept, bug, or requirement does it address?
+</details>
 
-**Brief description about the content of your PR and its improvements for the project.**
+*Add description here*
 
-1. What problem does this PR solve? Which concept, bug, or requirement does it address?
+<details><summary> Issue number </summary> *Add issue number here* </details>
 
-2. Please add context to the improvements: reference an issue ("Resolves #<your issue id here>"), a user story, or explain the improvements in documentation, code, or UX.
+## 🛠 Type of change
+Tick **one**.
+
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Refactor (no functional change)
+- [ ] Docs / examples
+- [ ] CI / tooling
 
 ## Design Decisions
+<details><summary>📝 Changes in detail (files, concepts)</summary>
+>Describe the way your implementation works or what design decisions you made if applicable.
+>Which are the main files and concepts you changed or introduced?</details>
 
-**Describe the way your implementation works or what design decisions you made if applicable.**
+*Add description here* 
 
-Which are the main files and concepts you changed or introduced?
+## How to test
 
-## Testing
-
-**Briefly explain how it can be tested—either with commands, manual steps, or test files.**
-
-1. Provide a description of the expected behavior.
-
-2. Describe how you tested the changes.
-
-3. Is there still unexpected behaviour which needs to be addressed in the future?
-
+### 1. Expected behavior
+*Add description here*
+### 2. Steps to reproduce
+*Add description here*
+### 3. Is there still unexpected behaviour which needs to be addressed in the future?
+*Add description here*
 ## Checklist
 
 Make sure you
