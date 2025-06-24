@@ -1,0 +1,49 @@
+name: "✨ Contribution proposal"
+description: "Suggest a feature / improvement and (optionally) volunteer to implement it"
+labels: ["enhancement", "contribution"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tell us what you’d like to add or improve.  
+        Check the box below if **you** intend to implement it.
+
+  - type: input
+    id: title
+    attributes:
+      label: "Brief title"
+      placeholder: "Add dark-mode toggle"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "What problem does this solve?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: approach
+    attributes:
+      label: "Proposed solution / approach"
+      placeholder: "High-level plan, API changes, UI mock-ups …"
+
+  - type: checkboxes
+    id: self_assign
+    attributes:
+      label: "Will you implement this yourself?"
+      options:
+        - label: "Yes – assign this issue to me"
+          required: false
+
+  - type: textarea
+    id: definition_of_done
+    attributes:
+      label: "Definition of Done"
+      placeholder: "Acceptance criteria, tests, docs…"
+
+  - type: textarea
+    id: extras
+    attributes:
+      label: "Additional context / references"
