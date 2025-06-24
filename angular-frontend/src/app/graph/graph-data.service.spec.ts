@@ -36,10 +36,12 @@ describe('GraphDataService', () => {
       device2: [
         { timestamp: 1500, value: 15 },
       ],
+    type ScaleAxisCallable = {
+      scaleAxisToData(data: Record<string, DataFormat[]>): void;
     };
 
     // scaleAxisToData ist private -> Aufruf über cast
-    (service as any).scaleAxisToData(mockData);
+    (service as unknown as ScaleAxisCallable).scaleAxisToData(mockData);
 
     const xDomain = service['$xDomain']();
     const yDomain = service['$yDomain']();
