@@ -1,15 +1,15 @@
-import { type NumberValue, timeFormat } from "d3";
+import { type NumberValue, timeFormat } from 'd3';
 
 export type xAxisMode = 'absolute' | 'relative';
 
 export function makeXAxisTickFormatter(
   mode: xAxisMode,
-  domainStart: NumberValue | Date
+  domainStart: NumberValue | Date,
 ): (domainValue: NumberValue | Date, index: number) => string {
   const formatAbsolute = timeFormat('%H:%M:%S');
   const formatRelative = timeFormat('%M:%S');
 
-  return (d, _index) => {
+  return (d) => {
     if (mode === 'absolute') {
       if (d instanceof Date) return formatAbsolute(d);
       return formatAbsolute(new Date(Number(d)));

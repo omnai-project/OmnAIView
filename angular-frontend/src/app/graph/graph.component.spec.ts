@@ -10,9 +10,8 @@ describe('GraphComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GraphComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
-    })
-      .compileComponents();
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(GraphComponent);
     component = fixture.componentInstance;
