@@ -167,17 +167,11 @@
             "data": [
               {
                 "timestamp": 1650123456.789,
-                "value": [
-                  45.67,
-                  78.12
-                ]
+                "value": [45.67, 78.12]
               },
               {
                 "timestamp": 1650123456.889,
-                "value": [
-                  45.89,
-                  77.98
-                ]
+                "value": [45.89, 77.98]
               }
             ]
           }
@@ -212,18 +206,11 @@
         "contentType": "application/json",
         "payload": {
           "type": "object",
-          "required": [
-            "command",
-            "tmin",
-            "tmax",
-            "desired_number_of_samples"
-          ],
+          "required": ["command", "tmin", "tmax", "desired_number_of_samples"],
           "properties": {
             "command": {
               "type": "string",
-              "enum": [
-                "get_downsampled_in_range"
-              ]
+              "enum": ["get_downsampled_in_range"]
             },
             "tmin": {
               "type": "string",
@@ -261,9 +248,7 @@
               "properties": {
                 "responce_to": {
                   "type": "string",
-                  "enum": [
-                    "get_downsampled_in_range"
-                  ]
+                  "enum": ["get_downsampled_in_range"]
                 },
                 "channel_ids": {
                   "type": "array",
@@ -299,39 +284,18 @@
           "example": {
             "meta": {
               "responce_to": "get_downsampled_in_range",
-              "channel_ids": [
-                "14352",
-                "123456"
-              ]
+              "channel_ids": ["14352", "123456"]
             },
             "data": [
               [
-                [
-                  "2025-04-14T12:34:56.123456789Z",
-                  45.67
-                ],
-                [
-                  "2025-04-14T12:34:56.223456789Z",
-                  78.12
-                ],
-                [
-                  "2025-04-14T12:34:56.323456789Z",
-                  23.45
-                ]
+                ["2025-04-14T12:34:56.123456789Z", 45.67],
+                ["2025-04-14T12:34:56.223456789Z", 78.12],
+                ["2025-04-14T12:34:56.323456789Z", 23.45]
               ],
               [
-                [
-                  "2025-04-14T12:34:57.423456789Z",
-                  91.34
-                ],
-                [
-                  "2025-04-14T12:34:57.523456789Z",
-                  12.89
-                ],
-                [
-                  "2025-04-14T12:34:57.623456789Z",
-                  67.01
-                ]
+                ["2025-04-14T12:34:57.423456789Z", 91.34],
+                ["2025-04-14T12:34:57.523456789Z", 12.89],
+                ["2025-04-14T12:34:57.623456789Z", 67.01]
               ]
             ]
           }

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, DestroyRef } from '@angular/core';
 import { DataSource } from '../../source-selection/data-source-selection.service';
 import { catchError, Observable, of, switchMap, timer } from 'rxjs';
-import {map} from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { BackendPortService } from './backend-port.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -35,10 +35,9 @@ interface OmnAIDataMessage {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OmnAIScopeDataService implements DataSource {
-
   private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
@@ -64,10 +63,10 @@ export class OmnAIScopeDataService implements DataSource {
 
   private setupDevicePolling(): void {
     const pollInterval_ms = 15 * 1000;
-    timer(0, pollInterval_ms )
+    timer(0, pollInterval_ms)
       .pipe(
         switchMap(() => this.getDevices()),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((devices: DeviceInformation[]) => {
         this.devices.set(devices);
@@ -82,23 +81,23 @@ export class OmnAIScopeDataService implements DataSource {
 
   // Abrufen der verfügbaren Geräte vom Server
   public getDevices(): Observable<DeviceInformation[]> {
-    console.log("called getDevices")
+    console.log('called getDevices');
     const url = `http://${this.serverUrl()}/UUID`;
 
     return this.#httpClient.get<Partial<DeviceOverview>>(url).pipe(
-      map(response => {
+      map((response) => {
         const devices = response.devices ?? [];
         const colors = response.colors ?? [];
 
         return devices.map((device, index) => ({
           UUID: device.UUID,
-          color: colors[index]?.color ?? {r: 0, g: 0, b: 0}
+          color: colors[index]?.color ?? { r: 0, g: 0, b: 0 },
         }));
       }),
-      catchError(error => {
+      catchError((error) => {
         console.warn('error while loading devices', error);
         return of([]);
-      })
+      }),
     );
   }
 
@@ -116,9 +115,11 @@ export class OmnAIScopeDataService implements DataSource {
       this.data.set({});
 
       // Send start message
-      const deviceUuids = this.devices().map(device => device.UUID).join(" ");
-      if(!this.socket){
-        throw new Error("Websocket is not defined");
+      const deviceUuids = this.devices()
+        .map((device) => device.UUID)
+        .join(' ');
+      if (!this.socket) {
+        throw new Error('Websocket is not defined');
       }
       this.socket.send(deviceUuids);
     });
@@ -139,7 +140,7 @@ export class OmnAIScopeDataService implements DataSource {
       }
 
       if (this.isOmnAIDataMessage(parsedMessage)) {
-        this.data.update(records => {
+        this.data.update((records) => {
           parsedMessage.devices.forEach((uuid: string, index: number) => {
             const existingData = records[uuid] ?? [];
             const newDataPoints = parsedMessage.data.map((point) => ({
@@ -149,7 +150,7 @@ export class OmnAIScopeDataService implements DataSource {
             records[uuid] = existingData.concat(newDataPoints);
           });
 
-          return {...records};
+          return { ...records };
         });
       } else {
         console.warn('Unbekanntes Nachrichtenformat:', parsedMessage);
@@ -181,6 +182,7 @@ export class OmnAIScopeDataService implements DataSource {
     if (typeof message !== 'object' || message === null) return false;
 
     const messageMaybe = message as Partial<OmnAIDataMessage>;
+
     if (!('devices' in message) || !('data' in message)) return false;
     if (!Array.isArray(messageMaybe.devices) || !messageMaybe.devices.every((d: unknown) => typeof d === 'string')) {
       return false;

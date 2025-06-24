@@ -26,6 +26,7 @@ git checkout -b feature/your-feature-name
 ```
 
 Follow the naming convention:
+
 - `feature/your-feature-name` for new features
 - `fix/your-fix-description` for bug fixes
 - `docs/update-readme` for documentation updates
@@ -45,19 +46,25 @@ git add .
 git commit
 ```
 
-It is expected that commits don't only have a header but also 
-1. Why did you add/change something? 
-2. What did you add/change in the commit? 
+It is expected that commits don't only have a header but also
+
+1. Why did you add/change something?
+2. What did you add/change in the commit?
 3. Possible important things to know about the commit.
 
-## 6. Document your changes in the changelog 
+## 6. Document your changes in the changelog
 
 To keep track of changes between different versions a changelog according to the (keepAChangelog)[https://keepachangelog.com/en/1.1.0/]
-is used. 
+is used.
 
-It is expected that new changes are documented in this changelog. 
+It is expected that new changes are documented in this changelog.
 
-## 7. Push to Your Fork
+## 7. Lint and format the document
+
+Run `npm run style` in your console.
+Fix all lint errors you receive.
+
+## 8. Push to Your Fork
 
 Push your branch to your fork:
 
@@ -77,20 +84,20 @@ git push origin \<branchname\>
 
 - PRs must be reviewed by at least **two maintainers**.
 - Address requested changes by updating your branch and pushing updates.
-- Once approved, the PR will be merged by one of the maintainers. 
+- Once approved, the PR will be merged by one of the maintainers.
 
 ## 10. Keep Your Fork Updated
 
-To stay up to date with the latest changes: 
+To stay up to date with the latest changes:
 
 ```sh
-git checkout master 
+git checkout master
 git fetch upstream
 git merge upstream/master
 git push origin master
 ```
 
-Make sure that you have added the upstream to your git repo with: 
+Make sure that you have added the upstream to your git repo with:
 
 ```
 git remote add upstream git@github.com:AI-Gruppe/OmnAIView.git
@@ -103,4 +110,3 @@ If you find a bug or have a feature request, please open an [issue](https://gith
 ---
 
 **Happy coding!** If you have any questions, feel free to ask in [Discussions](https://github.com/AI-Gruppe/OmnAIView/discussions).
-
