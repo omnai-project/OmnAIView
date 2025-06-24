@@ -40,6 +40,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Modernize codebase to Angular 19 (inject, signals, @if/@for, etc.) (#18)
 - Configure Angular Material with a custom theme (#18)
 - Fix the Port selection for the OmnAIScope backend (#19)
+- If electron-squirrel-startup is not avaliable the app crashes without logging. Therefore wrapping in try/catch. (#80)
 - Update x-axis labels to use hours, minutes, seconds instead of year (#58)
 - Reduce file size of csv-file-import.service.spec.ts by replacing hard-coded string (#78)
 - Privacy oriented default setting to not share data with Google (#82)
