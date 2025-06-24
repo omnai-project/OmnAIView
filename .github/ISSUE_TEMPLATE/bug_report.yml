@@ -46,9 +46,10 @@ body:
     attributes:
       label: "Environment"
       placeholder: |
-        - OS: Ubuntu 22.04  
-        - Browser: Chrome 123  
-        - App version: 2.0.1
+        - OS: 
+        - Browser:  
+        - Angular app version: 
+        - Electron app verison: 
 
   - type: checkboxes
       id: self_assign
