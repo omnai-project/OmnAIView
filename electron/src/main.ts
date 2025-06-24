@@ -1,9 +1,10 @@
-import { app, BrowserWindow, ipcMain, shell, Menu, dialog} from 'electron';
+import { app, BrowserWindow, ipcMain, shell, Menu, dialog } from 'electron';
 import * as path from "path";
 import * as fs from 'fs';
 import { omnaiscopeBackendManager } from './omnaiBackend';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   if (require('electron-squirrel-startup')) {
     app.quit();
   }
@@ -15,11 +16,11 @@ try {
 let mainWindow: BrowserWindow;
 
 function getVersionPath(): string {
-  const versionPath: string = app.isPackaged 
+  const versionPath: string = app.isPackaged
     ? path.join(process.resourcesPath, "version.json")
     : path.join(__dirname, "..", "src", "version.json")
 
-    return versionPath; 
+  return versionPath;
 }
 
 const versionInfo = JSON.parse(fs.readFileSync(getVersionPath(), 'utf-8'));
@@ -46,11 +47,11 @@ const menuScope = [
     submenu: [
       {
         label: 'Import',
-        click: async () => {console.log("Clicked File:Import")}
+        click: async () => { console.log("Clicked File:Import") }
       },
       {
         label: 'Export',
-        click: async () => {console.log("Clicked File:Export")}
+        click: async () => { console.log("Clicked File:Export") }
       },
       {
         label: 'Close',
@@ -62,27 +63,27 @@ const menuScope = [
     ]
   },
 
-    {
-  label: 'Analysis',
-  submenu: [
-    {
-      label: 'Minimum',
-      click: async () => {console.log("Clicked Analysis:Minimum")}
-    },
-    {
-      label: 'Maximum',
-      click: async () => {console.log("Clicked Analysis:Maximum")}
-    },
-    {
-      label: 'Median',
-      click: async () => {console.log("Clicked Analysis:Median")}
-    },
-    {
-      label: 'PWM',
-      click: async () => {console.log("Clicked Analysis:PWM")}
-    }
-  ]
-},
+  {
+    label: 'Analysis',
+    submenu: [
+      {
+        label: 'Minimum',
+        click: async () => { console.log("Clicked Analysis:Minimum") }
+      },
+      {
+        label: 'Maximum',
+        click: async () => { console.log("Clicked Analysis:Maximum") }
+      },
+      {
+        label: 'Median',
+        click: async () => { console.log("Clicked Analysis:Median") }
+      },
+      {
+        label: 'PWM',
+        click: async () => { console.log("Clicked Analysis:PWM") }
+      }
+    ]
+  },
   {
     label: 'Help',
     submenu: [{
@@ -96,21 +97,21 @@ const menuScope = [
         })
       }
     },
-      {
-        label: 'Support-Website',
-        click: async () => {
-          shell.openExternal("https://omnaiscope.auto-intern.de/support/")
-        }
-      },
-      {
-        label: 'Developer-Tools',
-        accelerator: 'CmdOrCtrl+I',
-        click: () => {
-          if (mainWindow) {
-            mainWindow.webContents.toggleDevTools();
-          }
+    {
+      label: 'Support-Website',
+      click: async () => {
+        shell.openExternal("https://omnaiscope.auto-intern.de/support/")
+      }
+    },
+    {
+      label: 'Developer-Tools',
+      accelerator: 'CmdOrCtrl+I',
+      click: () => {
+        if (mainWindow) {
+          mainWindow.webContents.toggleDevTools();
         }
       }
+    }
     ]
   }
 ];
