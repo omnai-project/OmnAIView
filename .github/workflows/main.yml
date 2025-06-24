@@ -50,3 +50,10 @@ jobs:
             electron\out\make\squirrel.windows\x64\RELEASES
             electron\out\make\squirrel.windows\x64\*.nupkg
             electron\out\make\squirrel.windows\x64\*.exe
+  CheckStyle: 
+    runs-on: windows-latest
+    steps: 
+      - name: Run ESLint Check
+        run: npm run lint:check
+      - name: Run Prettier check
+        run: npm run format:check
