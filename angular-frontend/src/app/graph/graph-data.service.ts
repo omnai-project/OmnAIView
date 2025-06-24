@@ -8,18 +8,27 @@ import {DataBounds, DataSourceSelectionService} from '../source-selection/data-s
 type UnwrapSignal<T> = T extends import('@angular/core').Signal<infer U> ? U : never;
 
 /**
+ * Describes the potential Domain values for the x-axis
+ * */
+type xDomainType = Date;
+type xDomainTuple = [xDomainType, xDomainType];
+
+const defaultXDomain: xDomainTuple = [new Date(), new Date(Date.now() - 24 * 60 * 60 * 1000)];
+
+/**
  * Provide the data to be displayed in the {@link GraphComponent}
- */
-@Injectable({
-  providedIn: 'root',
-})
+ * This class also provides the axis descriptions. As these are dependend on the size of the current
+ * graph, this service needs to be provided in any component that creates a graph to ensure that
+ * every graph has its own state management.
+ *  */
+@Injectable()
 export class DataSourceService {
   private readonly $graphDimensions = signal({ width: 800, height: 600 });
   readonly domain = computed(() => {
       const info = this.dummySeries();
       if (!info || !isFinite(info.bounds.minTimestamp) || !isFinite(info.bounds.maxTimestamp) || !isFinite(info.bounds.minValue) || !isFinite(info.bounds.maxValue))
         return {
-          xDomain: [new Date(2020), new Date()],
+          xDomain: defaultXDomain,
           yDomain: [0, 100],
         };
 
@@ -28,15 +37,22 @@ export class DataSourceService {
 
       const xDomainRange = result.maxTimestamp - result.minTimestamp;
       const xExpansion = xDomainRange * expandBy;
+      let xDomain;
+      if (xDomainRange === 0) {
+        xDomain = defaultXDomain;
+      }
+      else {
+        xDomain =[
+          new Date(result.minTimestamp),
+          new Date(result.maxTimestamp)
+        ];
+      }
 
       const yDomainRange = result.maxValue - result.minValue;
       const yExpansion = yDomainRange * expandBy;
 
       return {
-        xDomain: [
-          new Date(result.minTimestamp - xExpansion),
-          new Date(result.maxTimestamp + xExpansion),
-        ],
+        xDomain,
         yDomain: [
           result.minValue - yExpansion,
           result.maxValue + yExpansion,
@@ -82,6 +98,7 @@ export class DataSourceService {
       return d3ScaleLinear()
         .domain(domain.yDomain)
         .range([height, 0]);
+
     },
   });
 

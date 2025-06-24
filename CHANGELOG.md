@@ -31,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add version-script to obtain package.json information (#35)
 - Add import for csv-files (#39)
 Formatting needs to be similar to the dataformat of the old OmnAIView data exports. For more infos, see comments in code.
+- Add axis mode: Allow to switch between absolute and relative x-axis timestamps(#58)
+
 
 ### Changed 
 
@@ -38,6 +40,9 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Modernize codebase to Angular 19 (inject, signals, @if/@for, etc.) (#18)
 - Configure Angular Material with a custom theme (#18)
 - Fix the Port selection for the OmnAIScope backend (#19)
+- Update x-axis labels to use hours, minutes, seconds instead of year (#58)
+- Privacy oriented default setting to not share data with Google (#82)
+- Fixed ci and `package-lock.json` files to allow installing the project with `npm ci` (#83)
 - Optimized Graph rendering to happen in background, Remove unnecessary computations and Reduce data copying (#25)
 
 ### Removed 
@@ -45,4 +50,5 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Deletion of deprecated Angular 18 patterns (#18)
 - Deletion of duplicated AsyncAPI description for OmnAIBackend 
 - BREAKING CHANGE: Remove `package.json` build scripts in subfolders (#35)
+
 

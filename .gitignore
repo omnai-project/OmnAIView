@@ -8,6 +8,7 @@ angular-frontend/bazel-out
 angular-frontend/documentation 
 
 # Node
+/node_modules
 angular-frontend/node_modules
 angular-frontend/npm-debug.log
 angular-frontend/yarn-error.log
