@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import {CsvFileImportService} from './csv-file-import.service';
@@ -16,8 +16,8 @@ export class CsvFileSelectModalComponent {
     selected = computed(()=> this.csvFileDialog.files().length > 0);
     onFileSelected(fileList:FileList|null) {
       if (!fileList || fileList.length == 0) return;
-      this.csvFileDialog.files.update(old => {
         return [ ...fileList];
       });
     }
+    this.csvFileDialog.files.update(() => {
 }

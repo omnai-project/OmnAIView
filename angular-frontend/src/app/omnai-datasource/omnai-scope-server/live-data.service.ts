@@ -2,7 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, DestroyRef } from '@angular/core';
 import { DataSource } from '../../source-selection/data-source-selection.service';
-import {catchError, Observable, of, Subject, switchMap, takeUntil, timer} from 'rxjs';
+import { catchError, Observable, of, switchMap, timer } from 'rxjs';
 import {map} from 'rxjs/operators';
 import { BackendPortService } from './backend-port.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -23,6 +23,14 @@ interface DeviceOverview {
   }[];
   colors: {
     color: { r: number; g: number; b: number };
+  }[];
+}
+
+interface OmnAIDataMessage {
+  devices: string[];
+  data: {
+    timestamp: number;
+    value: number[];
   }[];
 }
 
@@ -123,7 +131,7 @@ export class OmnAIScopeDataService implements DataSource {
         return;
       }
 
-      let parsedMessage: any;
+      let parsedMessage: unknown;
       try {
         parsedMessage = JSON.parse(event.data);
       } catch {
@@ -134,7 +142,7 @@ export class OmnAIScopeDataService implements DataSource {
         this.data.update(records => {
           parsedMessage.devices.forEach((uuid: string, index: number) => {
             const existingData = records[uuid] ?? [];
-            const newDataPoints = parsedMessage.data.map((point: any) => ({
+            const newDataPoints = parsedMessage.data.map((point) => ({
               timestamp: point.timestamp,
               value: point.value[index],
             }));
@@ -169,21 +177,19 @@ export class OmnAIScopeDataService implements DataSource {
   }
 
   // Typprüfung für OmnAI-Daten-Nachrichten
-  private isOmnAIDataMessage(message: any): boolean {
+  private isOmnAIDataMessage(message: unknown): message is OmnAIDataMessage {
     if (typeof message !== 'object' || message === null) return false;
 
+    const messageMaybe = message as Partial<OmnAIDataMessage>;
     if (!('devices' in message) || !('data' in message)) return false;
-    if (
-      !Array.isArray(message.devices) ||
-      !message.devices.every((d: unknown) => typeof d === 'string')
-    ) {
+    if (!Array.isArray(messageMaybe.devices) || !messageMaybe.devices.every((d: unknown) => typeof d === 'string')) {
       return false;
     }
 
     if (
-      !Array.isArray(message.data) ||
-      !message.data.every(
-        (entry: any) =>
+      !Array.isArray(messageMaybe.data) ||
+      !messageMaybe.data.every(
+        (entry): entry is { timestamp: number; value: number[] } =>
           typeof entry.timestamp === 'number' &&
           Array.isArray(entry.value) &&
           entry.value.every((v: unknown) => typeof v === 'number'),

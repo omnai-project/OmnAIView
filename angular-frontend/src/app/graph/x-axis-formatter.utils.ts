@@ -9,7 +9,7 @@ export function makeXAxisTickFormatter(
   const formatAbsolute = timeFormat('%H:%M:%S');
   const formatRelative = timeFormat('%M:%S');
 
-  return (d, _index) => {
+  return (d) => {
     if (mode === 'absolute') {
       if (d instanceof Date) return formatAbsolute(d);
       return formatAbsolute(new Date(Number(d)));

@@ -1,6 +1,5 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { type DataFormat, OmnAIScopeDataService } from '../omnai-datasource/omnai-scope-server/live-data.service';
-import { Observable } from 'rxjs';
 import { DummyDataService } from '../omnai-datasource/random-data-server/random-data.service';
  import {CsvFileImportService} from '../omnai-datasource/csv-file-import/csv-file-import.service';
 /** Dummy interface to match your expected shape */

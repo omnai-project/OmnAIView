@@ -105,7 +105,6 @@ export class DataSourceService {
 
     if (!isFinite(result.minTimestamp) || !isFinite(result.minValue)) return;
     const xDomainRange = result.maxTimestamp - result.minTimestamp;
-    const xExpansion = xDomainRange * expandBy;
     if (xDomainRange === 0) {
       this.$xDomain.set(defaultXDomain);
     }

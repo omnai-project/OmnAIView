@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { GraphComponent } from './graph/graph.component';
-import { RenderMode } from '@angular/ssr';
 
 export const routes: Routes = [
   {
