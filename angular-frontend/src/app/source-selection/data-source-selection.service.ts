@@ -9,10 +9,55 @@ export interface DataPoint {
     y: number;
 }
 
+export class DataBounds {
+  constructor() {
+    this.minValue = Number.POSITIVE_INFINITY;
+    this.maxValue = Number.NEGATIVE_INFINITY;
+    this.minTimestamp = Number.POSITIVE_INFINITY;
+    this.maxTimestamp = Number.NEGATIVE_INFINITY;
+  }
+  static copy(copy: DataBounds) {
+    const newInfo = new DataBounds();
+    newInfo.minValue = copy.minValue;
+    newInfo.maxValue = copy.maxValue;
+    newInfo.minTimestamp = copy.minTimestamp;
+    newInfo.maxTimestamp = copy.maxTimestamp;
+    return newInfo;
+  }
+
+  static newFromData(data: Map<string, DataFormat[]>){
+    const newInfo = new DataBounds();
+    for (const values of data.values())
+      newInfo.applyDataPoints(values)
+    return newInfo;
+  }
+
+  applyDataPoints(dataPoints: DataFormat[]) {
+    for (const value of dataPoints) {
+      this.applyDataPoint(value);
+    }
+  }
+
+  applyDataPoint(dataPoint: DataFormat) {
+    if (dataPoint.value > this.maxValue) this.maxValue = dataPoint.value;
+    if (dataPoint.value < this.minValue) this.minValue = dataPoint.value;
+    if (dataPoint.timestamp > this.maxTimestamp) this.maxTimestamp = dataPoint.timestamp;
+    if (dataPoint.timestamp < this.minTimestamp) this.minTimestamp = dataPoint.timestamp;
+  }
+
+  minValue: number;
+  maxValue: number;
+  minTimestamp: number;
+  maxTimestamp: number;
+}
+export interface DataSourceData {
+  data: Map<string, DataFormat[]>,
+  bounds: DataBounds
+}
 /** Your expected DataSource interface */
 export interface DataSource {
     connect(): unknown;
-    data: Signal<Record<string, DataFormat[]>>
+    data: Signal<DataSourceData>
 }
 
 
@@ -37,21 +82,21 @@ export class DataSourceSelectionService {
             name: 'OmnAIScope',
             description: 'Live data from connected OmnAIScope devices',
             connect: this.liveDataService.connect.bind(this.liveDataService),
-            data: this.liveDataService.data
+            data: this.liveDataService.data,
         },
         {
             id: 'dummydata',
             name: 'Random Dummy Data',
             description: 'Random generated data points',
             connect: this.dummyDataService.connect.bind(this.dummyDataService),
-            data: this.dummyDataService.data
+            data: this.dummyDataService.data,
         },
         {
           id: 'csv-file',
           name: 'CSV Data',
           description: 'Import a CSV file',
           connect: this.csvDataService.connect.bind(this.csvDataService),
-          data: this.csvDataService.data
+          data: this.csvDataService.data,
         }
     ]);
     readonly availableSources = this._availableSources.asReadonly();
@@ -78,7 +123,10 @@ export class DataSourceSelectionService {
     }
     readonly data = computed(() => {
         const source = this._currentSource();
-        if (!source) return signal<Record<string, DataFormat[]>>({});
+        if (!source) return signal({
+          data: new Map(),
+          info: new DataBounds(),
+        }).asReadonly();
         return source.data;
     });
 }

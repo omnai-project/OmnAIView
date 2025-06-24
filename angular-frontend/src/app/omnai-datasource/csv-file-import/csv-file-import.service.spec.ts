@@ -49574,8 +49574,8 @@ describe('CsvFileImport', () => {
 
     const data = service.data();
 
-    expect(data[id]).toBeDefined();
-    const containedData = data[id];
+    expect(data.data.has(id)).toBeTrue();
+    const containedData = data.data.get(id)!;
 
     expect(containedData).toHaveSize(Math.ceil(fileSamples/sampleRate*1000));
     for (const [id, value] of containedData.entries()) {
