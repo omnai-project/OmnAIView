@@ -40,3 +40,4 @@ Make sure you
 - [ ] have read the [contribution guidelines](../CONTRIBUTION.md)
 - [ ] have added necessary unit/e2e tests if necessary.
 - [ ] have added documentation if necessary.
+- [ ] have documented the changes in the [CHANGELOG.md](../CHANGELOG.md)
