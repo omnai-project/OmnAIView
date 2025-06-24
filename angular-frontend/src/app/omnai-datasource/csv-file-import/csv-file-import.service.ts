@@ -1,26 +1,26 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
-import {DataSource} from '../../source-selection/data-source-selection.service';
-import {DataFormat} from '../omnai-scope-server/live-data.service';
-import {MatDialog} from '@angular/material/dialog';
-import {CsvFileSelectModalComponent} from './csv-file-select-modal.component';
+import { DataSource } from '../../source-selection/data-source-selection.service';
+import { DataFormat } from '../omnai-scope-server/live-data.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CsvFileSelectModalComponent } from './csv-file-select-modal.component';
 
 /**
  * The different errors, that can be thrown during file parsing
  */
 enum CsvFileImportErrorKind {
-  FileEmpty = "The file is empty.",
-  InvalidHeader = "The header of the File is malformed",
-  InvalidSamplingSpeed = "The sampling speed could not be parsed.",
+  FileEmpty = 'The file is empty.',
+  InvalidHeader = 'The header of the File is malformed',
+  InvalidSamplingSpeed = 'The sampling speed could not be parsed.',
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CsvFileImportService implements DataSource {
   private readonly dialog = inject(MatDialog);
   readonly files = signal<File[]>([]);
   connect() {
-    this.dialog.open(CsvFileSelectModalComponent)
+    this.dialog.open(CsvFileSelectModalComponent);
   }
   private readonly $data = signal<Record<string, DataFormat[]>>({});
   readonly data = this.$data.asReadonly();
@@ -33,7 +33,7 @@ export class CsvFileImportService implements DataSource {
    * @throws CsvFileImportErrorKind
    * @private
    */
-  private async processFile(file: File):Promise<{name: string, out: DataFormat[]}> {
+  private async processFile(file: File): Promise<{ name: string; out: DataFormat[] }> {
     //Ensure, that the file is not empty (contains no lines)
     const text = await file.text();
     const lines = text.split('\n');
@@ -48,8 +48,7 @@ export class CsvFileImportService implements DataSource {
     //name should be the id, which is the 4th index
     const name = info[4];
     const sampleRate = Number(info[5]);
-    if (Number.isNaN(sampleRate) || !Number.isFinite(sampleRate))
-      throw CsvFileImportErrorKind.InvalidSamplingSpeed;
+    if (Number.isNaN(sampleRate) || !Number.isFinite(sampleRate)) throw CsvFileImportErrorKind.InvalidSamplingSpeed;
 
     //Internally the Graph render converts everything to Date object.
     //The Date object constructor takes a number and interprets it as milliseconds since the Unix Epoch.
@@ -57,10 +56,10 @@ export class CsvFileImportService implements DataSource {
     //
     //This code calculates how many different millisecond values we can represent (length) and which items represent those milliseconds (keepEvery).
     let keepEvery = 1;
-    let length = (lines.length-1);
+    let length = lines.length - 1;
     if (sampleRate > 1000) {
-      keepEvery = sampleRate/1000;
-      length = Math.ceil(length/sampleRate*1000);
+      keepEvery = sampleRate / 1000;
+      length = Math.ceil((length / sampleRate) * 1000);
     }
 
     //Pre-allocating the array, when you know the size is good practice.
@@ -73,7 +72,7 @@ export class CsvFileImportService implements DataSource {
     for (const [index, sample] of lines.slice(1).entries()) {
       if (keepEvery !== 0 && index % keepEvery !== 0) continue;
       out[arrayIndex++] = {
-        timestamp: index/sampleRate*1000,
+        timestamp: (index / sampleRate) * 1000,
         value: Number(sample),
       };
     }
@@ -83,15 +82,17 @@ export class CsvFileImportService implements DataSource {
       out,
     };
   }
-  private readonly dataFileChanged = effect(async ()=>{
+  private readonly dataFileChanged = effect(async () => {
     const files = this.files();
     const data: Record<string, DataFormat[]> = {};
     for (const file of files) {
       try {
-        const {name, out} = await this.processFile(file);
+        const { name, out } = await this.processFile(file);
         data[name] = out;
       } catch (e) {
-        console.error(`There was an error, whilst parsing the file '${file.name}'. The file will be ignored. Error: ${e}`);
+        console.error(
+          `There was an error, whilst parsing the file '${file.name}'. The file will be ignored. Error: ${e}`,
+        );
       }
     }
     this.$data.set(data);

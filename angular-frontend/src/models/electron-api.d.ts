@@ -1,10 +1,9 @@
 export interface ElectronAPI {
-    getOmnAIScopeBackendPort: () => Promise<number>;
+  getOmnAIScopeBackendPort: () => Promise<number>;
 }
-  
+
 declare global {
-    interface Window {
-      electronAPI?: ElectronAPI;
-    }
+  interface Window {
+    electronAPI?: ElectronAPI;
+  }
 }
-  
