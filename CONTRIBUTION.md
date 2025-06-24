@@ -8,14 +8,17 @@ This guide outlines the workflow for submitting contributions.
 
 Before you begin, look through the issue tracker for the feature or fix you have in mind.
 
-If you find a matching issue: join the conversation and help decide who will take ownership.
+## 2.1 Matching issue
 
-## 2. No match ? : Create an issue 
+Join the conversation and help decide who will take ownership.
+
+## 2.2 No matching issue 
 
 Use our issue template to describe the change you propose.
-For bugs use the issue template. 
-For features etc. use the other template. 
-If you plan to implement it yourself, tick the “I’ll do it” box. 
+
+    >For bugs use the issue template. 
+    >For features etc. use the other template. 
+    >If you plan to implement it yourself, tick the “I’ll do it” box. 
 
 ## 3. Discussion about the issue
 
@@ -27,9 +30,11 @@ At least one maintainer (and probably other contributors) will review your issue
 
 3. agree on a Definition of Done
 
+The discussion is completed when a *Definition of Done* is approved by a maintainer of the project 
+
 ## 4. Assign responsibility
 
-Within 24 hours of setting the Definition of Done, the issue will be assigned to
+Within 24 hours after setting the Definition of Done, the issue will be assigned by a maintainer to
 
 1. you, if you volunteered, or
 
@@ -113,7 +118,7 @@ git push origin \<branchname\>
 - Address requested changes by updating your branch and pushing updates.
 - Once approved, the PR will be merged by one of the maintainers. 
 
-## 10´4. Keep Your Fork Updated
+## 14. Keep Your Fork Updated
 
 To stay up to date with the latest changes: 
 
