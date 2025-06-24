@@ -24,6 +24,7 @@
     "build": "npm run build:angular && npm run build:electron",
     "lint": "eslint \"{angular-frontend,electron}/src/**/*.{ts,js,html,tsx}\"",
     "lint:fix": "npm run lint -- --fix",
+    "lint:check": "eslint \"{angular-frontend,electron}/src/**/*.{ts,js,html,tsx}\" --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "style": "npm run lint:fix && npm run format"
