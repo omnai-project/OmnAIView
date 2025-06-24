@@ -38,18 +38,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Create version.json if missing
-        if: ${{ hashFiles('electron/src/version.json') == '' }}
-        run: |
-          angularVersion=$(jq -r '.version' angular-frontend/package.json)
-          electronVersion=$(jq -r '.version' electron/package.json)
-          node -e "console.log(JSON.stringify({
-            generatedAt: new Date().toISOString(),
-            angularVersion: '$angularVersion',
-            electronVersion: '$electronVersion'
-          }))" > electron/src/version.json
-          cat electron/src/version.json
-
       - name: Build project
         run: npm run build
 
