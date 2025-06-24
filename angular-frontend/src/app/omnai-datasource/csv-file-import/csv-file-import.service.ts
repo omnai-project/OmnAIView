@@ -35,19 +35,19 @@ export class CsvFileImportService implements DataSource {
    */
   private async processFile(file: File):Promise<{name: string, out: DataFormat[]}> {
     //Ensure, that the file is not empty (contains no lines)
-    let text = await file.text();
-    let lines = text.split('\n');
+    const text = await file.text();
+    const lines = text.split('\n');
     if (lines.length < 1) throw CsvFileImportErrorKind.FileEmpty;
 
     //The header of a file should be formed of 6 comma-seperated values:
     //name,vin,kilometers,manufacturer,id,sampleRate
-    let info = lines[0].split(',');
+    const info = lines[0].split(',');
     if (info.length != 6) throw CsvFileImportErrorKind.InvalidHeader;
 
     //sampleRate is the 5th index in the list above
     //name should be the id, which is the 4th index
-    let name = info[4];
-    let sampleRate = Number(info[5]);
+    const name = info[4];
+    const sampleRate = Number(info[5]);
     if (Number.isNaN(sampleRate) || !Number.isFinite(sampleRate))
       throw CsvFileImportErrorKind.InvalidSamplingSpeed;
 
@@ -65,12 +65,12 @@ export class CsvFileImportService implements DataSource {
 
     //Pre-allocating the array, when you know the size is good practice.
     //It makes it, so that data doesn't need to be moved, whilst adding more data
-    let out = new Array(length);
+    const out = new Array(length);
     let arrayIndex = 0;
 
     // keep only every 1 data-value of keepEvery
     // the first line is the header of the file, so we need to skip it
-    for (let [index, sample] of lines.slice(1).entries()) {
+    for (const [index, sample] of lines.slice(1).entries()) {
       if (keepEvery !== 0 && index % keepEvery !== 0) continue;
       out[arrayIndex++] = {
         timestamp: index/sampleRate*1000,
@@ -84,11 +84,11 @@ export class CsvFileImportService implements DataSource {
     };
   }
   private readonly dataFileChanged = effect(async ()=>{
-    let files = this.files();
-    let data: Record<string, DataFormat[]> = {};
-    for (let file of files) {
+    const files = this.files();
+    const data: Record<string, DataFormat[]> = {};
+    for (const file of files) {
       try {
-        let {name, out} = await this.processFile(file);
+        const {name, out} = await this.processFile(file);
         data[name] = out;
       } catch (e) {
         console.error(`There was an error, whilst parsing the file '${file.name}'. The file will be ignored. Error: ${e}`);
