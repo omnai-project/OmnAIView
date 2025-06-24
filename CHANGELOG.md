@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add import for csv-files (#39)
 Formatting needs to be similar to the dataformat of the old OmnAIView data exports. For more infos, see comments in code.
 - Add axis mode: Allow to switch between absolute and relative x-axis timestamps(#58)
+- Add issue template (#89)
+- Update contribution workflow (#89)
 
 
 ### Changed 
