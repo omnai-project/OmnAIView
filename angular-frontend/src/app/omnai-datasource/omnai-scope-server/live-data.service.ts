@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, DestroyRef } from '@angular/core';
 import { DataSource } from '../../source-selection/data-source-selection.service';
 import {catchError, Observable, of, Subject, switchMap, takeUntil, timer} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, filter} from 'rxjs/operators';
 import { BackendPortService } from './backend-port.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -58,6 +58,7 @@ export class OmnAIScopeDataService implements DataSource {
     const pollInterval_ms = 15 * 1000;
     timer(0, pollInterval_ms )
       .pipe(
+        filter(() => !this.isConnected() && this.port() !== null),
         switchMap(() => this.getDevices()),
         takeUntilDestroyed(this.destroyRef)
       )
