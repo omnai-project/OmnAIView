@@ -4,25 +4,39 @@
 @use '@angular/material' as mat;
 
 html {
-  @include mat.theme((
-    color: (
-      theme-type: light,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
-  /* Added to enable dark mode */
-  @media (prefers-color-scheme: dark) {
+  color-scheme: light dark;
+  @media (prefers-color-scheme: light) {
     @include mat.theme((
       color: (
-        theme-type: dark,
+        theme-type: light,
         primary: mat.$azure-palette,
         tertiary: mat.$blue-palette,
       ),
       typography: Roboto,
       density: 0,
+    ));
+  }
+  /* Added to enable dark mode */
+  @media (prefers-color-scheme: dark) {
+    @include mat.theme((
+      color: (
+        theme-type: dark,
+        primary: mat.$cyan-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: Roboto,
+      density: 0,
     ))
   };
+}
+
+body {
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+mat-card {  /* Override to color selected sources with tertiary color */
+  @include mat.card-overrides((
+    elevated-container-color: var(--mat-sys-tertiary-container),
+  ));
 }

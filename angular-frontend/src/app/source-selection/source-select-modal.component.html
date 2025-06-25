@@ -5,14 +5,17 @@
         @for (source of sources(); track source.id) {
             <li> 
                 <!-- Material Cards for every list element, if not selected, the card is only outlined -->
-                <mat-card [appearance]="selected()?.id === source.id ? 'raised' : 'outlined'"> 
+                <!-- If cards should also be filled when not selected, use 'filled' instead of 'outlined' -->
+                <!--Made whole card clickable for better touch support-->
+                <mat-card [appearance]="selected()?.id === source.id ? 'raised' : 'outlined'" (click)="select(source)">
                     <mat-card-header>
+                        <!-- Maybe formatting is better when title uses subtitle formatting, i think it's fine with mat-card-title -->
                         <mat-card-title>{{ source.name }}</mat-card-title>
                         @if (source.description; as description) {
                             <mat-card-content>{{ description }}</mat-card-content>
                         }
                     </mat-card-header>
-                    <mat-card-actions>
+                    <mat-card-actions  align="end">
                         <button mat-button (click)="select(source)">Select</button>
                     </mat-card-actions>
                 </mat-card>
@@ -20,11 +23,10 @@
             <br />
         }
     </ul>
-
-    <button mat-button color="warn" (click)="clear()">Clear Selection</button>
     
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-    <button mat-button mat-button [mat-dialog-close]="selected()" color="primary" [disabled]="!selected()" >Start</button>
+<mat-dialog-actions style="justify-content: space-between;">  <!--Brought both buttons into the same row, dialog-actions is a flexbox-->
+    <button mat-button color="warn" [disabled]="!selected()" (click)="clear()">Clear Selection</button>  <!--Clear button is now also disabled when nothing is selected-->
+    <button mat-button [mat-dialog-close]="selected()" color="primary" [disabled]="!selected()">Start</button>
 </mat-dialog-actions>
