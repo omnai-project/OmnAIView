@@ -1,24 +1,32 @@
 <h1 mat-dialog-title>Select Data Source</h1>
 
 <mat-dialog-content>
-    <ul>
+    <ul style="list-style-type: none;">
         @for (source of sources(); track source.id) {
-        <li (click)="select(source)">
-            <strong>{{ source.name }}</strong>
-            @if (source.description; as description) {
-            <p>{{ description }}</p>
-            }
-            @if (selected()?.id === source.id) {
-            <span>[selected]</span>
-            }
-        </li>
+            <li> 
+                <!-- Material Cards for every list element, if not selected, the card is only outlined -->
+                <!-- If cards should also be filled when not selected, use 'filled' instead of 'outlined' -->
+                <!--Made whole card clickable for better touch support-->
+                <mat-card style="margin: 10px;" [appearance]="selected()?.id === source.id ? 'raised' : 'outlined'" (click)="select(source)">
+                    <mat-card-header>
+                        <!-- Maybe formatting is better when title uses subtitle formatting, i think it's fine with mat-card-title -->
+                        <mat-card-title>{{ source.name }}</mat-card-title>
+                        @if (source.description; as description) {
+                            <mat-card-content>{{ description }}</mat-card-content>
+                        }
+                    </mat-card-header>
+                    <mat-card-actions  align="end">
+                        <button mat-button (click)="select(source)">Select</button>
+                    </mat-card-actions>
+                </mat-card>
+            </li>
         }
     </ul>
-
-    <button mat-button color="warn" (click)="clear()">Clear Selection</button>
     
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-    <button mat-button mat-button [mat-dialog-close]="selected()" color="primary" [disabled]="!selected()" >Start</button>
+<mat-dialog-actions style="justify-content: space-between;">  <!--Brought both buttons into the same row, dialog-actions is a flexbox-->
+    <!--Clear button is now also disabled when nothing is selected, when not disabled it uses error color from theme-->
+    <button mat-flat-button [style]="selected()? 'background-color: var(--mat-sys-error-container); color: var(--mat-sys-on-error-container);' : ''" [disabled]="!selected()" (click)="clear()">Clear Selection</button>  
+    <button mat-button [mat-dialog-close]="selected()" [disabled]="!selected()">Start</button>
 </mat-dialog-actions>
