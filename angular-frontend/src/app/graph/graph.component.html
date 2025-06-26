@@ -2,7 +2,7 @@
     <g [attr.transform]="marginTransform()">
 
         <g #xAxis [attr.transform]="xAxisTransformString()">
-          
+
         </g>
         <g #yAxis [attr.transform]="yAxisTransformString()"></g>
         @for (path of dataservice.paths(); track $index) {
@@ -13,8 +13,9 @@
 <app-start-data-button />
 <app-device-list />
 <mat-slide-toggle [checked]="xAxisTimeMode() === 'relative'" (change)="onXAxisTimeModeToggle($event.checked)">
-  Relative Time
+    Relative Time
 </mat-slide-toggle>
+<app-dev-data-channel-list />
 
 <div style="display: none;">
     <h4>Debug Output</h4>
