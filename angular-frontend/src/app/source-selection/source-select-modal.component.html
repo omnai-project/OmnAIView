@@ -4,12 +4,10 @@
     <ul style="list-style-type: none;">
         @for (source of sources(); track source.id) {
             <li> 
-                <!-- Material Cards for every list element, if not selected, the card is only outlined -->
+                <!-- Select data source with clickable card -->
                 <!-- If cards should also be filled when not selected, use 'filled' instead of 'outlined' -->
-                <!--Made whole card clickable for better touch support-->
                 <mat-card style="margin: 10px;" [appearance]="selected()?.id === source.id ? 'raised' : 'outlined'" (click)="select(source)">
                     <mat-card-header>
-                        <!-- Maybe formatting is better when title uses subtitle formatting, i think it's fine with mat-card-title -->
                         <mat-card-title>{{ source.name }}</mat-card-title>
                         @if (source.description; as description) {
                             <mat-card-content>{{ description }}</mat-card-content>
@@ -25,8 +23,8 @@
     
 </mat-dialog-content>
 
-<mat-dialog-actions style="justify-content: space-between;">  <!--Brought both buttons into the same row, dialog-actions is a flexbox-->
-    <!--Clear button is now also disabled when nothing is selected, when not disabled it uses error color from theme-->
+<mat-dialog-actions style="justify-content: space-between;">  <!--mat-dialog-actions is a flexbox-->
+    <!--Buttons are disabled when no source is selected, "Clear Selection" button uses different style for visual contrast-->
     <button mat-flat-button [style]="selected()? 'background-color: var(--mat-sys-error-container); color: var(--mat-sys-on-error-container);' : ''" [disabled]="!selected()" (click)="clear()">Clear Selection</button>  
     <button mat-button [mat-dialog-close]="selected()" [disabled]="!selected()">Start</button>
 </mat-dialog-actions>
