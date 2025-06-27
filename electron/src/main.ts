@@ -38,6 +38,10 @@ const createWindow = (): void => {
   });
   const indexPath: string = path.join(__dirname, "..", "res", "angular", "browser", "index.csr.html");
   mainWindow.loadFile(indexPath).catch(err => console.error("Fehler beim Laden der HTML-Datei:", err));
+  mainWindow.webContents.on('did-fail-load', () => {
+    console.log('on browser reload it did-fail-load and reloaded the app');
+    mainWindow.loadFile(indexPath).catch(err => console.error("error reloading HTML", err));
+  });
 };
 
 const menuScope = [
