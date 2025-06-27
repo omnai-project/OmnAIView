@@ -39,8 +39,8 @@ const createWindow = (): void => {
   const indexPath: string = path.join(__dirname, "..", "res", "angular", "browser", "index.csr.html");
   mainWindow.loadFile(indexPath).catch(err => console.error("Fehler beim Laden der HTML-Datei:", err));
   mainWindow.webContents.on('did-fail-load', () => {
-    console.log('on browser reload it did-fail-load and reloaded the app');
-    mainWindow.loadFile(indexPath).catch(err => console.error("error reloading HTML", err));
+    console.log('Electron was unable to find path due to missing History function thus defaulting to Entrypoint');
+    mainWindow.loadFile(indexPath).catch(err => console.error("The default entrypoint HTML file could not be loaded", err));
   });
 };
 
