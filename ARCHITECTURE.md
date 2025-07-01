@@ -17,13 +17,14 @@ For context of the application read the [VISION.md](/VISION.md)
 
 ### Enviroment/ Code setup/ Container Base
 
-The codebase contains an angular project and an electron project. 
+The codebase contains two  main components: an Angular frontend project and an Electron project. 
 
-The angular project is a rendered window in the browser.
-The electron project includes this rendered window in a application that starts locally. 
+The Angular project builds the frontend as a set of static files (html,css,ts) and can be rendered in a browser. 
+The Electron project runs as a desktop application. It includes the Angular html file and other modules 
+to display the web view in the locally running application. 
+Furthermore electron provides local system-access (e.g. access to the filesystem) which Angular doesn't. 
 
-Local access is done by the electron app. For example: access to the filesystem, starting other applications. 
-Everything else in the GUI is done by the angular app. 
+Therefore all system-access will be handled by Electron, all GUI interactions will be handled by Angular. 
 
 **We don't have a backend in this repository** 
 
@@ -44,6 +45,7 @@ This includes all components used in the end-application, this does not only inc
 - analysis server 
 
 **physical devices**: Physical devices like a multimeter or the [OmnAIScope](https://omnaiscope.auto-intern.de/). Purpose: Measure physical data
+These devices connect to a host system (e.g. PC, RSP) that runs an artifact (backend) which receives the data via a connection (e.g. USB, WiFi, CAN).
 
 **backends**: Backends written in different languages . Purpose: Receive, transform, provide data. (Either from physical devices or generated)
 
