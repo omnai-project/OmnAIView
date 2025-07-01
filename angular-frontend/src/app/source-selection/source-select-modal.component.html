@@ -5,7 +5,7 @@
         @for (source of sources(); track source.id) {
             <li> 
                 <!-- Select data source with clickable card -->
-                <!-- If cards should also be filled when not selected, use 'filled' instead of 'outlined' -->
+                <!-- If cards should also be filled when not selected, use 'filled' instead of 'outlined'. See: https://material.angular.dev/components/card/api -->
                 <mat-card style="margin: 10px;" [appearance]="selected()?.id === source.id ? 'raised' : 'outlined'" (click)="select(source)">
                     <mat-card-header>
                         <mat-card-title>{{ source.name }}</mat-card-title>
