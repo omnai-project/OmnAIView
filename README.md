@@ -23,9 +23,9 @@ We want to make this better!
 
 The README.md provides information to get a quick overview and setup the minimal project. 
 
-The VISION.md provides the context for this project. Our vision, the intended usergroup and userflow, background about the project. Read this if you want an overview of the project without understanding the codebase. 
+The [VISION.md](VISION.md) provides the context for this project. Our vision, the intended usergroup and userflow, background about the project. Read this if you want an overview of the project without understanding the codebase. 
 
-The ARCHITECTURE.md provides concept descriptions for contributers, from the general concepts of the application to more detailed concepts like adding a datasource. Read this whenever you are unsure where to put what code and how. 
+The [ARCHITECTURE.md](ARCHITECTURE.md) provides concept descriptions for contributers, from the general concepts of the application to more detailed concepts like adding a datasource. Read this whenever you are unsure where to put what code and how. 
 
 ### How to get the Code Documentation : 
 
