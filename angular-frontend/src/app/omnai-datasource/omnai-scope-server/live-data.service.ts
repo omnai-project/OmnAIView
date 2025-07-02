@@ -1,8 +1,11 @@
 // server-communication.service.ts
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal, DestroyRef } from '@angular/core';
 import { DataBounds, DataSource } from '../../source-selection/data-source-selection.service';
+import {catchError, Observable, of, Subject, switchMap, takeUntil, timer} from 'rxjs';
+import {map} from 'rxjs/operators';
 import { BackendPortService } from './backend-port.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 interface DeviceInformation {
   UUID: string;
@@ -26,8 +29,13 @@ interface DeviceOverview {
 @Injectable({
   providedIn: 'root'
 })
-export class OmnAIScopeDataService implements DataSource{
+export class OmnAIScopeDataService implements DataSource {
 
+  private readonly destroyRef = inject(DestroyRef);
+
+  constructor() {
+    this.setupDevicePolling();
+  }
   private socket: WebSocket | null = null;
   lastUpdate: number = 0;
 
@@ -46,6 +54,18 @@ export class OmnAIScopeDataService implements DataSource{
   });
 
   readonly #httpClient = inject(HttpClient);
+
+  private setupDevicePolling(): void {
+    const pollInterval_ms = 15 * 1000;
+    timer(0, pollInterval_ms )
+      .pipe(
+        switchMap(() => this.getDevices()),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((devices: DeviceInformation[]) => {
+        this.devices.set(devices);
+      });
+  }
   readonly port = inject(BackendPortService).port;
   readonly serverUrl = computed(() => {
     const port = this.port();
@@ -54,24 +74,25 @@ export class OmnAIScopeDataService implements DataSource{
   });
 
   // Abrufen der verfügbaren Geräte vom Server
-  getDevices(): void {
+  public getDevices(): Observable<DeviceInformation[]> {
+    console.log("called getDevices")
     const url = `http://${this.serverUrl()}/UUID`;
-    console.log("Current OmnAIScope Datatserver Backend URL (Angular):", url);
-    this.#httpClient.get<DeviceOverview>(url).subscribe({
-      next: (response) => {
-        console.log("got response", response)
-        if (response.devices && response.colors) {
-          const mappedDevices = response.devices.map((device, index) => ({
-            UUID: device.UUID,
-            color: response.colors[index]?.color ?? { r: 0, g: 0, b: 0 },
-          }));
-          this.devices.set(mappedDevices);
-        }
-      },
-      error: (error) => {
-        console.error('Fehler beim Abrufen der Geräte:', error);
-      }
-    });
+
+    return this.#httpClient.get<Partial<DeviceOverview>>(url).pipe(
+      map(response => {
+        const devices = response.devices ?? [];
+        const colors = response.colors ?? [];
+
+        return devices.map((device, index) => ({
+          UUID: device.UUID,
+          color: colors[index]?.color ?? {r: 0, g: 0, b: 0}
+        }));
+      }),
+      catchError(error => {
+        console.warn('error while loading devices', error);
+        return of([]);
+      })
+    );
   }
 
   connect(): void {
@@ -144,7 +165,6 @@ export class OmnAIScopeDataService implements DataSource{
         }
         let end = performance.now();
         // console.warn(`Message handing took ${end-start}`)
-
       } else {
         console.warn('Unbekanntes Nachrichtenformat:', parsedMessage);
       }
