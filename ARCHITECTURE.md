@@ -2,10 +2,10 @@
 ## 1. When to read this
 
 Reading Group: 
-- I want to contribute but i am not sure where to add my code 
+- I want to contribute but I am not sure where to add my code 
 
 The goal of this file is to give an overview of the components of the software as well as their connection to each other. 
-Read this if you have questions regarding the setup and where what should be implemented how. 
+Read this if you have questions regarding the setup and where to implement what logic with which guidelines. 
 
 ## 1. General architecture 
 
@@ -13,14 +13,14 @@ This describes the architecture shortly on a high level basis.
 
 ### Context 
 
-For context of the application read the [VISION.md](/VISION.md)
+For context, refer to [VISION.md](/VISION.md) for a detailed explanation on the idea of the software.
 
 ### Enviroment/ Code setup/ Container Base
 
-The codebase contains two  main components: an Angular frontend project and an Electron project. 
+The codebase contains two  parts: an Angular frontend project and an Electron project. 
 
-The Angular project builds the frontend as a set of static files (html,css,ts) and can be rendered in a browser. 
-The Electron project runs as a desktop application. It includes the Angular html file and other modules 
+Within the Angular project, the UI is designed. Using the angular build system, a single page application (SPA) is build. The resulting set of static files (html,css,ts) and can be served by any webserver so that users can render the page in a browser of their choice. 
+From the Electron project, we can build a desktop application. Electron allows to render multiple windows, each window behaving like a browser window. The build artefact from the angular project is loaded in one of these windows. As a result, we can install the UI as a desktop app as well as handle background processes that are needed for any data communication.
 to display the web view in the locally running application. 
 Furthermore electron provides local system-access (e.g. access to the filesystem) which Angular doesn't. 
 
@@ -28,14 +28,16 @@ Therefore all system-access will be handled by Electron, all GUI interactions wi
 
 **We don't have a backend in this repository** 
 
-In the application multiple backends can be connected. You will understand later how. 
+We intend to connect multiple backends as datasources. The concept of how these connections are handled is explained later. 
 Important is that the electron app itself is not the backend, it only communicates with backends written in other repositorys. 
 
 **The end application will run on the user laptop as an executable NOT in the browser** 
 
 ### Components 
 
-This includes all components used in the end-application, this does not only include the end-application components itself. 
+This chapter presents all system elements used in the end-application further refered to as "components". 
+
+**Note**: This does not refer to Angular components or UI-specific modules. Instead, the term “components” here refers to infrastructural and functional parts of the system
 
 **Components**:
 
