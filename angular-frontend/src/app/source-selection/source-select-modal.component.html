@@ -1,18 +1,18 @@
 <h1 mat-dialog-title>Select Data Source</h1>
 
 <mat-dialog-content>
-    <ul style="list-style-type: none;">
+    <ul>
         @for (source of sources(); track source.id) {
             <li> 
                 <!-- Select data source with clickable card -->
                 <!-- If cards should also be filled when not selected, use 'filled' instead of 'outlined'. See: https://material.angular.dev/components/card/api -->
-                <mat-card style="margin: 10px;" [appearance]="selected()?.id === source.id ? 'raised' : 'outlined'" (click)="select(source)">
+                <mat-card [appearance]="selected()?.id === source.id ? 'raised' : 'outlined'" (click)="select(source)">
                     <mat-card-header>
                         <mat-card-title>{{ source.name }}</mat-card-title>
-                        @if (source.description; as description) {
-                            <mat-card-content>{{ description }}</mat-card-content>
-                        }
                     </mat-card-header>
+                    @if (source.description; as description) {
+                        <mat-card-content>{{ description }}</mat-card-content>
+                    }
                     <mat-card-actions  align="end">
                         <button mat-button (click)="select(source)">Select</button>
                     </mat-card-actions>
@@ -23,8 +23,8 @@
     
 </mat-dialog-content>
 
-<mat-dialog-actions style="justify-content: space-between;">  <!--mat-dialog-actions is a flexbox-->
+<mat-dialog-actions>
     <!--Buttons are disabled when no source is selected, "Clear Selection" button uses different style for visual contrast-->
-    <button mat-flat-button [style]="selected()? 'background-color: var(--mat-sys-error-container); color: var(--mat-sys-on-error-container);' : ''" [disabled]="!selected()" (click)="clear()">Clear Selection</button>  
+    <button mat-flat-button [class]="selected()? 'error' : 'test'" [disabled]="!selected()" (click)="clear()">Clear Selection</button>  
     <button mat-button [mat-dialog-close]="selected()" [disabled]="!selected()">Start</button>
 </mat-dialog-actions>

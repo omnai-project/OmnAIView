@@ -10,6 +10,7 @@ import {MatCardModule, MatCardHeader, MatCardContent, MatCardActions} from '@ang
     imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent, MatCardModule, MatCardHeader, MatCardContent, MatCardActions],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './source-select-modal.component.html',
+    styleUrls: ['./source-select-modal.component.css'],
 })
 export class SourceSelectModalComponent {
     private readonly datasourceService = inject(DataSourceSelectionService);
