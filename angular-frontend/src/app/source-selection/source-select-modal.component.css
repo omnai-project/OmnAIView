@@ -1,0 +1,18 @@
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0px;  /* mat-cards don't have margins themselfes */
+}
+
+mat-dialog-actions {
+    justify-content: space-between;  /* mat-dialog-actions is a flexbox */
+}
+
+button.error {
+    background-color: var(--mat-sys-error-container);
+    color: var(--mat-sys-on-error-container);
+}
