@@ -1,8 +1,9 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { type DataFormat, OmnAIScopeDataService } from '../omnai-datasource/omnai-scope-server/live-data.service';
 import { Observable } from 'rxjs';
+import { CsvFileImportService } from '../omnai-datasource/csv-file-import/csv-file-import.service';
 import { DummyDataService } from '../omnai-datasource/random-data-server/random-data.service';
- import {CsvFileImportService} from '../omnai-datasource/csv-file-import/csv-file-import.service';
+import { DevDataService } from '../omnai-datasource/dev-data-server/dev-data.service';
 /** Dummy interface to match your expected shape */
 export interface DataPoint {
     x: number;
@@ -16,7 +17,7 @@ export interface DataSource {
 }
 
 
-export interface DataSourceInfo  extends DataSource{
+export interface DataSourceInfo extends DataSource {
     id: string;
     name: string;
     description?: string;
@@ -30,6 +31,7 @@ export class DataSourceSelectionService {
     private readonly dummyDataService = inject(DummyDataService);
     private readonly csvDataService = inject(CsvFileImportService);
     private readonly _currentSource = signal<DataSourceInfo | null>(null);
+    private readonly devDataService = inject(DevDataService);
 
     private readonly _availableSources = signal<DataSourceInfo[]>([
         {
@@ -47,11 +49,18 @@ export class DataSourceSelectionService {
             data: this.dummyDataService.data
         },
         {
-          id: 'csv-file',
-          name: 'CSV Data',
-          description: 'Import a CSV file',
-          connect: this.csvDataService.connect.bind(this.csvDataService),
-          data: this.csvDataService.data
+            id: 'csv-file',
+            name: 'CSV Data',
+            description: 'Import a CSV file',
+            connect: this.csvDataService.connect.bind(this.csvDataService),
+            data: this.csvDataService.data
+        },
+        {
+            id: 'sinrectestdata',
+            name: 'Dev Data Server',
+            description: 'Generate a sinus or rectangular function as testdata for the graph',
+            connect: this.devDataService.connect.bind(this.devDataService),
+            data: this.devDataService.data
         }
     ]);
     readonly availableSources = this._availableSources.asReadonly();
