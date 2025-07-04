@@ -38,6 +38,10 @@ const createWindow = (): void => {
   });
   const indexPath: string = path.join(__dirname, '..', 'res', 'angular', 'browser', 'index.csr.html');
   mainWindow.loadFile(indexPath).catch((err) => console.error('Fehler beim Laden der HTML-Datei:', err));
+  mainWindow.webContents.on('did-fail-load', () => {
+    console.log('Electron was unable to find path due to missing History function thus defaulting to Entrypoint');
+    mainWindow.loadFile(indexPath).catch(err => console.error("The default entrypoint HTML file could not be loaded", err));
+  });
 };
 
 const menuScope = [
@@ -46,23 +50,11 @@ const menuScope = [
     submenu: [
       {
         label: 'Import',
-<<<<<<< HEAD
         click: async () => { console.log("Clicked File:Import") }
       },
       {
         label: 'Export',
-        click: async () => { console.log("Clicked File:Export") }
-=======
-        click: async () => {
-          console.log('Clicked File:Import');
-        },
-      },
-      {
-        label: 'Export',
-        click: async () => {
-          console.log('Clicked File:Export');
-        },
->>>>>>> 542b812 (feat(fix): format whole code)
+        click: async () => { console.log("Clicked File:Export") 
       },
       {
         label: 'Close',
@@ -79,7 +71,6 @@ const menuScope = [
     submenu: [
       {
         label: 'Minimum',
-<<<<<<< HEAD
         click: async () => { console.log("Clicked Analysis:Minimum") }
       },
       {
@@ -126,63 +117,6 @@ const menuScope = [
     }
     ]
   }
-=======
-        click: async () => {
-          console.log('Clicked Analysis:Minimum');
-        },
-      },
-      {
-        label: 'Maximum',
-        click: async () => {
-          console.log('Clicked Analysis:Maximum');
-        },
-      },
-      {
-        label: 'Median',
-        click: async () => {
-          console.log('Clicked Analysis:Median');
-        },
-      },
-      {
-        label: 'PWM',
-        click: async () => {
-          console.log('Clicked Analysis:PWM');
-        },
-      },
-    ],
-  },
-  {
-    label: 'Help',
-    submenu: [
-      {
-        label: 'Information',
-        click: async () => {
-          dialog.showMessageBox(mainWindow, {
-            type: 'info',
-            title: 'Information',
-            message: `electron-v.${versionInfo.electronVersion}\nangular-v.${versionInfo.angularVersion}\n${versionInfo.generatedAt}\n\nMIT © ${new Date().getFullYear()} AI-Gruppe`,
-            buttons: ['OK'],
-          });
-        },
-      },
-      {
-        label: 'Support-Website',
-        click: async () => {
-          shell.openExternal('https://omnaiscope.auto-intern.de/support/');
-        },
-      },
-      {
-        label: 'Developer-Tools',
-        accelerator: 'CmdOrCtrl+I',
-        click: () => {
-          if (mainWindow) {
-            mainWindow.webContents.toggleDevTools();
-          }
-        },
-      },
-    ],
-  },
->>>>>>> 542b812 (feat(fix): format whole code)
 ];
 
 const menu = Menu.buildFromTemplate(menuScope);
