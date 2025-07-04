@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { DataSourceService } from './graph-data.service';
 import { signal } from '@angular/core';
 import { DataSourceSelectionService } from '../source-selection/data-source-selection.service';
+import { DataFormat } from '../omnai-datasource/omnai-scope-server/live-data.service';
 
 class MockDataSourceSelectionService {
   currentSource = signal<{ data: () => Record<string, { timestamp: number; value: number }[]> } | null>(null);
@@ -15,10 +16,7 @@ describe('GraphDataService', () => {
     mockSelectionService = new MockDataSourceSelectionService();
 
     TestBed.configureTestingModule({
-      providers: [
-        DataSourceService,
-        { provide: DataSourceSelectionService, useValue: mockSelectionService },
-      ]
+      providers: [DataSourceService, { provide: DataSourceSelectionService, useValue: mockSelectionService }],
     });
 
     service = TestBed.inject(DataSourceService);
@@ -33,13 +31,15 @@ describe('GraphDataService', () => {
         { timestamp: 1000, value: 10 },
         { timestamp: 2000, value: 20 },
       ],
-      device2: [
-        { timestamp: 1500, value: 15 },
-      ],
+      device2: [{ timestamp: 1500, value: 15 }],
+    };
+
+    type ScaleAxisCallable = {
+      scaleAxisToData(data: Record<string, DataFormat[]>): void;
     };
 
     // scaleAxisToData ist private -> Aufruf über cast
-    (service as any).scaleAxisToData(mockData);
+    (service as unknown as ScaleAxisCallable).scaleAxisToData(mockData);
 
     const xDomain = service['$xDomain']();
     const yDomain = service['$yDomain']();

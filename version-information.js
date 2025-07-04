@@ -11,9 +11,9 @@ const electronPkg = JSON.parse(fs.readFileSync(electronPkgPath, 'utf-8'));
 const angularPkg = JSON.parse(fs.readFileSync(angularPkgPath, 'utf-8'));
 
 const versionInfo = {
-    electronVersion: electronPkg.version,
-    angularVersion: angularPkg.version,
-    generatedAt: new Date().toISOString()
+  electronVersion: electronPkg.version,
+  angularVersion: angularPkg.version,
+  generatedAt: new Date().toISOString(),
 };
 
 const outputPath = path.join(__dirname, '/electron/src/version.json');

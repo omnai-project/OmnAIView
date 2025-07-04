@@ -8,25 +8,29 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 
 const config: ForgeConfig = {
   packagerConfig: {
-    icon: "./images/icon",
+    icon: './images/icon',
     asar: true,
     extraResource: [
-      "./res/omnai_BE/MiniOmni.exe", 
-      "./res/omnai_BE/libusb-1.0.dll",
-      "./res/omnai_BE/abseil_dll.dll",
-      "./res/omnai_BE/libprotobuf.dll",
-      "./src/version.json"    
+      './res/omnai_BE/MiniOmni.exe',
+      './res/omnai_BE/libusb-1.0.dll',
+      './res/omnai_BE/abseil_dll.dll',
+      './res/omnai_BE/libprotobuf.dll',
+      './src/version.json',
     ],
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({
-      setupIcon: './images/icon.ico',
-      iconUrl: 'https://lugges.s3.nl-ams.scw.cloud/icon-OmnAIView.ico',
-    }, ["win32"]), 
-    new MakerZIP({}, ['darwin']), 
-    new MakerRpm({}), 
-    new MakerDeb({options: {icon: './images/icon.png'}})],
+    new MakerSquirrel(
+      {
+        setupIcon: './images/icon.ico',
+        iconUrl: 'https://lugges.s3.nl-ams.scw.cloud/icon-OmnAIView.ico',
+      },
+      ['win32'],
+    ),
+    new MakerZIP({}, ['darwin']),
+    new MakerRpm({}),
+    new MakerDeb({ options: { icon: './images/icon.png' } }),
+  ],
   plugins: [
     // Fuses are used to enable/disable various Electron functionality
     // at package time, before code signing the application
