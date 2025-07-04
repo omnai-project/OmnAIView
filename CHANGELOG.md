@@ -34,6 +34,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Added automatic device polling every 15 Seconds (#35)
 - Add axis mode: Allow to switch between absolute and relative x-axis timestamps(#58)
 - Add webSocket disconnect and disable device polling while active WebSocket (#97)
+- Secure reloading of entrypoint via did-fail-load Event in Electron (#100)
 
 ### Changed 
 
