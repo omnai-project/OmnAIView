@@ -49,7 +49,6 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Fixed ci and `package-lock.json` files to allow installing the project with `npm ci` (#83)
 - Stop-Button for Random Data Server (#115)
 - Change start-data button to mat-icon play_arrow button (#107)
-- Update PR Template to be more clear
 - Update PR Template to be more clear (#93)
 
 
