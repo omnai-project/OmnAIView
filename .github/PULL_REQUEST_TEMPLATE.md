@@ -8,7 +8,7 @@ Which concept, bug, or requirement does it address? -->
 Issue number *Add issue number here*
 
 ## 🛠 Type of change
-<!-- Tick **one**. -->
+<!-- Tick **all that apply** and delete the unused ones. -->
 
 - [ ] Bug fix
 - [ ] New feature
