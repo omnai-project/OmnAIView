@@ -3,11 +3,32 @@
 <mat-dialog-content>
     <ul>
         @for (source of sources(); track source.id) {
-        <li (click)="select(source)" [class.active]="selected()?.id === source.id">
+        <li 
+            (click)="select(source)"
+            [class.selected]="selected()?.id === source.id"
+        >
             <strong>{{ source.name }}</strong>
             @if (source.description; as description) {
             <p>{{ description }}</p>
             }
+            @if (selected()?.id === source.id) {
+            <style>
+                li {
+                    cursor: pointer;
+                    padding: 0.5rem;
+                    border-radius: 4px;
+                    transition: background-color 0.2s;
+                }
+                li.selected {
+                    background-color: pink; 
+                    color: rgb(2, 2, 2);
+                }
+                li:hover {
+                    background-color: rgb(255, 192, 203);
+                    color: rgb(2, 2, 2);
+                }
+                </style>
+                }
         </li>
         }
     </ul>
