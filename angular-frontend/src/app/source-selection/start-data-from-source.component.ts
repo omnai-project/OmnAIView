@@ -3,14 +3,15 @@ import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DataSourceSelectionService } from './data-source-selection.service';
 import { SourceSelectModalComponent } from './source-select-modal.component';
+import { MatButton } from '@angular/material/button';
 
 @Component({
     selector: 'app-start-data-button',
     standalone: true,
-    imports: [MatDialogModule],
+    imports: [MatDialogModule, MatButton],
     template: `
-    <button (click)="openModal()">Start Data</button>
-  `
+    <button matButton (click)="openModal()">Start Data</button>
+    `
 })
 export class StartDataButtonComponent {
     private readonly dialog = inject(MatDialog);

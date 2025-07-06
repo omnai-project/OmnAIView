@@ -9,6 +9,7 @@ import { type DataSourceInfo, DataSourceSelectionService } from './data-source-s
     imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './source-select-modal.component.html',
+    styles: ['li:hover {background-color: #1976d2}', 'li:active {background-color:rgb(9, 43, 78)}'],
 })
 export class SourceSelectModalComponent {
     private readonly datasourceService = inject(DataSourceSelectionService);
