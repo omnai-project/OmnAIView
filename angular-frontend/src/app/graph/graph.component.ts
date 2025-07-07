@@ -20,6 +20,7 @@ import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { StartDataButtonComponent } from "../source-selection/start-data-from-source.component";
 import { DataSourceService } from './graph-data.service';
 import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils';
+import {GraphDataRendererService} from './graph-data-renderer.service';
 
 @Component({
   selector: 'app-graph',
@@ -32,6 +33,7 @@ import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils
 })
 export class GraphComponent {
   readonly dataservice = inject(DataSourceService);
+  readonly renderer = new GraphDataRendererService(this.dataservice);
   readonly svgGraph = viewChild.required<ElementRef<SVGElement>>('graphContainer');
   readonly axesContainer = viewChild.required<ElementRef<SVGGElement>>('xAxis');
   readonly axesYContainer = viewChild.required<ElementRef<SVGGElement>>('yAxis');

@@ -1,5 +1,5 @@
 import {computed, effect, inject, Injectable, signal} from '@angular/core';
-import {DataSource} from '../../source-selection/data-source-selection.service';
+import {DataBounds, DataSource, DataSourceData} from '../../source-selection/data-source-selection.service';
 import {DataFormat} from '../omnai-scope-server/live-data.service';
 import {MatDialog} from '@angular/material/dialog';
 import {CsvFileSelectModalComponent} from './csv-file-select-modal.component';
@@ -22,7 +22,10 @@ export class CsvFileImportService implements DataSource {
   connect() {
     this.dialog.open(CsvFileSelectModalComponent)
   }
-  private readonly $data = signal<Record<string, DataFormat[]>>({});
+  private readonly $data = signal<DataSourceData>({
+    data: new Map(),
+    bounds: new DataBounds(),
+  });
   readonly data = this.$data.asReadonly();
 
   /**
@@ -83,17 +86,18 @@ export class CsvFileImportService implements DataSource {
       out,
     };
   }
-  private readonly dataFileChanged = effect(async ()=>{
+  private readonly dataFileChanged = effect(async ()=> {
     let files = this.files();
-    let data: Record<string, DataFormat[]> = {};
+    let data: Map<string, DataFormat[]> = new Map();
     for (let file of files) {
       try {
         let {name, out} = await this.processFile(file);
-        data[name] = out;
+        data.set(name,out);
       } catch (e) {
         console.error(`There was an error, whilst parsing the file '${file.name}'. The file will be ignored. Error: ${e}`);
       }
     }
-    this.$data.set(data);
+    let info = DataBounds.newFromData(data);
+    this.$data.set({data, bounds: info});
   });
 }
