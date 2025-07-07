@@ -47,6 +47,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Reduce file size of csv-file-import.service.spec.ts by replacing hard-coded string (#78)
 - Privacy oriented default setting to not share data with Google (#82)
 - Fixed ci and `package-lock.json` files to allow installing the project with `npm ci` (#83)
+- Stop-Button for Random Data Server (#106)
 
 
 ### Removed 
