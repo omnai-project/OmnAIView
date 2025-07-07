@@ -1,3 +1,6 @@
+@if (isConnected()) {
+  <button (click)="disconnectWebsocket()" id="buttonDisconnectWebsocket">🛑</button>
+}
 @for (device of devices(); track device.UUID) {
 <ul>
     <li>
