@@ -34,7 +34,6 @@ export class DummyDataService implements DataSource {
     disconnect(): void {
         this.subscription?.unsubscribe();
         this.subscription = null;
-        this._data.set({});
         this.isConnected.set(false);
     }
 }

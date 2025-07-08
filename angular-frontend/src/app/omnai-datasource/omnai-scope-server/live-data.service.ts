@@ -166,7 +166,6 @@ export class OmnAIScopeDataService implements DataSource {
       this.socket.close();
       this.socket = null;
       this.isConnected.set(false);
-      this.data.set({});
     }
   }
 
