@@ -12,6 +12,8 @@ import { OmnAIScopeDataService } from './live-data.service';
 export class DeviceListComponent {
     readonly #deviceHandler = inject(OmnAIScopeDataService);
     devices = this.#deviceHandler.devices
+    isConnected = this.#deviceHandler.isConnected
 
     getDevicesList = this.#deviceHandler.getDevices.bind(this.#deviceHandler)
+    disconnectWebsocket = this.#deviceHandler.disconnect.bind(this.#deviceHandler)
 }
