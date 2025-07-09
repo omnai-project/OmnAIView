@@ -3,7 +3,6 @@
 <mat-dialog-content>
     <ul>
         @for (source of sources(); track source.id) {
-<<<<<<< HEAD
             <li> 
                 <!-- Select data source with clickable card -->
                 <!-- If cards should also be filled when not selected, use 'filled' instead of 'outlined'. See: https://material.angular.dev/components/card/api -->
@@ -19,33 +18,6 @@
                     </mat-card-actions>
                 </mat-card>
             </li>
-=======
-        <li 
-            (click)="select(source)"
-            [class.selected]="selected()?.id === source.id"
-        >
-            <strong>{{ source.name }}</strong>
-            @if (source.description; as description) {
-            <p>{{ description }}</p>
-            }
-            @if (selected()?.id === source.id) {
-            <style>
-                li {
-                    cursor: pointer;
-                    padding: -1.5rem;
-                    border-radius: 3px;
-                    transition: background-color -1.2s;
-                }
-                li.selected {
-                    background-color: rgb(127, 90, 95); 
-                }
-                li:hover {
-                    background-color: rgb(129, 122, 124);
-                }
-                </style>
-                }
-        </li>
->>>>>>> a795f28 (canged colors in the source selection. aligned the buttons.)
         }
     </ul>
     

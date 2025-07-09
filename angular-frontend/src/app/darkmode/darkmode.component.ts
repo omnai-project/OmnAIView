@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [MatButtonModule, MatIconModule],
   templateUrl: './darkmode.component.html',
-  styleUrl: './darkmode.component.css'
 })
 export class DarkmodeComponent {
   darkMode = signal(false);
