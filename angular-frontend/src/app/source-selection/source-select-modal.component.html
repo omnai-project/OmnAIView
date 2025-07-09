@@ -11,22 +11,6 @@
             @if (source.description; as description) {
             <p>{{ description }}</p>
             }
-            @if (selected()?.id === source.id) {
-            <style>
-                li {
-                    cursor: pointer;
-                    padding: -1.5rem;
-                    border-radius: 3px;
-                    transition: background-color -1.2s;
-                }
-                li.selected {
-                    background-color: rgb(127, 90, 95); 
-                }
-                li:hover {
-                    background-color: rgb(129, 122, 124);
-                }
-                </style>
-                }
         </li>
         }
     </ul>

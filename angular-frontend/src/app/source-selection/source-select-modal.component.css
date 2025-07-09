@@ -1,0 +1,24 @@
+li {
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+li.selected {
+  background-color: rgba(129, 122, 124, 0.67);
+  color: white;
+}
+
+li:hover {
+  background-color: rgb(129, 122, 124);
+  color: white;
+}
+
+li.selected.dark-theme {
+  background-color: rgb(127, 90, 95); 
+}
+
+li:hover.dark-theme {
+  background-color: rgb(129, 122, 124);
+}

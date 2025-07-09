@@ -9,6 +9,7 @@ import { type DataSourceInfo, DataSourceSelectionService } from './data-source-s
     imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent],
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './source-select-modal.component.html',
+    styleUrl: './source-select-modal.component.css'
 })
 export class SourceSelectModalComponent {
     private readonly datasourceService = inject(DataSourceSelectionService);
