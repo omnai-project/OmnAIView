@@ -47,7 +47,7 @@ jobs:
         run: npm run build
 
       - name: Angular tests
-        working-directory: angular_frontend
+        working-directory: angular-frontend
         run: npx ng test --watch=false
 
       - name: Upload artifact
@@ -161,7 +161,7 @@ jobs:
         run: |
           set -euo pipefail
           VER=${{ steps.bump.outputs.plain_ver }}
-          for f in angular_frontend/package.json electron/package.json; do
+          for f in angular-frontend/package.json electron/package.json; do
             if [[ -f "$f" ]]; then
               echo "✏️  $f -> $VER"
               npx json -I -f "$f" -e "this.version='${VER}'"
