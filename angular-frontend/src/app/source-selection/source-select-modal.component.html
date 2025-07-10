@@ -3,22 +3,28 @@
 <mat-dialog-content>
     <ul>
         @for (source of sources(); track source.id) {
-        <li (click)="select(source)">
-            <strong>{{ source.name }}</strong>
-            @if (source.description; as description) {
-            <p>{{ description }}</p>
-            }
-            @if (selected()?.id === source.id) {
-            <span>[selected]</span>
-            }
-        </li>
+            <li> 
+                <!-- Select data source with clickable card -->
+                <!-- If cards should also be filled when not selected, use 'filled' instead of 'outlined'. See: https://material.angular.dev/components/card/api -->
+                <mat-card [appearance]="selected()?.id === source.id ? 'raised' : 'outlined'" (click)="select(source)">
+                    <mat-card-header>
+                        <mat-card-title>{{ source.name }}</mat-card-title>
+                    </mat-card-header>
+                    @if (source.description; as description) {
+                        <mat-card-content>{{ description }}</mat-card-content>
+                    }
+                    <mat-card-actions  align="end">
+                        <button mat-button (click)="select(source)">Select</button>
+                    </mat-card-actions>
+                </mat-card>
+            </li>
         }
     </ul>
-
-    <button mat-button color="warn" (click)="clear()">Clear Selection</button>
     
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-    <button mat-button mat-button [mat-dialog-close]="selected()" color="primary" [disabled]="!selected()" >Start</button>
+<mat-dialog-actions>
+    <!--Buttons are disabled when no source is selected, "Clear Selection" button uses different style for visual contrast-->
+    <button mat-flat-button [class]="selected()? 'error' : ''" [disabled]="!selected()" (click)="clear()">Clear Selection</button>  
+    <button mat-button [mat-dialog-close]="selected()" [disabled]="!selected()">Start</button>
 </mat-dialog-actions>
