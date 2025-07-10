@@ -2,17 +2,17 @@
 #  CI + Release in einem Workflow
 #  • build-windows:   läuft bei pull_request & push
 #  • release:        läuft nur nach erfolgreichem Build
-#                    und nur bei push-Events auf master
+#                    und NUR bei push-Events auf master
 # ==========================================================
 
 name: CI-and-Release
 
 on:
-  pull_request:                 # PR-Builds
+  pull_request:
     branches: ["**"]
-  push:                         # Commits (inkl. Merge-Commit)
-    branches: ["master"]
-    tags: ["**"]                # falls du Tag-Builds behalten willst
+  push:
+    branches: ["master"]        # Merge-Commits
+    tags:     ["**"]            # optional – falls Tag-Builds gewünscht
   workflow_dispatch:
 
 env:
@@ -21,19 +21,20 @@ env:
 permissions:
   contents: write               # Tag + Release
   pull-requests: read
-  actions: read                 # für Cache usw.
+  actions: read
 
+# ----------------------------------------------------------------------
+# 1) Windows-Build
+# ----------------------------------------------------------------------
 jobs:
-# ----------------------------------------------------------------------
-# 1) Windows-Build (unverändert)
-# ----------------------------------------------------------------------
   build-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-        name: Checkout
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
@@ -71,20 +72,22 @@ jobs:
 # ----------------------------------------------------------------------
   release:
     needs: build-windows
-    if: github.event_name == 'push'        # PR-Builds werden übersprungen
+    if: github.event_name == 'push'          # PR-Events überspringen
     runs-on: ubuntu-latest
 
     steps:
-      # -------- Checkout exakt denselben Commit -----------
-      - uses: actions/checkout@v4
+      # -------- Commit des Merge-Builds auschecken --------------------
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      # -------- PR-Labels bestimmen -----------------------
+      # -------- PR-Labels analysieren ---------------------------------
       - name: Determine release type from PR labels
         id: rel
         uses: actions/github-script@v7
@@ -119,58 +122,70 @@ jobs:
         if: env.SKIP_RELEASE == 'true'
         run: echo "Skip release" && exit 0
 
-      # -------- Version bump & Tag ------------------------
+      # -------- Version erhöhen & Git-Tag pushen ----------------------
       - name: Bump version
         id: bump
         shell: bash
         run: |
           set -euo pipefail
-          git fetch --prune --tags
-          latest=$(git tag -l "v*" --sort=-v:refname | head -n1 || echo "v0.0.0")
-          echo "Latest tag: $latest"
+
+          git fetch --prune --tags origin master
+
+          latest=$(git tag --merged HEAD --sort=-v:refname | \
+            grep -E '^[v]?[0-9]+\.[0-9]+\.[0-9]+' | head -n1)
+
+          [[ -z "$latest" ]] && latest="0.0.0"
+          echo "Letztes Tag : $latest"
+
+          plain=${latest#v}                      
+          bump=${{ steps.rel.outputs.bump }}     
+          pre=${{ steps.rel.outputs.pre }}       
 
           preflag=""
-          if [[ -n "${{ steps.rel.outputs.pre }}" ]]; then
-            preflag="--preid ${{ steps.rel.outputs.pre }}"
-          fi
+          [[ -n "$pre" ]] && preflag="--preid $pre"
 
-          new=$(npx semver -c "$latest" --increment ${{ steps.rel.outputs.bump }} $preflag)
-          echo "new_version=$new" >> "$GITHUB_OUTPUT"
+          next=$(npx semver "$plain" -i "$bump" $preflag)
+          new_tag="v$next"
+
+          echo "new_version=$new_tag" >> "$GITHUB_OUTPUT"
 
       - name: Create git tag
         run: |
           git tag ${{ steps.bump.outputs.new_version }}
           git push origin ${{ steps.bump.outputs.new_version }}
 
-       # 3.1) Version in beiden package.jsons aktualisieren
+      # -------- package.json-Versionen aktualisieren ------------------
       - name: Update package.json versions
         shell: bash
         run: |
-          NEW="${{ steps.bump.outputs.new_version }}"
-          # Angular-Frontend
-          npx json -I -f angular-frontend/package.json -e "this.version='${NEW}'"
-          # Electron-Root (ggf. Pfad anpassen)
-          npx json -I -f electron/package.json -e "this.version='${NEW}'"
+          TAG="${{ steps.bump.outputs.new_version }}"
+
+          NUM_VERSION="${TAG#v}"
+
+          echo "Setze package.json-Version auf $NUM_VERSION"
+
+          npx json -I -f angular-frontend/package.json -e "this.version='$NUM_VERSION'"
+          npx json -I -f electron/package.json        -e "this.version='$NUM_VERSION'"
+
 
       - name: Commit bumped versions
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          # Ziel-Branch angeben → kein detached-HEAD-Fehler
-          branch: master                    # oder ${{ github.ref_name }}
-          commit_message: |
-            chore: bump version to v${{ steps.bump.outputs.new_version }} [skip ci]
+          branch: master
+          commit_message: "chore: bump version to ${{ steps.bump.outputs.new_version }} [skip ci]"
           file_pattern: |
             angular-frontend/package.json
             electron/package.json
 
-
-      # -------- Artefakte vom Build-Job holen -------------
-      - uses: actions/download-artifact@v4
+      # -------- Artefakte vom Build-Job herunterladen -----------------
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
         with:
           name: OmnaiView-Windows-${{ github.sha }}
 
-      # -------- GitHub-Release anlegen + Installer anhängen
-      - uses: softprops/action-gh-release@v2
+      # -------- GitHub-Release anlegen & Installer anhängen -----------
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
           tag_name:               ${{ steps.bump.outputs.new_version }}
           name:                   ${{ steps.bump.outputs.new_version }}
