@@ -35,6 +35,9 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Add axis mode: Allow to switch between absolute and relative x-axis timestamps(#58)
 - Add webSocket disconnect and disable device polling while active WebSocket (#97)
 - Secure reloading of entrypoint via did-fail-load Event in Electron (#100)
+- Add issue template (#89)
+- Update contribution workflow (#89)
+
 
 ### Changed 
 
