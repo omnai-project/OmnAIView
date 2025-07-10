@@ -1,7 +1,7 @@
 # ==========================================================
 #  CI + Release in einem Workflow
-#  • build-windows:   läuft bei pull_request & push
-#  • release:        läuft nur nach erfolgreichem Build
+#  • build-windows   läuft bei pull_request & push
+#  • release         läuft nur nach erfolgreichem Build-Job
 #                    und NUR bei push-Events auf master
 # ==========================================================
 
@@ -12,7 +12,7 @@ on:
     branches: ["**"]
   push:
     branches: ["master"]        # Merge-Commits
-    tags:     ["**"]            # optional – falls Tag-Builds gewünscht
+    tags: ["**"]                # optional – Tag-Builds
   workflow_dispatch:
 
 env:
@@ -68,11 +68,11 @@ jobs:
             electron/out/make/squirrel.windows/x64/*.exe
 
 # ----------------------------------------------------------------------
-# 2) Release – läuft nur bei push auf master UND nach erfolgreichem Build
+# 2) Release – nur bei push auf master UND nach erfolgreichem Build
 # ----------------------------------------------------------------------
   release:
     needs: build-windows
-    if: github.event_name == 'push'          # PR-Events überspringen
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
@@ -95,7 +95,9 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-              owner, repo, commit_sha: context.sha
+              owner,
+              repo,
+              commit_sha: context.sha
             });
 
             if (!prs.data.length) {
@@ -110,11 +112,11 @@ jobs:
               return;
             }
 
-            const bump = ['major','minor','patch']
+            const bump = ['major', 'minor', 'patch']
               .find(t => labels.includes(`semver:${t}`)) ?? 'patch';
             core.setOutput('bump', bump);
 
-            const pre = ['alpha','beta']
+            const pre = ['alpha', 'beta']
               .find(p => labels.includes(`prerelease:${p}`)) ?? '';
             core.setOutput('pre', pre);
 
@@ -122,8 +124,7 @@ jobs:
         if: env.SKIP_RELEASE == 'true'
         run: echo "Skip release" && exit 0
 
-      # -------- Version erhöhen & Git-Tag pushen ----------------------
-      # -------- Version erhöhen & Git-Tag pushen ---------------
+      # -------- Version erhöhen & Git-Tag generieren ------------------
       - name: Bump version
         id: bump
         shell: bash
@@ -131,49 +132,51 @@ jobs:
           set -euo pipefail
           git fetch --prune --tags
 
+          # Höchstes SemVer-Tag (inkl. prerelease) finden
           latest=$(git tag -l --sort=-v:refname \
-                    | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' \
-                    | head -n1 || true)
+            | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z\.-]+)?$' \
+            | head -n1 || true)
 
-          [[ -z "$latest" ]] && latest="0.0.0"    
-
+          [[ -z "$latest" ]] && latest="0.0.0"
           echo "Letztes SemVer-Tag: $latest"
 
           prefix=""
           plain="$latest"
-          [[ "$latest" == v* ]] && { prefix="v"; plain="${latest#v}"; }
+          if [[ "$latest" == v* ]]; then
+            prefix="v"
+            plain="${latest#v}"
+          fi
 
-      
-          bump=${{ steps.rel.outputs.bump }}   
-          pre=${{ steps.rel.outputs.pre }}     
+          bump="${{ steps.rel.outputs.bump }}"
+          pre="${{ steps.rel.outputs.pre }}"
 
           preflag=""
           [[ -n "$pre" ]] && preflag="--preid $pre"
 
           next=$(npx semver "$plain" -i "$bump" $preflag)
-          
           new_tag="${prefix}${next}"
           echo "new_version=$new_tag" >> "$GITHUB_OUTPUT"
 
-
-      - name: Create git tag
+      - name: Create git tag (fails if exists)
+        shell: bash
         run: |
-          git tag ${{ steps.bump.outputs.new_version }}
-          git push origin ${{ steps.bump.outputs.new_version }}
+          TAG=${{ steps.bump.outputs.new_version }}
+          if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null; then
+            echo "❌ Tag ${TAG} existiert bereits – Workflow abgebrochen."
+            exit 1
+          fi
+          git tag "${TAG}"
+          git push origin "${TAG}"
 
       # -------- package.json-Versionen aktualisieren ------------------
       - name: Update package.json versions
         shell: bash
         run: |
-          TAG="${{ steps.bump.outputs.new_version }}"
-
-          NUM_VERSION="${TAG#v}"
-
-          echo "Setze package.json-Version auf $NUM_VERSION"
-
-          npx json -I -f angular-frontend/package.json -e "this.version='$NUM_VERSION'"
-          npx json -I -f electron/package.json        -e "this.version='$NUM_VERSION'"
-
+          TAG=${{ steps.bump.outputs.new_version }}
+          NUM_VERSION=${TAG#v}
+          echo "Setze Version auf ${NUM_VERSION}"
+          npx json -I -f angular-frontend/package.json -e "this.version='${NUM_VERSION}'"
+          npx json -I -f electron/package.json        -e "this.version='${NUM_VERSION}'"
 
       - name: Commit bumped versions
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -184,22 +187,22 @@ jobs:
             angular-frontend/package.json
             electron/package.json
 
-      # -------- Artefakte vom Build-Job herunterladen -----------------
+      # -------- Artefakt vom Build-Job herunterladen -----------------
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
           name: OmnaiView-Windows-${{ github.sha }}
 
-      # -------- GitHub-Release anlegen & Installer anhängen -----------
+      # -------- GitHub-Release anlegen & Installer anhängen ----------
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name:               ${{ steps.bump.outputs.new_version }}
-          name:                   ${{ steps.bump.outputs.new_version }}
-          prerelease:             ${{ steps.rel.outputs.pre != '' }}
+          tag_name: ${{ steps.bump.outputs.new_version }}
+          name:     ${{ steps.bump.outputs.new_version }}
+          prerelease: ${{ steps.rel.outputs.pre != '' }}
           generate_release_notes: true
           files: |
-            electron/out/make/squirrel.windows/x64/*.exe
-            electron/out/make/squirrel.windows/x64/*.nupkg
+            OmnaiView-Windows-${{ github.sha }}/electron/out/make/squirrel.windows/x64/*.exe
+            OmnaiView-Windows-${{ github.sha }}/electron/out/make/squirrel.windows/x64/*.nupkg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
