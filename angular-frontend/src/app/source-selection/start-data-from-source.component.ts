@@ -3,13 +3,17 @@ import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DataSourceSelectionService } from './data-source-selection.service';
 import { SourceSelectModalComponent } from './source-select-modal.component';
+import { MatIconModule } from '@angular/material/icon';
+
 
 @Component({
     selector: 'app-start-data-button',
     standalone: true,
-    imports: [MatDialogModule],
+    imports: [MatDialogModule, MatIconModule],
     template: `
-    <button (click)="openModal()">Start Data</button>
+    <button mat-icon-button (click)="openModal()" aria-label="Start Data">
+      <mat-icon>play_arrow</mat-icon>
+    </button>
   `
 })
 export class StartDataButtonComponent {

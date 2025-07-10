@@ -48,6 +48,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Privacy oriented default setting to not share data with Google (#82)
 - Fixed ci and `package-lock.json` files to allow installing the project with `npm ci` (#83)
 - Stop-Button for Random Data Server (#115)
+- Change start-data button to mat-icon play_arrow button (#107)
 
 
 ### Removed 
