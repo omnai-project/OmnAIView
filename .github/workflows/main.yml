@@ -141,6 +141,25 @@ jobs:
         run: |
           git tag ${{ steps.bump.outputs.new_version }}
           git push origin ${{ steps.bump.outputs.new_version }}
+          
+       # 3.1) Version in beiden package.jsons aktualisieren
+      - name: Update package.json versions
+        shell: bash
+        run: |
+          NEW="${{ steps.bump.outputs.new_version }}"
+          # Angular-Frontend
+          npx json -I -f angular-frontend/package.json -e "this.version='${NEW}'"
+          # Electron-Root (ggf. Pfad anpassen)
+          npx json -I -f electron/package.json -e "this.version='${NEW}'"
+
+      # 3.2) Änderungen committen & pushen (ohne neuen CI-Lauf)
+      - name: Commit bumped versions
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: bump version to v${{ steps.bump.outputs.new_version }} [skip ci]"
+          file_pattern: |
+            angular-frontend/package.json
+            electron/package.json
 
       # -------- Artefakte vom Build-Job holen -------------
       - uses: actions/download-artifact@v4
