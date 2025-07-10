@@ -123,31 +123,38 @@ jobs:
         run: echo "Skip release" && exit 0
 
       # -------- Version erhöhen & Git-Tag pushen ----------------------
+      # -------- Version erhöhen & Git-Tag pushen ---------------
       - name: Bump version
         id: bump
         shell: bash
         run: |
           set -euo pipefail
+          git fetch --prune --tags
 
-          git fetch --prune --tags origin master
+          latest=$(git tag -l --sort=-v:refname \
+                    | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' \
+                    | head -n1 || true)
 
-          latest=$(git tag --merged HEAD --sort=-v:refname | \
-            grep -E '^[v]?[0-9]+\.[0-9]+\.[0-9]+' | head -n1)
+          [[ -z "$latest" ]] && latest="0.0.0"    
 
-          [[ -z "$latest" ]] && latest="0.0.0"
-          echo "Letztes Tag : $latest"
+          echo "Letztes SemVer-Tag: $latest"
 
-          plain=${latest#v}                      
-          bump=${{ steps.rel.outputs.bump }}     
-          pre=${{ steps.rel.outputs.pre }}       
+          prefix=""
+          plain="$latest"
+          [[ "$latest" == v* ]] && { prefix="v"; plain="${latest#v}"; }
+
+      
+          bump=${{ steps.rel.outputs.bump }}   
+          pre=${{ steps.rel.outputs.pre }}     
 
           preflag=""
           [[ -n "$pre" ]] && preflag="--preid $pre"
 
           next=$(npx semver "$plain" -i "$bump" $preflag)
-          new_tag="v$next"
-
+          
+          new_tag="${prefix}${next}"
           echo "new_version=$new_tag" >> "$GITHUB_OUTPUT"
+
 
       - name: Create git tag
         run: |
