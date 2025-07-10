@@ -18,11 +18,16 @@ We want to make this better!
 1. OmnAIView does not only display data from our devices. OmnAIView will support different interfaces for devices, so you can display **your** data from **your** device in the software.
 2. OmnAIView will support REST API. You can connect **your** analysis to the frontend and analyse data via a button click.
 3. OmnAIView offers integrated analysis support - whether you're unsure about the mechanics of your scientific data or simply need a mathematical assessment, it's just one click away.
-## How to Contribute :
 
-We are very happy about contributions. If you want to contribute just follow the steps in the [CONTRIBUTIONS.md](CONTRIBUTION.md). We will review your contribution as fast as possible.
+## Where to find which information : 
 
-## How to get the Code Documentation : 
+The README.md provides information to get a quick overview and setup the minimal project. 
+
+The [VISION.md](VISION.md) provides the context for this project. Our vision, the intended usergroup and userflow, background about the project. Read this if you want an overview of the project without understanding the codebase. 
+
+The [ARCHITECTURE.md](ARCHITECTURE.md) provides concept descriptions for contributers, from the general concepts of the application to more detailed concepts like adding a datasource. Read this whenever you are unsure where to put what code and how. 
+
+### How to get the Code Documentation : 
 
 The Code is documented with [Compodoc](https://compodoc.app/). To see the documentation follow these steps: 
 
@@ -32,6 +37,10 @@ The Code is documented with [Compodoc](https://compodoc.app/). To see the docume
 ``` npm run compodoc:build-and-serve ``` 
 in your console 
 4. Open the documentation with the link compodoc generates 
+
+## How to Contribute :
+
+We are very happy about contributions. If you want to contribute just follow the steps in the [CONTRIBUTIONS.md](CONTRIBUTION.md). We will review your contribution as fast as possible.
 
 ## How to run the project
 
