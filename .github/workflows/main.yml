@@ -148,14 +148,18 @@ jobs:
         working-directory: angular-frontend
         run: npx ng test --watch=false
 
-      - name: Upload artifact
+      - name: Bundle Windows output
+        run: |
+          zip -r OmnAIView-Windows.zip \
+              electron/out/make/squirrel.windows/x64/RELEASES \
+              electron/out/make/squirrel.windows/x64/*.nupkg \
+              electron/out/make/squirrel.windows/x64/*.exe
+      
+      - name: Upload bundle
         uses: actions/upload-artifact@v4
         with:
           name: OmnAIView-Windows
-          path: |
-            electron/out/make/squirrel.windows/x64/RELEASES
-            electron/out/make/squirrel.windows/x64/*.nupkg
-            electron/out/make/squirrel.windows/x64/*.exe
+          path: OmnAIView-Windows.zip
 
   release:
     needs: [bump, build-windows]
@@ -166,21 +170,12 @@ jobs:
         with:
           ref: ${{ needs.bump.outputs.sha }}
 
-      - name: Download Windows artifact (ZIP)
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: OmnAIView-Windows         
-          path: .                        
-          extract: false                   
-
-      - name: Rename ZIP to include tag
-        run: mv OmnAIView-Windows.zip OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+          name: OmnAIView-Windows
+          path: .
+    
+      - run: mv OmnAIView-Windows.zip OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip
+      - uses: softprops/action-gh-release@v2
         with:
-          tag_name:   ${{ needs.bump.outputs.tag }}
-          prerelease: ${{ needs.bump.outputs.pre != '' }}
-          files:      OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip
