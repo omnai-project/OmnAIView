@@ -87,12 +87,21 @@ jobs:
 
           bump="${{ steps.rel.outputs.bump }}"
           pre="${{ steps.rel.outputs.pre }}"
-          preflag=""
-          [[ -n "$pre" ]] && preflag="--preid $pre"
+          if [[ -n "$pre" ]]; then
+            case "$bump" in
+              patch)  bump="prepatch"  ;;
+              minor)  bump="preminor"  ;;
+              major)  bump="premajor"  ;;
+            esac
+          fi
 
-             next=$(npx semver "$latest" -i "${{ steps.rel.outputs.bump }}" \
-                 $( [[ -n "${{ steps.rel.outputs.pre }}" ]] && echo --preid ${{ steps.rel.outputs.pre }}))
-          new_tag="v$next"                   
+          if [[ -n "$pre" ]]; then
+            next=$(npx semver "$latest" -i "$bump" --preid "$pre")
+          else
+            next=$(npx semver "$latest" -i "$bump")
+          fi   
+
+          new_tag="v$next"              
 
           echo "new_tag=$new_tag"   >> "$GITHUB_OUTPUT"
           echo "plain_ver=$next"    >> "$GITHUB_OUTPUT"
