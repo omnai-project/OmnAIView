@@ -111,7 +111,7 @@ jobs:
           file_pattern: angular-frontend/package.json electron/package.json package.json
       - name: Create git tag         
         run: |
-          git tag "${{ steps.bump.outputs.new_tag }}" ${{ steps.commit.outputs.commit_hash }}
+          git tag "${{ steps.bump.outputs.new_tag }}" ${{ steps.commit.outputs.sha }}
           git push origin "${{ steps.bump.outputs.new_tag }}"
 
   build-windows:
@@ -151,7 +151,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OmnAIView-Windows-${{ needs.bump.outputs.tag }}
+          name: OmnAIView-Windows
           path: |
             electron/out/make/squirrel.windows/x64/RELEASES
             electron/out/make/squirrel.windows/x64/*.nupkg
@@ -170,22 +170,15 @@ jobs:
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
-          name: OmnAIView-Windows-
+          name: OmnAIView-Windows
           path: .                       
 
       - name: Zip artifact folder
-        run: |
-          zip -r OmnAIView-Windows-.zip \
-            OmnAIView-Windows-
-      
-        # ▸ Release mit genau diesem ZIP
+        run: zip -r OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip OmnAIView-Windows
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name:   ${{ needs.bump.outputs.tag }}
-          name:       ${{ needs.bump.outputs.tag }}
+          tag_name: ${{ needs.bump.outputs.tag }}
           prerelease: ${{ needs.bump.outputs.pre != '' }}
-          generate_release_notes: true
-          files: OmnAIView-Windows-.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip
