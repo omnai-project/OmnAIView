@@ -1,8 +1,6 @@
 name: CI-and-Release
 
 on:
-  pull_request:
-    branches: ["**"]
   push:
     branches: ["master"]         
   workflow_dispatch:
@@ -106,8 +104,9 @@ jobs:
           done
       - name: Commit bumped versions
         id: commit         # zwingend, sonst kein commit_hash Output
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v6      
         with:
+          branch: master 
           commit_message: "chore: bump to ${{ steps.bump.outputs.new_tag }} [skip ci]"
           file_pattern: angular-frontend/package.json electron/package.json package.json
       - name: Create git tag               # ← jetzt NACH dem Commit
