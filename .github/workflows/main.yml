@@ -157,28 +157,34 @@ jobs:
             electron/out/make/squirrel.windows/x64/*.nupkg
             electron/out/make/squirrel.windows/x64/*.exe
 
-  release: 
-    needs: [bump, build-windows]
-    runs-on: ubuntu-latest
+  release:
+  needs: [bump, build-windows]
+  runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.bump.outputs.sha }}
+  steps:
+    # Den Commit auschecken, auf dem der Tag liegt
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ needs.bump.outputs.sha }}
 
-      - name: Download Windows artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: OmnAIView-Windows
-          path: .                       
+    # 1️⃣ Artefakt 1 :1 herunterladen (extract:false ⇒ ZIP bleibt erhalten)
+    - name: Download Windows artifact (ZIP)
+      uses: actions/download-artifact@v4
+      with:
+        name: OmnAIView-Windows          # identischer Name wie im Build-Job
+        path: .                          # ZIP landet im Arbeitsverz.
+        extract: false                   # NICHT entpacken!
 
-      - name: Zip artifact folder
-        run: zip -r OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip OmnAIView-Windows
+    # 2️⃣ ZIP auf den gewünschten Namen bringen
+    - name: Rename ZIP to include tag
+      run: mv OmnAIView-Windows.zip OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.bump.outputs.tag }}
-          prerelease: ${{ needs.bump.outputs.pre != '' }}
-          files: OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip
+    # 3️⃣ GitHub-Release erstellen und ZIP anhängen
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name:   ${{ needs.bump.outputs.tag }}
+        prerelease: ${{ needs.bump.outputs.pre != '' }}
+        files:      OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
