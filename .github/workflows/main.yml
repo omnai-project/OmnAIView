@@ -174,7 +174,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: OmnAIView-Windows-${{ github.sha }}
-          path: .                        
+          path: .     
+          merge-multiple: true                   
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
