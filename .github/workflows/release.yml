@@ -1,0 +1,185 @@
+name: CI-and-Release
+
+on:
+  push:
+    branches: ["master"]         
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: 20
+
+permissions:
+  contents: write
+  pull-requests: read
+  actions: read
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    outputs:
+      sha:   ${{ steps.commit.outputs.commit_sha }}   
+      tag:   ${{ steps.bump.outputs.new_tag }}         
+      plain: ${{ steps.bump.outputs.plain_ver }}       
+      pre:   ${{ steps.rel.outputs.pre }}     
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Determine release type and version from PR labels
+        id: rel
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner,
+              repo,
+              commit_sha: context.sha
+            });
+
+            if (!prs.data.length) {
+              core.setFailed('No PR for this commit');
+              return;
+            }
+
+            const labels = prs.data[0].labels.map(l => l.name);
+
+            if (labels.includes('release:skip')) {
+              core.exportVariable('SKIP_RELEASE', 'true');
+              return;
+            }
+
+            core.setOutput(
+              'bump',
+              ['major','minor','patch'].find(t => labels.includes(`semver:${t}`)) ?? 'patch'
+            );
+            core.setOutput(
+              'pre',
+              ['alpha','beta'].find(p => labels.includes(`prerelease:${p}`)) ?? ''
+            );
+
+      - name: Stop if release:skip
+        if: env.SKIP_RELEASE == 'true'
+        run: echo "Skip release" && exit 0
+
+      - name: Calculate new version from latest version 
+        id: bump
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --prune --tags
+
+          latest=$(git tag -l \
+                   | sed 's/^v//' \
+                   | grep -E '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z\.-]+)?$' \
+                   | sort -V \
+                   | tail -n1)
+          [[ -z "$latest" ]] && latest="0.0.0"
+          echo "Latest tag: $latest"
+
+          bump="${{ steps.rel.outputs.bump }}"
+          pre="${{ steps.rel.outputs.pre }}"
+          preflag=""
+          [[ -n "$pre" ]] && preflag="--preid $pre"
+
+             next=$(npx semver "$latest" -i "${{ steps.rel.outputs.bump }}" \
+                 $( [[ -n "${{ steps.rel.outputs.pre }}" ]] && echo --preid ${{ steps.rel.outputs.pre }}))
+          new_tag="v$next"                   
+
+          echo "new_tag=$new_tag"   >> "$GITHUB_OUTPUT"
+          echo "plain_ver=$next"    >> "$GITHUB_OUTPUT"
+
+      - name: Update package.json
+        run: |
+          for f in angular-frontend/package.json electron/package.json package.json; do
+            npx json -I -f "$f" -e "this.version='${{ steps.bump.outputs.plain_ver }}'"
+          done
+      - name: Commit bumped versions
+        id: commit       
+        uses: stefanzweifel/git-auto-commit-action@v6      
+        with:
+          branch: master 
+          commit_message: "chore: bump to ${{ steps.bump.outputs.new_tag }} [skip ci]"
+          file_pattern: angular-frontend/package.json electron/package.json package.json
+      - name: Create git tag         
+        run: |
+          git tag "${{ steps.bump.outputs.new_tag }}" ${{ steps.commit.outputs.sha }}
+          git push origin "${{ steps.bump.outputs.new_tag }}"
+
+  build-windows:
+    needs: bump
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.bump.outputs.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Cache node_modules
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules-${{ runner.os }}-${{ runner.arch }}-node_${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install deps
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci --no-audit --no-fund
+
+      - name: Build
+        run: npm run build
+
+      - name: Angular tests
+        working-directory: angular-frontend
+        run: npx ng test --watch=false
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OmnAIView-Windows
+          path: |
+            electron/out/make/squirrel.windows/x64/RELEASES
+            electron/out/make/squirrel.windows/x64/*.nupkg
+            electron/out/make/squirrel.windows/x64/*.exe
+  
+  release:
+    needs: [bump, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.bump.outputs.sha }}
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: OmnAIView-Windows   
+          path: .             
+    
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name:   ${{ needs.bump.outputs.tag }}
+          prerelease: ${{ needs.bump.outputs.pre != '' }}
+          files: |                  
+            ./*.exe
+            ./*.nupkg
+            ./RELEASES
+          fail_on_unmatched_files: true
