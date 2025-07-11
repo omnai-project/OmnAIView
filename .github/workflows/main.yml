@@ -148,18 +148,14 @@ jobs:
         working-directory: angular-frontend
         run: npx ng test --watch=false
 
-      - name: Bundle Windows output
-        run: |
-          zip -r OmnAIView-Windows.zip \
-              electron/out/make/squirrel.windows/x64/RELEASES \
-              electron/out/make/squirrel.windows/x64/*.nupkg \
-              electron/out/make/squirrel.windows/x64/*.exe
-      
-      - name: Upload bundle
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: OmnAIView-Windows
-          path: OmnAIView-Windows.zip
+          path: |
+            electron/out/make/squirrel.windows/x64/RELEASES
+            electron/out/make/squirrel.windows/x64/*.nupkg
+            electron/out/make/squirrel.windows/x64/*.exe
 
   release:
     needs: [bump, build-windows]
@@ -170,12 +166,21 @@ jobs:
         with:
           ref: ${{ needs.bump.outputs.sha }}
 
-      - uses: actions/download-artifact@v4
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
         with:
-          name: OmnAIView-Windows
+          name: OmnAIView-Windows      # ladet nach ./OmnAIView-Windows/…
           path: .
-    
-      - run: mv OmnAIView-Windows.zip OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip
-      - uses: softprops/action-gh-release@v2
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          files: OmnAIView-Windows-${{ needs.bump.outputs.tag }}.zip
+          tag_name:   ${{ needs.bump.outputs.tag }}
+          prerelease: ${{ needs.bump.outputs.pre != '' }}
+          files: |                         # <-- jetzt echte Dateipfade / Globs
+            OmnAIView-Windows/electron/out/make/squirrel.windows/x64/*.exe
+            OmnAIView-Windows/electron/out/make/squirrel.windows/x64/*.nupkg
+            OmnAIView-Windows/electron/out/make/squirrel.windows/x64/RELEASES
+          fail_on_unmatched_files: true    # optional – bricht sofort bei Tippfehlern ab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
