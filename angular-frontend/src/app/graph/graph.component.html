@@ -2,7 +2,7 @@
     <g [attr.transform]="marginTransform()">
 
         <g #xAxis [attr.transform]="xAxisTransformString()">
-          
+
         </g>
         <g #yAxis [attr.transform]="yAxisTransformString()"></g>
         @for (path of dataservice.paths(); track $index) {
@@ -13,6 +13,9 @@
 <div class="button-wrapper">
 <app-start-data-button />
 <app-device-list />
+<mat-slide-toggle [checked]="advancedMode.enabled()" (change)="advancedMode.toggle()">
+    Advanced Mode
+</mat-slide-toggle>
 <mat-slide-toggle [checked]="xAxisTimeMode() === 'relative'" (change)="onXAxisTimeModeToggle($event.checked)">
     Relative Time
 </mat-slide-toggle>
