@@ -109,10 +109,10 @@ jobs:
           branch: master 
           commit_message: "chore: bump to ${{ steps.bump.outputs.new_tag }} [skip ci]"
           file_pattern: angular-frontend/package.json electron/package.json package.json
-      - name: Create git tag               # ← jetzt NACH dem Commit
+      - name: Create git tag          # bleibt NACH dem Commit-Step
         run: |
-          git tag "${{ steps.bump.outputs.tag }}" ${{ steps.commit.outputs.commit_hash }}
-          git push origin "${{ steps.bump.outputs.tag }}"
+          git tag "${{ steps.bump.outputs.new_tag }}" ${{ steps.commit.outputs.commit_hash }}
+          git push origin "${{ steps.bump.outputs.new_tag }}"
 
   build-windows:
     needs: bump
