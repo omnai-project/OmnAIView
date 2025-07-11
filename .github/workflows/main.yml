@@ -16,50 +16,13 @@ permissions:
   actions: read
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Cache node_modules
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: node_modules-${{ runner.os }}-${{ runner.arch }}-node_${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Install deps
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci --no-audit --no-fund
-
-      - name: Build
-        run: npm run build
-
-      - name: Angular tests
-        working-directory: angular-frontend
-        run: npx ng test --watch=false
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: OmnAIView-Windows-${{ github.sha }}
-          path: |
-            electron/out/make/squirrel.windows/x64/RELEASES
-            electron/out/make/squirrel.windows/x64/*.nupkg
-            electron/out/make/squirrel.windows/x64/*.exe
-
-  release:
-    needs: build-windows
-    if: github.event_name == 'push'
+  bump:
     runs-on: ubuntu-latest
+    outputs:
+      sha:   ${{ steps.commit.outputs.commit_hash }}   # neuer Commit-SHA
+      tag:   ${{ steps.bump.outputs.new_tag }}         # z. B. v1.4.0
+      plain: ${{ steps.bump.outputs.plain_ver }}       # 1.4.0
+      pre:   ${{ steps.rel.outputs.pre }}     
 
     steps:
       - name: Checkout repository
@@ -96,13 +59,14 @@ jobs:
               return;
             }
 
-            const bump = ['major', 'minor', 'patch']
-              .find(t => labels.includes(`semver:${t}`)) ?? 'patch';
-            core.setOutput('bump', bump);
-
-            const pre = ['alpha', 'beta']
-              .find(p => labels.includes(`prerelease:${p}`)) ?? '';
-            core.setOutput('pre', pre);
+            core.setOutput(
+              'bump',
+              ['major','minor','patch'].find(t => labels.includes(`semver:${t}`)) ?? 'patch'
+            );
+            core.setOutput(
+              'pre',
+              ['alpha','beta'].find(p => labels.includes(`prerelease:${p}`)) ?? ''
+            );
 
       - name: Stop if release:skip
         if: env.SKIP_RELEASE == 'true'
@@ -128,61 +92,102 @@ jobs:
           preflag=""
           [[ -n "$pre" ]] && preflag="--preid $pre"
 
-          next=$(npx semver "$latest" -i "$bump" $preflag)
+             next=$(npx semver "$latest" -i "${{ steps.rel.outputs.bump }}" \
+                 $( [[ -n "${{ steps.rel.outputs.pre }}" ]] && echo --preid ${{ steps.rel.outputs.pre }}))
           new_tag="v$next"                   
 
           echo "new_tag=$new_tag"   >> "$GITHUB_OUTPUT"
           echo "plain_ver=$next"    >> "$GITHUB_OUTPUT"
 
-      - name: Create git tag
-        shell: bash
+      - name: Update package.json
         run: |
-          TAG=${{ steps.bump.outputs.new_tag }}
-          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-            echo "❌ Tag $TAG already exists. This should not happen"
-            exit 1
-          fi
-          git tag "$TAG"
-          git push origin "$TAG"
-
-      - name: Update package.json versions
-        shell: bash
-        run: |
-          set -euo pipefail
-          VER=${{ steps.bump.outputs.plain_ver }}
           for f in angular-frontend/package.json electron/package.json package.json; do
-            if [[ -f "$f" ]]; then
-              echo "✏️  $f -> $VER"
-              npx json -I -f "$f" -e "this.version='${VER}'"
-            else
-              echo "⚠️  $f nicht gefunden"
-              exit 1
-            fi
+            npx json -I -f "$f" -e "this.version='${{ steps.bump.outputs.plain_ver }}'"
           done
-
       - name: Commit bumped versions
-        uses: stefanzweifel/git-auto-commit-action@v5
+        id: commit         # zwingend, sonst kein commit_hash Output
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
-          branch: master
-          commit_message: "chore: bump version to ${{ steps.bump.outputs.new_tag }} [skip ci]"
+          commit_message: "chore: bump to ${{ steps.bump.outputs.new_tag }} [skip ci]"
           file_pattern: angular-frontend/package.json electron/package.json package.json
+      - name: Create git tag               # ← jetzt NACH dem Commit
+        run: |
+          git tag "${{ steps.bump.outputs.tag }}" ${{ steps.commit.outputs.commit_hash }}
+          git push origin "${{ steps.bump.outputs.tag }}"
 
+  build-windows:
+    needs: bump
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.bump.outputs.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Cache node_modules
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules-${{ runner.os }}-${{ runner.arch }}-node_${{ env.NODE_VERSION }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install deps
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci --no-audit --no-fund
+
+      - name: Build
+        run: npm run build
+
+      - name: Angular tests
+        working-directory: angular-frontend
+        run: npx ng test --watch=false
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OmnAIView-Windows-${{ needs.bump.outputs.sha }}
+          path: |
+            electron/out/make/squirrel.windows/x64/RELEASES
+            electron/out/make/squirrel.windows/x64/*.nupkg
+            electron/out/make/squirrel.windows/x64/*.exe
+
+  release: 
+    needs: [bump, build-windows]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.bump.outputs.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
-          name: OmnAIView-Windows-${{ github.sha }}
+          name: OmnAIView-Windows-${{ needs.bump.outputs.sha }}
           path: .     
           merge-multiple: true                   
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name:     ${{ steps.bump.outputs.new_tag }}
-          name:         ${{ steps.bump.outputs.new_tag }}
-          prerelease:   ${{ steps.rel.outputs.pre != '' }}
+          tag_name:   ${{ needs.bump.outputs.tag }}
+          name:       ${{ needs.bump.outputs.tag }}
+          prerelease: ${{ needs.bump.outputs.pre != '' }}
           generate_release_notes: true
           files: |
-            electron/out/make/squirrel.windows/x64/*.exe     
+            electron/out/make/squirrel.windows/x64/*.exe
             electron/out/make/squirrel.windows/x64/*.nupkg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
