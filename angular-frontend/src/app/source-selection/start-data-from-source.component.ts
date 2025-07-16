@@ -11,8 +11,8 @@ import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
     standalone: true,
     imports: [MatDialogModule, MatIconModule],
     template: `
-    <button mat-icon-button (click)="openModal()" aria-label="Start Data">
-      <mat-icon>play_arrow</mat-icon>
+    <button mat-icon-button (click)="toggleStartButton()" aria-label="Start Data" style="display: flex; padding: .3em" id="start-button">
+      <mat-icon>{{ measurementIsStarted ? 'stop' : 'play_arrow' }}</mat-icon>
     </button>
   `
 })
@@ -20,7 +20,15 @@ export class StartDataButtonComponent {
     private readonly dialog = inject(MatDialog);
     private readonly datasource = inject(DataSourceSelectionService);
     private readonly advancedMode = inject(AdvancedModeService);
+
+    protected measurementIsStarted: boolean = false;
+
+    resetAllData(): void {
+        // this.datasource.currentSource()?.data = {};
+    }
+
     openModal(): void {
+        this.resetAllData();
         if (this.advancedMode.enabled()) {
             const dialogRef = this.dialog.open(SourceSelectModalComponent, {
                 width: '60vw'
@@ -39,5 +47,18 @@ export class StartDataButtonComponent {
                 OmnAIScope.connect();
             }
         }
+    }
+
+    stopMeasurement(): void {
+        try {
+            this.datasource.currentSource()?.disconnect();
+        } catch(error: unknown) {
+            this.datasource.clearSelection();
+        }
+    }
+
+    toggleStartButton(): void {
+        this.measurementIsStarted ? this.stopMeasurement() : this.openModal();
+        this.measurementIsStarted = !this.measurementIsStarted;
     }
 }
