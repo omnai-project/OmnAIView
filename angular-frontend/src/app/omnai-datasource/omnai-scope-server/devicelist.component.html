@@ -1,6 +1,3 @@
-@if (isLiveDataConnected() || isRandomDataConnected()) {
-  <button (click)="disconnectSource()" id="buttonDisconnectSource">🛑</button>
-}
 @for (device of devices(); track device.UUID) {
 <ul>
     <li>
