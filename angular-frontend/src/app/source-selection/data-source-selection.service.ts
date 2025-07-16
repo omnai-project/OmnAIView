@@ -13,6 +13,7 @@ export interface DataPoint {
 export interface DataSource {
     connect(): unknown;
     disconnect(): void;
+    clearData(): void;
     data: Signal<Record<string, DataFormat[]>>
 }
 
@@ -38,7 +39,8 @@ export class DataSourceSelectionService {
             name: 'OmnAIScope',
             description: 'Live data from connected OmnAIScope devices',
             connect: this.liveDataService.connect.bind(this.liveDataService),
-            disconnect: this.liveDataService.connect.bind(this.liveDataService),
+            disconnect: this.liveDataService.disconnect.bind(this.liveDataService),
+            clearData: this.liveDataService.clearData.bind(this.liveDataService),
             data: this.liveDataService.data
         },
         {
@@ -47,6 +49,7 @@ export class DataSourceSelectionService {
             description: 'Random generated data points',
             connect: this.dummyDataService.connect.bind(this.dummyDataService),
             disconnect: this.dummyDataService.disconnect.bind(this.dummyDataService),
+            clearData: this.dummyDataService.clearData.bind(this.dummyDataService),
             data: this.dummyDataService.data
         },
         {
@@ -54,7 +57,8 @@ export class DataSourceSelectionService {
             name: 'CSV Data',
             description: 'Import a CSV file',
             connect: this.csvDataService.connect.bind(this.csvDataService),
-            disconnect: this.csvDataService.connect.bind(this.csvDataService),
+            disconnect: this.csvDataService.disconnect.bind(this.csvDataService),
+            clearData: this.csvDataService.clearData.bind(this.csvDataService),
             data: this.csvDataService.data
         }
     ]);

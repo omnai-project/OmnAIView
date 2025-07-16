@@ -169,6 +169,10 @@ export class OmnAIScopeDataService implements DataSource {
     }
   }
 
+  clearData(): void {
+    this.data.set({});
+  }
+
   // Typprüfung für OmnAI-Daten-Nachrichten
   private isOmnAIDataMessage(message: any): boolean {
     if (typeof message !== 'object' || message === null) return false;

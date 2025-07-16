@@ -23,12 +23,14 @@ export class StartDataButtonComponent {
 
     protected measurementIsStarted: boolean = false;
 
-    resetAllData(): void {
-        // this.datasource.currentSource()?.data = {};
+    clearAllData(): void {
+        this.datasource.availableSources().forEach( (source) => {
+            source.clearData();
+        });
     }
 
     openModal(): void {
-        this.resetAllData();
+        this.clearAllData();
         if (this.advancedMode.enabled()) {
             const dialogRef = this.dialog.open(SourceSelectModalComponent, {
                 width: '60vw'
@@ -50,11 +52,7 @@ export class StartDataButtonComponent {
     }
 
     stopMeasurement(): void {
-        try {
-            this.datasource.currentSource()?.disconnect();
-        } catch(error: unknown) {
-            this.datasource.clearSelection();
-        }
+        this.datasource.currentSource()?.disconnect();
     }
 
     toggleStartButton(): void {
