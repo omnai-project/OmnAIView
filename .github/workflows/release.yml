@@ -1,4 +1,9 @@
-name: CI-and-Release
+# Create new release via github CI on merge with master 
+# Versioning is calculated from git tags 
+## semver:minor, semver:major, semver:patch set which version number should be increased 
+## prerelease:alpha, perelease:beta set the release as a prerelease verison 
+## release:skip skip new release creation on merge 
+name: CI-for-Release
 
 on:
   push:
@@ -14,7 +19,7 @@ permissions:
   actions: read
 
 jobs:
-  bump:
+  bump: # creates a version tag from last version and PR labels 
     runs-on: ubuntu-latest
     outputs:
       sha:   ${{ steps.commit.outputs.commit_sha }}   
@@ -106,7 +111,7 @@ jobs:
           echo "new_tag=$new_tag"   >> "$GITHUB_OUTPUT"
           echo "plain_ver=$next"    >> "$GITHUB_OUTPUT"
 
-      - name: Update package.json
+      - name: Update package.json # updates the package.json files in the master repository to fit new version before building 
         run: |
           for f in angular-frontend/package.json electron/package.json package.json; do
             npx json -I -f "$f" -e "this.version='${{ steps.bump.outputs.plain_ver }}'"
@@ -123,9 +128,9 @@ jobs:
           git tag "${{ steps.bump.outputs.new_tag }}" ${{ steps.commit.outputs.sha }}
           git push origin "${{ steps.bump.outputs.new_tag }}"
 
-  build-windows:
+  build-windows: 
     needs: bump
-    runs-on: windows-latest
+    runs-on: windows-latest # create new windows artifact 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -166,7 +171,7 @@ jobs:
             electron/out/make/squirrel.windows/x64/*.nupkg
             electron/out/make/squirrel.windows/x64/*.exe
   
-  release:
+  release: # create new release in Github release section 
     needs: [bump, build-windows]
     runs-on: ubuntu-latest
     steps:
