@@ -17,7 +17,7 @@ import { select } from 'd3-selection';
 import { timeFormat } from 'd3-time-format';
 import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devicelist.component";
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
-import { StartDataButtonComponent } from "../source-selection/start-data-from-source.component";
+import { StartDataButtonComponent } from "../source-selection/start-data-button.component";
 import { DataSourceService } from './graph-data.service';
 import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils';
 import { DarkmodeComponent } from '../darkmode/darkmode.component';
