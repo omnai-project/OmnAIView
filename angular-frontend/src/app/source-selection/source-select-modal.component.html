@@ -13,9 +13,6 @@
                     @if (source.description; as description) {
                         <mat-card-content>{{ description }}</mat-card-content>
                     }
-                    <mat-card-actions  align="end">
-                        <button mat-button (click)="select(source)">Select</button>
-                    </mat-card-actions>
                 </mat-card>
             </li>
         }
@@ -23,8 +20,7 @@
     
 </mat-dialog-content>
 
-<mat-dialog-actions>
+<mat-dialog-actions align="end">
     <!--Buttons are disabled when no source is selected, "Clear Selection" button uses different style for visual contrast-->
-    <button mat-flat-button [class]="selected()? 'error' : ''" [disabled]="!selected()" (click)="clear()">Clear Selection</button>  
     <button mat-button [mat-dialog-close]="selected()" [disabled]="!selected()">Start</button>
 </mat-dialog-actions>
