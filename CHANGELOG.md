@@ -39,6 +39,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Update contribution workflow (#89)
 - Add darkmode via button toggle (#121)
 - Add workshop/advanced mode for car repair shops (#118)
+- Add CI for Release (#123)
 - Add stop and delete functionality to start button (#126)
 
 
