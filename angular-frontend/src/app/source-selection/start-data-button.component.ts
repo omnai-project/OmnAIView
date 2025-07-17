@@ -11,10 +11,11 @@ import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
     standalone: true,
     imports: [MatDialogModule, MatIconModule],
     template: `
-    <button mat-icon-button (click)="toggleStartButton()" aria-label="Start Data" style="display: flex; padding: .3em" id="start-button">
-      <mat-icon>{{ measurementIsStarted ? 'stop' : 'play_arrow' }}</mat-icon>
-    </button>
-  `
+        <button mat-icon-button (click)="toggleStartButton()" aria-label="Start Data" id="start-button">
+        <mat-icon>{{ measurementIsStarted ? 'stop' : 'play_arrow' }}</mat-icon>
+        </button>
+    `,
+    styles: `button { display: flex; padding: .3em }`,
 })
 export class StartDataButtonComponent {
     private readonly dialog = inject(MatDialog);
