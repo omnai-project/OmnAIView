@@ -11,11 +11,11 @@ const config: ForgeConfig = {
     icon: "./images/icon",
     asar: true,
     extraResource: [
-      "./res/omnai_BE/MiniOmni.exe", 
+      "./res/omnai_BE/OmnAIScopeBackend.exe",
       "./res/omnai_BE/libusb-1.0.dll",
       "./res/omnai_BE/abseil_dll.dll",
       "./res/omnai_BE/libprotobuf.dll",
-      "./src/version.json"    
+      "./src/version.json"
     ],
   },
   rebuildConfig: {},
@@ -23,10 +23,10 @@ const config: ForgeConfig = {
     new MakerSquirrel({
       setupIcon: './images/icon.ico',
       iconUrl: 'https://lugges.s3.nl-ams.scw.cloud/icon-OmnAIView.ico',
-    }, ["win32"]), 
-    new MakerZIP({}, ['darwin']), 
-    new MakerRpm({}), 
-    new MakerDeb({options: {icon: './images/icon.png'}})],
+    }, ["win32"]),
+    new MakerZIP({}, ['darwin']),
+    new MakerRpm({}),
+    new MakerDeb({ options: { icon: './images/icon.png' } })],
   plugins: [
     // Fuses are used to enable/disable various Electron functionality
     // at package time, before code signing the application

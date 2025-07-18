@@ -2,8 +2,8 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal, DestroyRef } from '@angular/core';
 import { DataSource } from '../../source-selection/data-source-selection.service';
-import {catchError, Observable, of, Subject, switchMap, takeUntil, timer} from 'rxjs';
-import {map, filter} from 'rxjs/operators';
+import { catchError, Observable, of, Subject, switchMap, takeUntil, timer } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
 import { BackendPortService } from './backend-port.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -56,7 +56,7 @@ export class OmnAIScopeDataService implements DataSource {
 
   private setupDevicePolling(): void {
     const pollInterval_ms = 15 * 1000;
-    timer(0, pollInterval_ms )
+    timer(0, pollInterval_ms)
       .pipe(
         filter(() => !this.isConnected() && this.port() !== null),
         switchMap(() => this.getDevices()),
@@ -85,7 +85,7 @@ export class OmnAIScopeDataService implements DataSource {
 
         return devices.map((device, index) => ({
           UUID: device.UUID,
-          color: colors[index]?.color ?? {r: 0, g: 0, b: 0}
+          color: colors[index]?.color ?? { r: 0, g: 0, b: 0 }
         }));
       }),
       catchError(error => {
@@ -97,7 +97,7 @@ export class OmnAIScopeDataService implements DataSource {
 
   connect(): void {
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      console.log('WebSocket ist bereits verbunden.');
+      console.log('WebSocket is already connected');
       return;
     }
 
@@ -108,18 +108,24 @@ export class OmnAIScopeDataService implements DataSource {
       this.isConnected.set(true);
       this.data.set({});
 
-      // Send start message
-      const deviceUuids = this.devices().map(device => device.UUID).join(" ");
-      if(!this.socket){
+      // define start message 
+      const startMessage = {
+        type: `start`,
+        uuids: this.devices().map(device => device.UUID),
+        rate: 2000
+      }
+      if (!this.socket) {
         throw new Error("Websocket is not defined");
       }
-      this.socket.send(deviceUuids);
+      // send startMessage 
+      console.log(JSON.stringify(startMessage));
+      this.socket.send(JSON.stringify(startMessage));
     });
 
     let ignoreCounter = 0;
     this.socket.addEventListener('message', (event) => {
       if (ignoreCounter < 2) {
-        // Die ersten Nachrichten manchmal ignorieren
+        // ignore first messages sometimes 
         ignoreCounter++;
         return;
       }
@@ -142,7 +148,7 @@ export class OmnAIScopeDataService implements DataSource {
             records[uuid] = existingData.concat(newDataPoints);
           });
 
-          return {...records};
+          return { ...records };
         });
       } else {
         console.warn('Unbekanntes Nachrichtenformat:', parsedMessage);

@@ -57,6 +57,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Stop-Button for Random Data Server (#115)
 - Change start-data button to mat-icon play_arrow button (#107)
 - Update PR Template to be more clear (#93)
+- Update programm to v1.1.1 of the OmnAIScope Backend(#130)
 
 
 ### Removed 
