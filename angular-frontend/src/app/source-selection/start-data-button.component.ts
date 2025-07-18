@@ -25,7 +25,7 @@ export class StartDataButtonComponent {
     protected measurementIsStarted: boolean = false;
 
     clearAllData(): void {
-        this.datasource.availableSources().forEach( (source) => {
+        this.datasource.availableSources().forEach((source) => {
             source.clearData();
         });
     }
@@ -44,6 +44,7 @@ export class StartDataButtonComponent {
             return;
         }
         else {
+            console.log("ich geh hier auch rein");
             const OmnAIScope = this.datasource.availableSources().find(s => s.id === 'omnaiscope');
             if (OmnAIScope) {
                 this.datasource.selectSource(OmnAIScope);
