@@ -24,6 +24,8 @@ export class CsvFileImportService implements DataSource {
   }
   disconnect(): void { }
   clearData(): void { }
+  save(): void {}
+  record(): void {}
   private readonly $data = signal<Record<string, DataFormat[]>>({});
   readonly data = this.$data.asReadonly();
 
