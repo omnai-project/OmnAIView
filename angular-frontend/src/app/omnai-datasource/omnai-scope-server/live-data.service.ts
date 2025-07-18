@@ -6,7 +6,6 @@ import { catchError, Observable, of, Subject, switchMap, takeUntil, timer } from
 import { map, filter } from 'rxjs/operators';
 import { BackendPortService } from './backend-port.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { start } from 'node:repl';
 
 interface DeviceInformation {
   UUID: string;
