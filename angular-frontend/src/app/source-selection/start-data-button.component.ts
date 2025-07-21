@@ -44,7 +44,6 @@ export class StartDataButtonComponent {
             return;
         }
         else {
-            console.log("ich geh hier auch rein");
             const OmnAIScope = this.datasource.availableSources().find(s => s.id === 'omnaiscope');
             if (OmnAIScope) {
                 this.datasource.selectSource(OmnAIScope);

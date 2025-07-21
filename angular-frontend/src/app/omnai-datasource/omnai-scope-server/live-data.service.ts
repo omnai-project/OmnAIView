@@ -53,8 +53,6 @@ export class OmnAIScopeDataService implements DataSource {
   });
 
   readonly #httpClient = inject(HttpClient);
-  private wsIsClosing = false;
-  private wsConnectIsPending = false;
 
   private setupDevicePolling(): void {
     const pollInterval_ms = 15 * 1000;
@@ -98,9 +96,8 @@ export class OmnAIScopeDataService implements DataSource {
   }
 
   connect(): void {
-
-    if (this.wsIsClosing) {
-      this.wsConnectIsPending = true; // disconnect function will call connect again after closing 
+    if (this.socket?.readyState === WebSocket.CLOSING) {
+      this.socket.addEventListener("close", () => this.connect(), { once: true });
       return;
     }
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
@@ -175,27 +172,7 @@ export class OmnAIScopeDataService implements DataSource {
 
   // close websocket connection
   disconnect(): void {
-    if (!this.socket || this.socket.readyState === WebSocket.CLOSED) {
-      return;
-    }
-    const ws = this.socket;
-    this.wsIsClosing = true;
-
-    ws.addEventListener(
-      'close',
-      () => {
-        this.wsIsClosing = false;
-        this.isConnected.set(false);
-
-        if (this.wsConnectIsPending) {
-          this.wsConnectIsPending = false;
-          this.connect();
-        }
-      },
-      { once: true }
-    );
-
-    this.socket.close();
+    if (this.socket?.readyState === WebSocket.OPEN) this.socket.close();
   }
 
   clearData(): void {
