@@ -129,17 +129,16 @@ ipcMain.handle('get-omnaiscope-backend-port', async () => {
   return omnaiscopeBackendManager.getPort();
 });
 
-ipcMain.handle('download-file', async (_evt, { serverpath }) => {
+ipcMain.handle('download-file', async (_evt, { serverpath, dir, fileName }) => {
   console.log("Download started");
-  const saveDir = app.getPath('downloads');
-  const filePath = path.join(saveDir, serverpath);
-  console.log(filePath);
+  let savepath = path.join(dir, fileName);
+  console.log(savepath);
   const url = `http://127.0.0.1:${omnaiscopeBackendManager.getPort()}${serverpath}`;
   console.log(url);
   const win = BrowserWindow.getFocusedWindow();
 
   session.defaultSession.once('will-download', (event, item) => {
-    item.setSavePath(filePath);
+    item.setSavePath(savepath);
   });
 
   win.webContents.downloadURL(url);

@@ -19,6 +19,16 @@ export class SaveDataLocallyModalComponent {
   protected fileName: string = '';
   private dialogRef = inject(MatDialogRef);
 
+  onFolderPicked(ev: Event) {
+    const input = ev.target as HTMLInputElement;
+    const f = input.files?.[0]; // first file in selected folder 
+    if (!f) return;
+    if (window.electronAPI) {
+      const fullPath = window.electronAPI.getAbsolutePath(f);
+      this.filePath = fullPath.split(/[\\/]/).slice(0, -1).join('/');
+    }
+  }
+
   onCancel(): void {
     this.dialogRef.close(); // Close dialog without data
   }

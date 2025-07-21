@@ -11,17 +11,17 @@
     </g>
 </svg>
 <div class="button-wrapper">
-<app-start-data-button />
-<app-save-data-button />
-<app-device-list />
-<mat-slide-toggle [checked]="advancedMode.enabled()" (change)="advancedMode.toggle()">
-    Advanced Mode
-</mat-slide-toggle>
-<mat-slide-toggle [checked]="xAxisTimeMode() === 'relative'" (change)="onXAxisTimeModeToggle($event.checked)">
-    Relative Time
-</mat-slide-toggle>
+    <app-start-data-button />
+    <app-save-data-button />
+    <app-device-list />
+    <mat-slide-toggle [checked]="advancedMode.enabled()" (change)="advancedMode.toggle()">
+        Advanced Mode
+    </mat-slide-toggle>
+    <mat-slide-toggle [checked]="xAxisTimeMode() === 'relative'" (change)="onXAxisTimeModeToggle($event.checked)">
+        Relative Time
+    </mat-slide-toggle>
 
-<app-darkmode></app-darkmode>
+    <app-darkmode></app-darkmode>
 </div>
 <div style="display: none;">
     <h4>Debug Output</h4>

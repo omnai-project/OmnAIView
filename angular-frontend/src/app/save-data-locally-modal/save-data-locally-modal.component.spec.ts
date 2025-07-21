@@ -15,7 +15,7 @@ describe('SaveDataLocallyModalComponent', () => {
         { provide: MatDialogRef, useValue: dialogRefSpy }
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SaveDataLocallyModalComponent);
     component = fixture.componentInstance;

@@ -7,6 +7,8 @@ import { map, filter } from 'rxjs/operators';
 import { BackendPortService } from './backend-port.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs/operators';
+import { SaveDataLocallyModalComponent } from '../../save-data-locally-modal/save-data-locally-modal.component';
+import { MatDialog } from '@angular/material/dialog';
 
 interface DeviceInformation {
   UUID: string;
@@ -48,11 +50,13 @@ type WSMessage = DataMessage | FileReadyMessage;
 export class OmnAIScopeDataService implements DataSource {
 
   private readonly destroyRef = inject(DestroyRef);
+  private readonly dialog = inject(MatDialog);
 
   constructor() {
     this.setupDevicePolling();
   }
   private socket: WebSocket | null = null;
+
 
   readonly isConnected = signal<boolean>(false);
   readonly devices = signal<DeviceInformation[]>([]);
@@ -214,24 +218,30 @@ export class OmnAIScopeDataService implements DataSource {
   }
 
   save(): void {
-    let serverpath = '/download/data.txt';
-    const saveMessage = {
-      type: `save`,
-      uuids: this.devices().map(device => device.UUID),
-      path: 'data.txt'
-    }
-    this.fileReady$
-      .pipe(
-        filter(m => m.url === serverpath),
-        take(1)
-      )
-      .subscribe(() => {
-        window.electronAPI?.downloadFile(serverpath)
-          .catch(err => console.error('Download‑Error', err));
-      });
-    this.socket?.send(JSON.stringify(saveMessage));
-
+    const dialogRef = this.dialog.open(SaveDataLocallyModalComponent, {
+      width: '60vw'
+    });
+    dialogRef.afterClosed().pipe(filter(Boolean)).subscribe(({ dir, fileName }) => {
+      let serverpath = `/download/${fileName}`;
+      const saveMessage = {
+        type: `save`,
+        uuids: this.devices().map(device => device.UUID),
+        path: `${fileName}`
+      }
+      this.fileReady$
+        .pipe(
+          filter(m => m.url === serverpath),
+          take(1)
+        )
+        .subscribe(() => {
+          window.electronAPI?.downloadFile(serverpath, dir, fileName)
+            .catch(err => console.error('Download‑Error', err));
+        });
+      this.socket?.send(JSON.stringify(saveMessage));
+      console.log("dialog closed");
+    });
   }
+
   record(): void {
     console.log('Start recording OmnAI data ...');
   }

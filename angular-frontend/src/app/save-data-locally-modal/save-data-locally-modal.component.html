@@ -1,15 +1,16 @@
 <h2 mat-dialog-title>Saving data locally</h2>
 <mat-dialog-content>
     <button mat-raised-button (click)="fileInput.click()">Ordner auswählen</button>
-    <input #fileInput type="file" webkitdirectory style="display:none;">
+    <input #fileInput type="file" webkitdirectory style="display:none;" (change)="onFolderPicked($event)">
 </mat-dialog-content>
 <mat-dialog-content>
     <mat-form-field>
         <mat-label>File Name</mat-label>
-        <input matInput [(ngModel)]="fileName"/>
+        <input matInput [(ngModel)]="fileName" />
     </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-raised-button [mat-dialog-close]="fileName">Ok</button>
+    <button mat-raised-button [disabled]="!filePath || !fileName"
+        [mat-dialog-close]="{dir: filePath, fileName: fileName}">Ok</button>
 </mat-dialog-actions>
