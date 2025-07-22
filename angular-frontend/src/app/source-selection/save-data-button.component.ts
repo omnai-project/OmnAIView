@@ -3,7 +3,6 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { DataSourceSelectionService } from "./data-source-selection.service";
 
-
 @Component({
     selector: 'app-save-data-button',
     standalone: true,
@@ -21,5 +20,5 @@ export class SaveDataButtonComponent {
     saveData(): void {
         if (!this.datasource.currentSource()) console.log("No datasource connected.");
         this.datasource.currentSource()?.save();
-    }   
+    }
 }
