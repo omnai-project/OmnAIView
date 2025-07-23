@@ -96,6 +96,10 @@ export class OmnAIScopeDataService implements DataSource {
   }
 
   connect(): void {
+    if (this.socket?.readyState === WebSocket.CLOSING) {
+      this.socket.addEventListener("close", () => this.connect(), { once: true });
+      return;
+    }
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       console.log('WebSocket is already connected');
       return;
@@ -166,13 +170,9 @@ export class OmnAIScopeDataService implements DataSource {
     });
   }
 
-  // WebSocket-Verbindung schließen
+  // close websocket connection
   disconnect(): void {
-    if (this.socket) {
-      this.socket.close();
-      this.socket = null;
-      this.isConnected.set(false);
-    }
+    if (this.socket?.readyState === WebSocket.OPEN) this.socket.close();
   }
 
   clearData(): void {

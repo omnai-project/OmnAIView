@@ -25,7 +25,7 @@ export class StartDataButtonComponent {
     protected measurementIsStarted: boolean = false;
 
     clearAllData(): void {
-        this.datasource.availableSources().forEach( (source) => {
+        this.datasource.availableSources().forEach((source) => {
             source.clearData();
         });
     }
