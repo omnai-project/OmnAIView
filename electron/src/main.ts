@@ -11,7 +11,7 @@ try {
 } catch (err) {
   console.log('electron-squirrel-startup not available:', err.message);
 }
-
+const fs_promises = require('fs').promises;
 
 let mainWindow: BrowserWindow;
 
@@ -143,8 +143,17 @@ ipcMain.handle('download-file', async (_evt, { serverpath, dir, fileName }) => {
 
   win.webContents.downloadURL(url);
   console.log("download finished");
-}
-)
+});
+
+ipcMain.handle('save-file', async (event, { data, folderPath, fileName }) => {
+  try {
+    const filePath = path.join(folderPath, fileName);
+    fs_promises.writeFile(filePath, data);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
 
 app.whenReady().then(() => {
   createWindow();

@@ -45,8 +45,17 @@ export class DummyDataService implements DataSource {
     }
     
     save(): void {
-        this.dialog.open(SaveDataLocallyModalComponent, { width: '60vw' });
-
+        if (!this.isConnected) {
+            console.log('Dummy data source not connected.');
+            return;
+        } else {
+            this.disconnect();
+        }
+        const dialogRef = this.dialog.open(SaveDataLocallyModalComponent, { width: '60vw' });
+        dialogRef.afterClosed().subscribe(({dir, fileName}) => {
+            const dummyData = JSON.stringify(this._data());
+            if(window.electronAPI) window.electronAPI.saveFile(dummyData, dir, fileName);
+        })
     }
     
     record(): void {

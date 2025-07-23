@@ -5,5 +5,6 @@ import { contextBridge, ipcRenderer, webUtils } from "electron";
 contextBridge.exposeInMainWorld('electronAPI', {
     getOmnAIScopeBackendPort: (): Promise<number> => ipcRenderer.invoke('get-omnaiscope-backend-port'),
     downloadFile: (serverpath: string, dir: string, fileName: string) => ipcRenderer.invoke('download-file', { serverpath, dir, fileName }),
-    getAbsolutePath: (file: File): string => webUtils.getPathForFile(file)
+    getAbsolutePath: (file: File): string => webUtils.getPathForFile(file),
+    saveFile: (data: string, folderPath: string, fileName: string) => ipcRenderer.invoke('save-file', { data, folderPath, fileName })
 });
