@@ -11,7 +11,7 @@ const config: ForgeConfig = {
     icon: "./images/icon",
     asar: true,
     extraResource: [
-      "./res/omnai_BE/OmnAIScopeBackend.exe",
+      "./res/omnai_BE/OmnAIScope-DataServer.exe",
       "./res/omnai_BE/libusb-1.0.dll",
       "./res/omnai_BE/abseil_dll.dll",
       "./res/omnai_BE/libprotobuf.dll",

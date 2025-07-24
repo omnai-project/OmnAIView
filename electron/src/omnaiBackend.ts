@@ -50,8 +50,8 @@ export const omnaiscopeBackendManager = (() => { // singelton for only one possi
      */
     function getBackendPath(): string {
         const exePath: string = app.isPackaged
-            ? join(process.resourcesPath, "OmnAIScopeBackend.exe") // production mode 
-            : join(__dirname, "..", "res", "omnai_BE", "OmnAIScopeBackend.exe") // dev mode 
+            ? join(process.resourcesPath, "OmnAIScope-DataServer.exe") // production mode 
+            : join(__dirname, "..", "res", "omnai_BE", "OmnAIScope-DataServer.exe") // dev mode 
 
         return exePath;
     }
