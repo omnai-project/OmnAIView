@@ -1,7 +1,8 @@
-import { app, BrowserWindow, ipcMain, shell, Menu, dialog} from 'electron';
+import { app, BrowserWindow, ipcMain, shell, Menu, dialog } from 'electron';
 import * as path from "path";
 import * as fs from 'fs';
 import { omnaiscopeBackendManager } from './omnaiBackend';
+import { session } from 'electron';
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 try {
   if (require('electron-squirrel-startup')) {
@@ -10,16 +11,16 @@ try {
 } catch (err) {
   console.log('electron-squirrel-startup not available:', err.message);
 }
-
+const fs_promises = require('fs').promises;
 
 let mainWindow: BrowserWindow;
 
 function getVersionPath(): string {
-  const versionPath: string = app.isPackaged 
+  const versionPath: string = app.isPackaged
     ? path.join(process.resourcesPath, "version.json")
     : path.join(__dirname, "..", "src", "version.json")
 
-    return versionPath; 
+  return versionPath;
 }
 
 const versionInfo = JSON.parse(fs.readFileSync(getVersionPath(), 'utf-8'));
@@ -37,7 +38,7 @@ const createWindow = (): void => {
     },
   });
   const indexPath: string = path.join(__dirname, "..", "res", "angular", "browser", "index.csr.html");
-  mainWindow.loadFile(indexPath).catch(err => console.error("Fehler beim Laden der HTML-Datei:", err));
+  mainWindow.loadFile(indexPath).catch(err => console.error("Error loading html file:", err));
   mainWindow.webContents.on('did-fail-load', () => {
     console.log('Electron was unable to find path due to missing History function thus defaulting to Entrypoint');
     mainWindow.loadFile(indexPath).catch(err => console.error("The default entrypoint HTML file could not be loaded", err));
@@ -50,11 +51,11 @@ const menuScope = [
     submenu: [
       {
         label: 'Import',
-        click: async () => {console.log("Clicked File:Import")}
+        click: async () => { console.log("Clicked File:Import") }
       },
       {
         label: 'Export',
-        click: async () => {console.log("Clicked File:Export")}
+        click: async () => { console.log("Clicked File:Export") }
       },
       {
         label: 'Close',
@@ -66,27 +67,27 @@ const menuScope = [
     ]
   },
 
-    {
-  label: 'Analysis',
-  submenu: [
-    {
-      label: 'Minimum',
-      click: async () => {console.log("Clicked Analysis:Minimum")}
-    },
-    {
-      label: 'Maximum',
-      click: async () => {console.log("Clicked Analysis:Maximum")}
-    },
-    {
-      label: 'Median',
-      click: async () => {console.log("Clicked Analysis:Median")}
-    },
-    {
-      label: 'PWM',
-      click: async () => {console.log("Clicked Analysis:PWM")}
-    }
-  ]
-},
+  {
+    label: 'Analysis',
+    submenu: [
+      {
+        label: 'Minimum',
+        click: async () => { console.log("Clicked Analysis:Minimum") }
+      },
+      {
+        label: 'Maximum',
+        click: async () => { console.log("Clicked Analysis:Maximum") }
+      },
+      {
+        label: 'Median',
+        click: async () => { console.log("Clicked Analysis:Median") }
+      },
+      {
+        label: 'PWM',
+        click: async () => { console.log("Clicked Analysis:PWM") }
+      }
+    ]
+  },
   {
     label: 'Help',
     submenu: [{
@@ -100,21 +101,21 @@ const menuScope = [
         })
       }
     },
-      {
-        label: 'Support-Website',
-        click: async () => {
-          shell.openExternal("https://omnaiscope.auto-intern.de/support/")
-        }
-      },
-      {
-        label: 'Developer-Tools',
-        accelerator: 'CmdOrCtrl+I',
-        click: () => {
-          if (mainWindow) {
-            mainWindow.webContents.toggleDevTools();
-          }
+    {
+      label: 'Support-Website',
+      click: async () => {
+        shell.openExternal("https://omnaiscope.auto-intern.de/support/")
+      }
+    },
+    {
+      label: 'Developer-Tools',
+      accelerator: 'CmdOrCtrl+I',
+      click: () => {
+        if (mainWindow) {
+          mainWindow.webContents.toggleDevTools();
         }
       }
+    }
     ]
   }
 ];
@@ -126,6 +127,37 @@ omnaiscopeBackendManager.startBackend();
 
 ipcMain.handle('get-omnaiscope-backend-port', async () => {
   return omnaiscopeBackendManager.getPort();
+});
+
+ipcMain.handle('download-file', async (_evt, { serverpath, dir, fileName }) => {
+  console.log("Download started");
+  let savepath = path.join(dir, fileName);
+  console.log(savepath);
+  const url = `http://127.0.0.1:${omnaiscopeBackendManager.getPort()}${serverpath}`;
+  console.log(url);
+  const win = BrowserWindow.getFocusedWindow();
+  return new Promise<void>((resolve, reject) => {
+    session.defaultSession.once('will-download', (event, item) => {
+      item.setSavePath(savepath);
+
+      item.once('done', (_ev, state) => {
+        state === 'completed' ? resolve() : reject(new Error("Download ${state}"));
+      });
+    });
+
+    win.webContents.downloadURL(url);
+    console.log("download finished");
+  });
+});
+
+ipcMain.handle('save-file', async (event, { data, folderPath, fileName }) => {
+  try {
+    const filePath = path.join(folderPath, fileName);
+    fs_promises.writeFile(filePath, data);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 });
 
 app.whenReady().then(() => {

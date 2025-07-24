@@ -1,8 +1,8 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { type DataFormat, OmnAIScopeDataService } from '../omnai-datasource/omnai-scope-server/live-data.service';
 import { Observable } from 'rxjs';
-import { DummyDataService } from '../omnai-datasource/random-data-server/random-data.service';
- import {CsvFileImportService} from '../omnai-datasource/csv-file-import/csv-file-import.service';
+import { DummyDataService } from '../omnai-datasource/dummy-data-server/dummy-data.service';
+import { CsvFileImportService } from '../omnai-datasource/csv-file-import/csv-file-import.service';
 /** Dummy interface to match your expected shape */
 export interface DataPoint {
     x: number;
@@ -14,11 +14,13 @@ export interface DataSource {
     connect(): unknown;
     disconnect(): void;
     clearData(): void;
+    save(): void;
+    record(): void;
     data: Signal<Record<string, DataFormat[]>>
 }
 
 
-export interface DataSourceInfo  extends DataSource{
+export interface DataSourceInfo extends DataSource {
     id: string;
     name: string;
     description?: string;
@@ -41,6 +43,8 @@ export class DataSourceSelectionService {
             connect: this.liveDataService.connect.bind(this.liveDataService),
             disconnect: this.liveDataService.disconnect.bind(this.liveDataService),
             clearData: this.liveDataService.clearData.bind(this.liveDataService),
+            save: this.liveDataService.save.bind(this.liveDataService),
+            record: this.liveDataService.record.bind(this.liveDataService),
             data: this.liveDataService.data
         },
         {
@@ -50,6 +54,8 @@ export class DataSourceSelectionService {
             connect: this.dummyDataService.connect.bind(this.dummyDataService),
             disconnect: this.dummyDataService.disconnect.bind(this.dummyDataService),
             clearData: this.dummyDataService.clearData.bind(this.dummyDataService),
+            save: this.dummyDataService.save.bind(this.dummyDataService),
+            record: this.dummyDataService.record.bind(this.dummyDataService),
             data: this.dummyDataService.data
         },
         {
@@ -59,6 +65,8 @@ export class DataSourceSelectionService {
             connect: this.csvDataService.connect.bind(this.csvDataService),
             disconnect: this.csvDataService.disconnect.bind(this.csvDataService),
             clearData: this.csvDataService.clearData.bind(this.csvDataService),
+            save: this.csvDataService.save.bind(this.csvDataService),
+            record: this.csvDataService.record.bind(this.csvDataService),
             data: this.csvDataService.data
         }
     ]);

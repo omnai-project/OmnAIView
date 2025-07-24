@@ -41,6 +41,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Add workshop/advanced mode for car repair shops (#118)
 - Add CI for Release (#123)
 - Add stop and delete functionality to start button (#126)
+- Add save button and save functionality (#134)
 
 
 ### Changed 
@@ -57,8 +58,9 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Stop-Button for Random Data Server (#115)
 - Change start-data button to mat-icon play_arrow button (#107)
 - Update PR Template to be more clear (#93)
-- Update programm to v1.1.1 of the OmnAIScope Backend(#130)
-- Fix start/stop conditions for car mode(#131)
+- Update programm to v1.1.1 of the OmnAIScope Backend (#130)
+- Fix start/stop conditions for car mode (#131)
+- Update OmnAIScope Backend/ OmnAIScope-DataServer to v1.2.0 (#134)
 
 
 ### Removed 
