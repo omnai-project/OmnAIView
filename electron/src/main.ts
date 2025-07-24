@@ -136,13 +136,18 @@ ipcMain.handle('download-file', async (_evt, { serverpath, dir, fileName }) => {
   const url = `http://127.0.0.1:${omnaiscopeBackendManager.getPort()}${serverpath}`;
   console.log(url);
   const win = BrowserWindow.getFocusedWindow();
+  return new Promise<void>((resolve, reject) => {
+    session.defaultSession.once('will-download', (event, item) => {
+      item.setSavePath(savepath);
 
-  session.defaultSession.once('will-download', (event, item) => {
-    item.setSavePath(savepath);
+      item.once('done', (_ev, state) => {
+        state === 'completed' ? resolve() : reject(new Error("Download ${state}"));
+      });
+    });
+
+    win.webContents.downloadURL(url);
+    console.log("download finished");
   });
-
-  win.webContents.downloadURL(url);
-  console.log("download finished");
 });
 
 ipcMain.handle('save-file', async (event, { data, folderPath, fileName }) => {

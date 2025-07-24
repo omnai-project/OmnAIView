@@ -9,6 +9,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs/operators';
 import { SaveDataLocallyModalComponent } from '../../save-data-locally-modal/save-data-locally-modal.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DownloadProgressComponent } from './downloadProgress.component';
 
 interface DeviceInformation {
   UUID: string;
@@ -52,7 +54,7 @@ export class OmnAIScopeDataService implements DataSource {
   private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
 
-  constructor() {
+  constructor(private snackBar: MatSnackBar) {
     this.setupDevicePolling();
   }
   private socket: WebSocket | null = null;
@@ -226,8 +228,12 @@ export class OmnAIScopeDataService implements DataSource {
       const saveMessage = {
         type: `save`,
         uuids: this.devices().map(device => device.UUID),
-        path: `${fileName}`
+        path: `${fileName}`,
+        format: `csv`
       }
+      const progressRef = this.dialog.open(DownloadProgressComponent, {
+        disableClose: true
+      });
       this.fileReady$
         .pipe(
           filter(m => m.url === serverpath),
@@ -235,7 +241,13 @@ export class OmnAIScopeDataService implements DataSource {
         )
         .subscribe(() => {
           window.electronAPI?.downloadFile(serverpath, dir, fileName)
-            .catch(err => console.error('Download‑Error', err));
+            .then(() => {
+              this.snackBar.open('File sucessfully saved ✓', '', { duration: 4000 });
+            })
+            .catch(() => {
+              this.snackBar.open('Saving error', '', { duration: 4000 });
+            })
+            .finally(() => progressRef.close());
         });
       this.socket?.send(JSON.stringify(saveMessage));
       console.log("dialog closed");
