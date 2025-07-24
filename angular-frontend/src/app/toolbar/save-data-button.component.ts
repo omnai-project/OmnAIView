@@ -1,7 +1,7 @@
 import { Component, inject } from "@angular/core";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
-import { DataSourceSelectionService } from "./data-source-selection.service";
+import { DataSourceSelectionService } from "../source-selection/data-source-selection.service";
 
 @Component({
     selector: 'app-save-data-button',
