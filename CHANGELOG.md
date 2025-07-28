@@ -61,6 +61,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Update programm to v1.1.1 of the OmnAIScope Backend (#130)
 - Fix start/stop conditions for car mode (#131)
 - Update OmnAIScope Backend/ OmnAIScope-DataServer to v1.2.0 (#134)
+- Update OmnAIScope-DataServer to v1.2.1 (#135)
 
 
 ### Removed 
