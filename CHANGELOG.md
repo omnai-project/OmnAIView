@@ -42,6 +42,7 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Add CI for Release (#123)
 - Add stop and delete functionality to start button (#126)
 - Add save button and save functionality (#134)
+- Add csv parser for OmnAIScope and Random Dummy data files (#136)
 
 
 ### Changed 
