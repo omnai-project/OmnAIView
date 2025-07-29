@@ -24,6 +24,7 @@ import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils
 import { DarkmodeComponent } from '../darkmode/darkmode.component';
 import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
 import { ZoomableDirective } from '../shared/graph-zoom.directive';
+import { SettingsMenuComponent } from '../settings/setting-menu.component';
 
 /**
  * How far the user can zoom *in*
@@ -43,7 +44,7 @@ const MINZOOM = 0.5;
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective],
+  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective, SettingsMenuComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GraphComponent {
