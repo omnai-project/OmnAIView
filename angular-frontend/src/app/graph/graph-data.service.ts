@@ -11,10 +11,7 @@ import { scaleLinear as d3ScaleLinear, scaleUtc as d3ScaleUtc } from 'd3-scale';
 import { line as d3Line } from 'd3-shape';
 import { DataSourceSelectionService } from '../source-selection/data-source-selection.service';
 import { zoomIdentity, ZoomTransform } from 'd3-zoom';
-
-type UnwrapSignal<T> = T extends import('@angular/core').Signal<infer U>
-  ? U
-  : never;
+import type { UnwrapSignal } from '../utils/unwrap-signal.type';
 
 /**
  * Describes the potential Domain values for the x-axis
