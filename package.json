@@ -1,23 +1,26 @@
 {
   "name": "omnaiview-parent",
-  "version": "0.2.0",
+  "version": "1.5.0",
   "description": "Frontend for time-series data receiving, visualising and analysing",
   "private": true,
-  "workspaces": ["angular-frontend", "electron"],
+  "workspaces": [
+    "angular-frontend",
+    "electron"
+  ],
   "scripts": {
-    "prepare":                  "node version-information.js",
-    "start:angular":            "npm exec -w angular-frontend ng serve",
-    "build:angular":            "npm run prepare && npm exec -w angular-frontend ng build",
-    "watch:angular":            "npm exec -w angular-frontend ng build --watch --configuration development",
-    "test:angular":             "npm exec -w angular-frontend ng test",
-    "compodoc:build":           "npm exec -w angular-frontend compodoc -p tsconfig.doc.json",
+    "prepare": "node version-information.js",
+    "start:angular": "npm exec -w angular-frontend ng serve",
+    "build:angular": "npm run prepare && npm exec -w angular-frontend ng build",
+    "watch:angular": "npm exec -w angular-frontend ng build --watch --configuration development",
+    "test:angular": "npm exec -w angular-frontend ng test",
+    "compodoc:build": "npm exec -w angular-frontend compodoc -p tsconfig.doc.json",
     "compodoc:build-and-serve": "npm exec -w angular-frontend compodoc -p tsconfig.doc.json -s",
-    "compodoc:serve":           "npm exec -w angular-frontend compodoc -s",
-    "serve:ssr":                "node electron/res/angular/server/server.mjs",
-    "start:electron":           "npm exec -w electron tsc && npm exec -w electron electron-forge start",
-    "build:electron":           "npm run prepare && npm exec -w electron tsc && npm exec -w electron electron-forge make",
-    "package:electron":         "npm exec -w electron electron-forge package",
-    "publish:electron":         "npm exec -w electron electron-forge publish",
-    "build":                    "npm run prepare && npm run build:angular && npm run build:electron"
+    "compodoc:serve": "npm exec -w angular-frontend compodoc -s",
+    "serve:ssr": "node electron/res/angular/server/server.mjs",
+    "start:electron": "npm exec -w electron tsc && npm exec -w electron electron-forge start",
+    "build:electron": "npm run prepare && npm exec -w electron tsc && npm exec -w electron electron-forge make",
+    "package:electron": "npm exec -w electron electron-forge package",
+    "publish:electron": "npm exec -w electron electron-forge publish",
+    "build": "npm run prepare && npm run build:angular && npm run build:electron"
   }
 }

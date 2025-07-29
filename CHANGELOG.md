@@ -5,7 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+
+## [v1.5.0-alpha]
+
+### Added 
+- Add csv parser for OmnAIScope and Random Dummy data files (#136)
+### Changed 
+- Update OmnAIScope-DataServer to v1.2.1 (#135)
+- Update Versionnumber (#139)
+- Update changelog to fit versions and keepachangelog format (#139)
+
+## [v1.4.0-alpha]
+
+### Added 
+- Add save button and save functionality (#134)
+### Changed 
+- Update OmnAIScope Backend/ OmnAIScope-DataServer to v1.2.0 (#134)
+
+## [v1.3.1-alpha]
+
+### Changed 
+- Fix start/stop conditions for car mode (#131)
+
+## [v1.3.0-alpha]
+
+### Added
+- Add CI for Release (#123)
+- Add stop and delete functionality to start button (#126)
+### Changed 
+- Update programm to v1.1.1 of the OmnAIScope Backend (#130)
+
+## [v1.2.0-alpha]
+
+### Added 
+- Add workshop/advanced mode for car repair shops (#118)
+## [v1.1.0-alpha]
+### Added 
+- Add darkmode via button toggle (#121)
+
+### [v1.0.0-alpha]
 
 ### Added 
 - Initial Angular Setup (#8)
@@ -37,13 +75,6 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Secure reloading of entrypoint via did-fail-load Event in Electron (#100)
 - Add issue template (#89)
 - Update contribution workflow (#89)
-- Add darkmode via button toggle (#121)
-- Add workshop/advanced mode for car repair shops (#118)
-- Add CI for Release (#123)
-- Add stop and delete functionality to start button (#126)
-- Add save button and save functionality (#134)
-- Add csv parser for OmnAIScope and Random Dummy data files (#136)
-
 
 ### Changed 
 
@@ -59,11 +90,6 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Stop-Button for Random Data Server (#115)
 - Change start-data button to mat-icon play_arrow button (#107)
 - Update PR Template to be more clear (#93)
-- Update programm to v1.1.1 of the OmnAIScope Backend (#130)
-- Fix start/stop conditions for car mode (#131)
-- Update OmnAIScope Backend/ OmnAIScope-DataServer to v1.2.0 (#134)
-- Update OmnAIScope-DataServer to v1.2.1 (#135)
-
 
 ### Removed 
 
