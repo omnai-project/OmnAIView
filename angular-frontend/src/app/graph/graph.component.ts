@@ -66,7 +66,7 @@ export class GraphComponent {
     }
   }
 
-  private zoomBehaviour!: ZoomBehavior<SVGSVGElement, unknown>;
+  private zoomBehaviour: ZoomBehavior<SVGSVGElement, unknown> | null = null;
 
   ngAfterViewInit() {
     if (this.isInBrowser) {
