@@ -44,7 +44,7 @@ const MINZOOM = 0.5;
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
   imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GraphComponent {
   readonly dataservice = inject(DataSourceService);

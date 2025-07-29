@@ -1,4 +1,4 @@
-import { AfterViewInit, Directive, OnDestroy, Input, inject, ElementRef } from "@angular/core";
+import { AfterViewInit, Directive, OnDestroy, Input, inject, ElementRef, input } from "@angular/core";
 import { ZoomBehavior, zoom, ZoomTransform } from "d3-zoom";
 import { select } from "d3";
 import { DataSourceService } from "../graph/graph-data.service";
@@ -13,8 +13,7 @@ import { DataSourceService } from "../graph/graph-data.service";
  *   <svg appZoomable [minZoom]="0.5" [maxZoom]="32"></svg>
  */
 @Directive({
-    selector: '[appZoomable]',
-    standalone: true
+    selector: '[appZoomable]'
 })
 export class ZoomableDirective implements AfterViewInit, OnDestroy {
     /**
@@ -22,13 +21,13 @@ export class ZoomableDirective implements AfterViewInit, OnDestroy {
     * MINZOOM < 1 compresses multiple data‑pixels into one screen‑pixel.
     * User can shrink the graph up to MINZOOM x 
     */
-    @Input() MINZOOM = 0.5;
+    MINZOOM = input(0.5);
     /**
      * How far the user can zoom *in*
      * A zoom factor k means “one data‑pixel covers k canvas‑pixels".
      * User can magnify the graph up to MAXZOOM x 
      */
-    @Input() MAXZOOM = 32;
+    MAXZOOM = input(32);
 
     private readonly dataservice = inject(DataSourceService);
     private readonly svgElement = inject(ElementRef) as ElementRef<SVGSVGElement>;
@@ -45,10 +44,10 @@ export class ZoomableDirective implements AfterViewInit, OnDestroy {
     private initZoom() {
 
         this.zoomBehaviour = zoom<SVGSVGElement, unknown>()
-            .scaleExtent([this.MINZOOM, this.MAXZOOM])
+            .scaleExtent([this.MINZOOM(), this.MAXZOOM()])
             .on('zoom', ({ transform }) => this.onZoom(transform));
 
-        select(this.svgElement.nativeElement).call(this.zoomBehaviour as any);
+        select(this.svgElement.nativeElement).call(this.zoomBehaviour);
     }
 
     private onZoom(t: ZoomTransform) {
