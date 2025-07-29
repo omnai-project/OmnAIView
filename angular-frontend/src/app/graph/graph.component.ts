@@ -11,7 +11,7 @@ import {
   type ElementRef
 } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NumberValue, transition } from 'd3';
+import { NumberValue, transition, zoom, ZoomBehavior, ZoomTransform } from 'd3';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
 import { timeFormat } from 'd3-time-format';
@@ -24,6 +24,14 @@ import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils
 import { DarkmodeComponent } from '../darkmode/darkmode.component';
 import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
 
+/**
+ * Maximal mulitplikation factor of distanz between two pixels 
+ */
+const MAXZOOM = 32;
+/**
+ * Minimal mulitplikation factor of distanz between two pixels 
+ */
+const MINZOOM = 0.5;
 @Component({
   selector: 'app-graph',
   standalone: true,
@@ -54,9 +62,40 @@ export class GraphComponent {
     }
   }
 
-  updateGraphDimensions(dimension: { width: number, height: number }) {
-    this.dataservice.updateGraphDimensions(dimension)
+  private zoomBehaviour!: ZoomBehavior<SVGSVGElement, unknown>;
+
+  ngAfterViewInit() {
+    if (this.isInBrowser) {
+      this.initZoom();
+    }
   }
+
+  private initZoom() {
+    const svgEl = this.svgGraph().nativeElement;
+
+    this.zoomBehaviour = zoom<SVGSVGElement, unknown>()
+      .scaleExtent([MINZOOM, MAXZOOM])
+      .on('zoom', ({ transform }) => this.onZoom(transform));
+
+    select(svgEl).call(this.zoomBehaviour as any);
+  }
+
+  private onZoom(t: ZoomTransform) {
+    this.dataservice.setZoom(t);
+  }
+
+  updateGraphDimensions(dims: { width: number; height: number }) {
+    this.dataservice.updateGraphDimensions(dims);
+  }
+
+  innerSize = computed(() => {
+    const { width, height } = this.dataservice.graphDimensions();
+    const m = this.dataservice.margin;
+    return {
+      w: width - m.left - m.right,
+      h: height - m.top - m.bottom,
+    };
+  });
 
   marginTransform = computed(() => {
     return `translate(${this.dataservice.margin.left}, ${this.dataservice.margin.top})`
