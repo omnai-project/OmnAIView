@@ -1,4 +1,5 @@
-<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)">
+<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" appZoomable [MINZOOM]="0.5"
+    [MAXZOOM]="32">
     <defs>
         <clipPath id="plotArea"> <!--PlotArea between the axis-->
             <rect [attr.width]="innerSize().w" [attr.height]="innerSize().h"></rect>

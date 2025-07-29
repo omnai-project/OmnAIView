@@ -23,6 +23,7 @@ import { DataSourceService } from './graph-data.service';
 import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils';
 import { DarkmodeComponent } from '../darkmode/darkmode.component';
 import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
+import { ZoomableDirective } from '../shared/graph-zoom.directive';
 
 /**
  * How far the user can zoom *in*
@@ -42,7 +43,7 @@ const MINZOOM = 0.5;
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule],
+  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GraphComponent {
@@ -64,28 +65,6 @@ export class GraphComponent {
         }
       });
     }
-  }
-
-  private zoomBehaviour: ZoomBehavior<SVGSVGElement, unknown> | null = null;
-
-  ngAfterViewInit() {
-    if (this.isInBrowser) {
-      this.initZoom();
-    }
-  }
-
-  private initZoom() {
-    const svgEl = this.svgGraph().nativeElement;
-
-    this.zoomBehaviour = zoom<SVGSVGElement, unknown>()
-      .scaleExtent([MINZOOM, MAXZOOM])
-      .on('zoom', ({ transform }) => this.onZoom(transform));
-
-    select(svgEl).call(this.zoomBehaviour as any);
-  }
-
-  private onZoom(t: ZoomTransform) {
-    this.dataservice.setZoom(t);
   }
 
   updateGraphDimensions(dims: { width: number; height: number }) {
