@@ -56,9 +56,9 @@ export class DataSourceService {
   graphDimensions = this.$graphDimensions.asReadonly();
 
   /**  
-  * Base Axis-Scales depending on graphDimensions (windowSize) and Axis Domains
+  * Base Axis-Scales computed solely from current data domain and graphDimensions (windowSize)
   * Purpose: Provide a stable reference that can be rescaled by d3-zoom 
-  * This does NOT depend on the current zoom state  
+  * For actual size see {@link xScale} . Here additional parameters from zooming etc. are taken into account 
   */
   private readonly baseX = linkedSignal({
     source: () => ({
@@ -84,7 +84,7 @@ export class DataSourceService {
   });
 
   /**
-   * Live Scale based on basis Scale and Zoom 
+   * Live Scale calculated from baseScales {@link baseX} and zooming 
    * Whenever Scale or Zoom changes the Axis Scale is rescaled with d3.helper rescale function 
    */
   xScale = linkedSignal({
