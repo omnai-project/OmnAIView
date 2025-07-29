@@ -10,7 +10,7 @@ import {
 import { scaleLinear as d3ScaleLinear, scaleUtc as d3ScaleUtc } from 'd3-scale';
 import { line as d3Line } from 'd3-shape';
 import { DataSourceSelectionService } from '../source-selection/data-source-selection.service';
-import { zoomIdentity, ZoomTransform } from 'd3';
+import { zoomIdentity, ZoomTransform } from 'd3-zoom';
 
 type UnwrapSignal<T> = T extends import('@angular/core').Signal<infer U>
   ? U
@@ -58,6 +58,11 @@ export class DataSourceService {
   readonly margin = { top: 20, right: 30, bottom: 40, left: 60 };
   graphDimensions = this.$graphDimensions.asReadonly();
 
+  /**  
+  * Base Axis-Scales depending on graphDimensions (windowSize) and Axis Domains
+  * Purpose: Provide a stable reference that can be rescaled by d3-zoom 
+  * This does NOT depend on the current zoom state  
+  */
   private readonly baseX = linkedSignal({
     source: () => ({
       dimensions: this.$graphDimensions(),
@@ -69,7 +74,6 @@ export class DataSourceService {
       return d3ScaleUtc().domain(xDomain).range([0, width]);
     },
   });
-
   private readonly baseY = linkedSignal({
     source: () => ({
       dimensions: this.$graphDimensions(),
@@ -83,7 +87,8 @@ export class DataSourceService {
   });
 
   /**
-   * Calculate axis-scale from baseScale and Zoom 
+   * Live Scale based on basis Scale and Zoom 
+   * Whenever Scale or Zoom changes the Axis Scale is rescaled with d3.helper rescale function 
    */
   xScale = linkedSignal({
     source: () => ({ b: this.baseX(), z: this.$zoom() }),

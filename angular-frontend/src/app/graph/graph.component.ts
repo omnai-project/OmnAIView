@@ -25,11 +25,15 @@ import { DarkmodeComponent } from '../darkmode/darkmode.component';
 import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
 
 /**
- * Maximal mulitplikation factor of distanz between two pixels 
+ * How far the user can zoom *in*
+ * A zoom factor k means “one data‑pixel covers k canvas‑pixels".
+ * User can magnify the graph up to MAXZOOM x 
  */
 const MAXZOOM = 32;
 /**
- * Minimal mulitplikation factor of distanz between two pixels 
+ * How far the user can zoom *out*
+ * MINZOOM < 1 compresses multiple data‑pixels into one screen‑pixel.
+ * User can shrink the graph up to MINZOOM x 
  */
 const MINZOOM = 0.5;
 @Component({
