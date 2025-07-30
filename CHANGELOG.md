@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added 
-### Changed 
-- Fix relative time calculation for new zoom possibility
+### Changed
 ### Removed 
 
-## [v1.7.0]
+## [v1.7.1-alpha]
+
+### Changed 
+- Fix relative time calculation for new zoom possibility
+
+## [v1.7.0-alpha]
 
 ### Added 
 - Add settings menu dummy (#138)
