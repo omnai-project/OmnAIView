@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add settings menu dummy (#138)
 ### Changed 
 - Improve style by changing elements positions (#138)
+- Fit style to brand colors using red-theme pallettes (#138)
 
 ##[v1.6.0-alpha]
 
