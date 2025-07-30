@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Removed 
 
+## [v1.7.2-alpha]
+### Changed 
+- Update to OmnAIScope-DataServer v1.3.0
+- Fix x-Axis dates from OmnAIScope data by adding new v1.3.0 of OmnAIScope-Dataserver
+
 ## [v1.7.1-alpha]
 
 ### Changed 
