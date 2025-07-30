@@ -11,7 +11,7 @@ import {
   type ElementRef
 } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NumberValue, transition } from 'd3';
+import { NumberValue, transition, zoom, ZoomBehavior, ZoomTransform } from 'd3';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
 import { timeFormat } from 'd3-time-format';
@@ -23,15 +23,28 @@ import { DataSourceService } from './graph-data.service';
 import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils';
 import { DarkmodeComponent } from '../darkmode/darkmode.component';
 import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
+import { ZoomableDirective } from '../shared/graph-zoom.directive';
 
+/**
+ * How far the user can zoom *in*
+ * A zoom factor k means “one data‑pixel covers k canvas‑pixels".
+ * User can magnify the graph up to MAXZOOM x 
+ */
+const MAXZOOM = 32;
+/**
+ * How far the user can zoom *out*
+ * MINZOOM < 1 compresses multiple data‑pixels into one screen‑pixel.
+ * User can shrink the graph up to MINZOOM x 
+ */
+const MINZOOM = 0.5;
 @Component({
   selector: 'app-graph',
   standalone: true,
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GraphComponent {
   readonly dataservice = inject(DataSourceService);
@@ -54,9 +67,18 @@ export class GraphComponent {
     }
   }
 
-  updateGraphDimensions(dimension: { width: number, height: number }) {
-    this.dataservice.updateGraphDimensions(dimension)
+  updateGraphDimensions(dims: { width: number; height: number }) {
+    this.dataservice.updateGraphDimensions(dims);
   }
+
+  innerSize = computed(() => {
+    const { width, height } = this.dataservice.graphDimensions();
+    const m = this.dataservice.margin;
+    return {
+      w: width - m.left - m.right,
+      h: height - m.top - m.bottom,
+    };
+  });
 
   marginTransform = computed(() => {
     return `translate(${this.dataservice.margin.left}, ${this.dataservice.margin.top})`
