@@ -139,7 +139,7 @@ export class OmnAIScopeDataService implements DataSource {
       const startMessage = {
         type: `start`,
         uuids: this.devices().map(device => device.UUID),
-        rate: 2000
+        rate: 200
       }
       if (!this.socket) {
         throw new Error("Websocket is not defined");
