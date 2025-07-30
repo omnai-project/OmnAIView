@@ -35,6 +35,7 @@ export class DataSourceService {
   private readonly $graphDimensions = signal({ width: 800, height: 600 });
   private readonly $xDomain = signal<xDomainTuple>(defaultXDomain);
   private readonly $yDomain = signal([0, 100]);
+  readonly referenceStartTimestamp = signal<number | null>(null); // Reference the start timestamp of a measurement
   private readonly dataSourceSelectionService = inject(
     DataSourceSelectionService
   );
@@ -117,7 +118,10 @@ export class DataSourceService {
 
   private scaleAxisToData(data: UnwrapSignal<typeof this.dummySeries>) {
     console.log(data);
-    if (Object.keys(data).length === 0) return;
+    if (Object.keys(data).length === 0) {
+      this.referenceStartTimestamp.set(null);
+      return;
+    }
 
     const expandBy = 0.1;
 
@@ -139,6 +143,10 @@ export class DataSourceService {
       }),
       initial
     );
+
+    if (this.referenceStartTimestamp() === null) {
+      this.referenceStartTimestamp.set(result.minTimestamp);
+    }
 
     if (!isFinite(result.minTimestamp) || !isFinite(result.minValue)) return;
     const xDomainRange = result.maxTimestamp - result.minTimestamp;

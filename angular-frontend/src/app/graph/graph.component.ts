@@ -106,8 +106,9 @@ export class GraphComponent {
   updateXAxisInCanvas = effect(() => {
     if (!this.isInBrowser) return;
     const x = this.dataservice.xScale();
-    const domain = x.domain();
-    const formatter = makeXAxisTickFormatter(this.xAxisTimeMode(), domain[0]);
+    const t0 = this.dataservice.referenceStartTimestamp(); 
+    const baseline = t0 !== null ? new Date(t0) : x.domain()[0]; 
+    const formatter = makeXAxisTickFormatter(this.xAxisTimeMode(), baseline);
     const g = this.axesContainer().nativeElement;
     select(g)
       .transition(transition())

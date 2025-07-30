@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added 
 ### Changed 
+- Fix relative time calculation for new zoom possibility
 ### Removed 
 
 ## [v1.7.0]
