@@ -25,6 +25,7 @@ import { DarkmodeComponent } from '../darkmode/darkmode.component';
 import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
 import { ZoomableDirective } from '../shared/graph-zoom.directive';
 import { SettingsMenuComponent } from '../settings/setting-menu.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 /**
  * How far the user can zoom *in*
@@ -44,7 +45,7 @@ const MINZOOM = 0.5;
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective, SettingsMenuComponent],
+  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective, SettingsMenuComponent, MatCheckboxModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GraphComponent {
@@ -52,6 +53,9 @@ export class GraphComponent {
   readonly svgGraph = viewChild.required<ElementRef<SVGElement>>('graphContainer');
   readonly axesContainer = viewChild.required<ElementRef<SVGGElement>>('xAxis');
   readonly axesYContainer = viewChild.required<ElementRef<SVGGElement>>('yAxis');
+
+  zoomXOnly = signal(false);
+  zoomYOnly = signal(false);
 
   protected readonly advancedMode = inject(AdvancedModeService);
 
@@ -95,6 +99,12 @@ export class GraphComponent {
     return `translate(${xScale.range()[0]}, 0)`;
   });
 
+  toggleXZoom($event: boolean) {
+    this.zoomXOnly.set($event);
+  }
+  toggleYZoom($event: boolean) {
+    this.zoomYOnly.set($event);
+  }
   /**
    * Signal to control the x-axis time mode. Relative starts with 0, absolute reflects the time of day the data was recorded.
    */
@@ -106,8 +116,8 @@ export class GraphComponent {
   updateXAxisInCanvas = effect(() => {
     if (!this.isInBrowser) return;
     const x = this.dataservice.xScale();
-    const t0 = this.dataservice.referenceStartTimestamp(); 
-    const baseline = t0 !== null ? new Date(t0) : x.domain()[0]; 
+    const t0 = this.dataservice.referenceStartTimestamp();
+    const baseline = t0 !== null ? new Date(t0) : x.domain()[0];
     const formatter = makeXAxisTickFormatter(this.xAxisTimeMode(), baseline);
     const g = this.axesContainer().nativeElement;
     select(g)

@@ -12,7 +12,7 @@
 </div>
 
 <svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" appZoomable [MINZOOM]="0.5"
-    [MAXZOOM]="32">
+    [MAXZOOM]="32" [onlyXZoom]="zoomXOnly()" [onlyYZoom]="zoomYOnly()">
     <defs>
         <clipPath id="plotArea"> <!--PlotArea between the axis-->
             <rect [attr.width]="innerSize().w" [attr.height]="innerSize().h"></rect>
@@ -20,9 +20,7 @@
     </defs>
     <g [attr.transform]="marginTransform()">
 
-        <g #xAxis [attr.transform]="xAxisTransformString()">
-
-        </g>
+        <g #xAxis [attr.transform]="xAxisTransformString()"></g>
         <g #yAxis [attr.transform]="yAxisTransformString()"></g>
         <g [attr.clip-path]="'url(#plotArea)'"> <!-- Keep path in plotArea when zooming-->
             @for (path of dataservice.paths(); track $index) {
@@ -37,6 +35,8 @@
         Relative Time
     </mat-slide-toggle>
     <app-darkmode></app-darkmode>
+    <mat-checkbox [checked]="zoomXOnly()" (change)="toggleXZoom($event.checked)"> X-Zoom</mat-checkbox>
+    <mat-checkbox [checked]="zoomYOnly()" (change)="toggleYZoom($event.checked)"> Y-Zoom</mat-checkbox>
 </div>
 <div style="display: none;">
     <h4>Debug Output</h4>

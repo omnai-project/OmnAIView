@@ -47,10 +47,16 @@ export class DataSourceService {
     return selectedSource.data();
   });
 
-  private readonly $zoom = signal<ZoomTransform>(zoomIdentity);
+  private $zoomX = signal<ZoomTransform>(zoomIdentity);
+  private $zoomY = signal<ZoomTransform>(zoomIdentity);
 
-  setZoom(t: ZoomTransform) {
-    this.$zoom.set(t);
+  /**
+   * Set Zoom for Axis
+   * @param axis Axis zoomed: x, y or both 
+   */
+  setZoom(t: ZoomTransform, axis: 'x' | 'y' | 'both') {
+    if (axis !== 'y') this.$zoomX.set(t);
+    if (axis !== 'x') this.$zoomY.set(t);
   }
 
   readonly margin = { top: 20, right: 30, bottom: 40, left: 60 };
@@ -89,12 +95,12 @@ export class DataSourceService {
    * Whenever Scale or Zoom changes the Axis Scale is rescaled with d3.helper rescale function 
    */
   xScale = linkedSignal({
-    source: () => ({ b: this.baseX(), z: this.$zoom() }),
+    source: () => ({ b: this.baseX(), z: this.$zoomX() }),
     computation: ({ b, z }) => z.rescaleX(b),
   });
 
   yScale = linkedSignal({
-    source: () => ({ b: this.baseY(), z: this.$zoom() }),
+    source: () => ({ b: this.baseY(), z: this.$zoomY() }),
     computation: ({ b, z }) => z.rescaleY(b),
   });
 
