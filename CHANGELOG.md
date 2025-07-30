@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added 
+### Changed 
+### Removed 
+
+## [v1.7.0]
+
+### Added 
 - Add settings menu dummy (#138)
 ### Changed 
 - Improve style by changing elements positions (#138)
