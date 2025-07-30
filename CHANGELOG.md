@@ -5,11 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-##[Unreleased]
+## [Unreleased]
+### Added 
+- Add settings menu dummy (#138)
+### Changed 
+- Improve style by changing elements positions (#138)
+- Fit style to brand colors using red-theme pallettes (#138)
+
+##[v1.6.0-alpha]
+
 ### Added 
 - Add zoom functionality for graph (#137)
-
-### Changed 
 
 ## [v1.5.0-alpha]
 
@@ -95,6 +101,8 @@ Formatting needs to be similar to the dataformat of the old OmnAIView data expor
 - Stop-Button for Random Data Server (#115)
 - Change start-data button to mat-icon play_arrow button (#107)
 - Update PR Template to be more clear (#93)
+- Improve style by changing elements positions (#138)
+
 
 ### Removed 
 
