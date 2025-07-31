@@ -1,4 +1,4 @@
-import { isPlatformBrowser, JsonPipe } from '@angular/common';
+import { isPlatformBrowser, JsonPipe, DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,10 +11,9 @@ import {
   type ElementRef
 } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NumberValue, transition, zoom, ZoomBehavior, ZoomTransform } from 'd3';
+import { transition } from 'd3';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
-import { timeFormat } from 'd3-time-format';
 import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devicelist.component";
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { StartDataButtonComponent } from "../toolbar/start-data-button.component";
@@ -26,6 +25,7 @@ import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
 import { ZoomableDirective } from '../shared/graph-zoom.directive';
 import { SettingsMenuComponent } from '../settings/setting-menu.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { GraphCursorDirective } from '../shared/graph-cursor.directive';
 
 /**
  * How far the user can zoom *in*
@@ -45,7 +45,7 @@ const MINZOOM = 0.5;
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective, SettingsMenuComponent, MatCheckboxModule],
+  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective, SettingsMenuComponent, MatCheckboxModule, GraphCursorDirective, DecimalPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GraphComponent {
@@ -84,6 +84,15 @@ export class GraphComponent {
       h: height - m.top - m.bottom,
     };
   });
+
+  mousePos = { x: 0, y: 0 };
+  /**
+   * Sets mouse position in screen coordinates 
+   * Used for tooltip coordinate calculation 
+   */
+  onPointerMove(evt: PointerEvent) {
+    this.mousePos = { x: evt.clientX, y: evt.clientY };
+  }
 
   marginTransform = computed(() => {
     return `translate(${this.dataservice.margin.left}, ${this.dataservice.margin.top})`
