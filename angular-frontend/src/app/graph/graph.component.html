@@ -10,9 +10,9 @@
         <app-settings-menu />
     </div>
 </div>
-
 <svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" appZoomable [MINZOOM]="0.5"
-    [MAXZOOM]="32" [onlyXZoom]="zoomXOnly()" [onlyYZoom]="zoomYOnly()">
+    [MAXZOOM]="32" [onlyXZoom]="zoomXOnly()" [onlyYZoom]="zoomYOnly()" appGraphCursor #cursor="appGraphCursor"
+    (pointermove)="onPointerMove($event)">
     <defs>
         <clipPath id="plotArea"> <!--PlotArea between the axis-->
             <rect [attr.width]="innerSize().w" [attr.height]="innerSize().h"></rect>
@@ -29,6 +29,14 @@
         </g>
     </g>
 </svg>
+
+@if (cursor.xValue() !== null && cursor.yValue() !== null) { <!-- Set tooltip in graph-->
+<div class="tooltip" [style.left.px]="mousePos.x + 12" [style.top.px]="mousePos.y + 12">
+    X: {{ cursor.xValue() }}<br>
+    Y: {{ cursor.yValue() | number:'1.2-2' }}
+</div>
+}
+
 <div class="button-wrapper">
     <app-device-list />
     <mat-slide-toggle [checked]="xAxisTimeMode() === 'relative'" (change)="onXAxisTimeModeToggle($event.checked)">

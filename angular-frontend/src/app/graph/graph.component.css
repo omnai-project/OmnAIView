@@ -33,3 +33,13 @@ svg {
     right: 0;
     margin-right: 10px;
 }
+
+.tooltip {
+    position: fixed;
+    background: #222;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    pointer-events: none;
+}

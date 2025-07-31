@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Removed 
 
+## [v1.9.0-alpha]
+### Added 
+- Add tooltip showing graph coordinates of mouse position
+
 ## [v1.8.0-alpha]
 ### Added 
 - Add selection checkboxes to zoom axis separatly 
