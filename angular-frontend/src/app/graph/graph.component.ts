@@ -1,4 +1,4 @@
-import { isPlatformBrowser, JsonPipe, DecimalPipe } from '@angular/common';
+import { isPlatformBrowser, JsonPipe, DecimalPipe, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,6 +8,7 @@ import {
   PLATFORM_ID,
   signal,
   viewChild,
+  ViewChild,
   type ElementRef
 } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -26,6 +27,7 @@ import { ZoomableDirective } from '../shared/graph-zoom.directive';
 import { SettingsMenuComponent } from '../settings/setting-menu.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { GraphCursorDirective } from '../shared/graph-cursor.directive';
+import { GraphSurveyComponent } from './graph-survey.component';
 
 /**
  * How far the user can zoom *in*
@@ -45,7 +47,7 @@ const MINZOOM = 0.5;
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective, SettingsMenuComponent, MatCheckboxModule, GraphCursorDirective, DecimalPipe],
+  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective, SettingsMenuComponent, MatCheckboxModule, GraphCursorDirective, DecimalPipe, DatePipe, GraphSurveyComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GraphComponent {

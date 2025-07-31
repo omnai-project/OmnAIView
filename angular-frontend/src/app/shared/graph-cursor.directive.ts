@@ -19,7 +19,7 @@ export class GraphCursorDirective {
     /* flag to enable/disable tooltip without destroying directive */
     enabled = input(true);
 
-    readonly xValue: WritableSignal<string | null> = signal(null);
+    readonly xValue: WritableSignal<number | null> = signal(null);
     readonly yValue: WritableSignal<number | null> = signal(null);
 
     private readonly dataservice = inject(DataSourceService);
@@ -38,16 +38,15 @@ export class GraphCursorDirective {
                     const margin = this.dataservice.margin; // offset coordinates to fit graph margin 
                     const svgX = loc.x - margin.left;
                     const svgY = loc.y - margin.top;
-                    const x = this.dataservice.xScale().invert(svgX); // transfer into actual graph coordinates 
+                    const x = this.dataservice.xScale().invert(svgX).getTime(); // transfer into actual graph coordinates 
                     const y = this.dataservice.yScale().invert(svgY);
-                    const xDate = this.fmtCursorTime(new Date(x)); // transfer UNIX timestamps into fmtCursorTime format 
-                    return { xDate, y };
+                    return { x, y };
                 })
             )
-            .subscribe(({ xDate, y }) => {
+            .subscribe(({ x, y }) => {
                 if (this.enabled()) { // Set values if mouse tooltip is enabled 
-                    this.xValue.set(xDate);
-                    this.yValue.set(+y);
+                    this.xValue.set(x);
+                    this.yValue.set(y);
                 } else {
                     this.xValue.set(null);
                     this.yValue.set(null);
