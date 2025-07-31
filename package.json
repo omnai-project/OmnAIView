@@ -1,6 +1,6 @@
 {
   "name": "omnaiview-parent",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "description": "Frontend for time-series data receiving, visualising and analysing",
   "private": true,
   "workspaces": [
