@@ -1,7 +1,8 @@
-import { AfterViewInit, Directive, OnDestroy, Input, inject, ElementRef, input } from "@angular/core";
-import { ZoomBehavior, zoom, ZoomTransform } from "d3-zoom";
+import { AfterViewInit, Directive, OnDestroy, Input, inject, ElementRef, input, effect } from "@angular/core";
+import { ZoomBehavior, zoom, ZoomTransform, zoomIdentity } from "d3-zoom";
 import { select } from "d3";
 import { DataSourceService } from "../graph/graph-data.service";
+
 /**
  * Attaches d3.zoom() to any <svg> or <g>.
  * The directive attaches a ZoomBehavior to the host element.
@@ -28,6 +29,14 @@ export class ZoomableDirective implements AfterViewInit, OnDestroy {
      * User can magnify the graph up to MAXZOOM x 
      */
     MAXZOOM = input(32);
+    /**
+     * If only the X-Axis is zoomed in on zoom behavior
+     */
+    onlyXZoom = input(false);
+    /** 
+     * If only the Y-Axis is zoomed in on zoom behavior
+     */
+    onlyYZoom = input(false);
 
     private readonly dataservice = inject(DataSourceService);
     private readonly svgElement = inject(ElementRef) as ElementRef<SVGSVGElement>;
@@ -50,7 +59,25 @@ export class ZoomableDirective implements AfterViewInit, OnDestroy {
         select(this.svgElement.nativeElement).call(this.zoomBehaviour);
     }
 
+    /**
+     * Dispatches the d3 ZoomTransform together with the selected axis from the axis input  
+     * @param t The raw `ZoomTransform` emitted by the d3‑zoom behaviour
+     */
     private onZoom(t: ZoomTransform) {
-        this.dataservice.setZoom(t);
+        const xOnly = this.onlyXZoom();
+        const yOnly = this.onlyYZoom();
+
+        let adjusted: ZoomTransform;
+
+        if (xOnly && !yOnly) {
+            this.dataservice.setZoom(t, 'x');
+        }
+        else if (!xOnly && yOnly) {
+            this.dataservice.setZoom(t, 'y');
+        }
+        else {
+            this.dataservice.setZoom(t, 'both');
+        }
+
     }
 }

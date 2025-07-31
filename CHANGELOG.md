@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Removed 
 
+## [v1.8.0-alpha]
+### Added 
+- Add selection checkboxes to zoom axis separatly 
+
 ## [v1.7.2-alpha]
 ### Changed 
 - Update to OmnAIScope-DataServer v1.3.0
