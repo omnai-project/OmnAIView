@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Removed 
 
+## [v1.10.0-alpha]
+### Added 
+- Add survey tool calculating and showing delta between two selected graph points
+
 ## [v1.9.0-alpha]
 ### Added 
 - Add tooltip showing graph coordinates of mouse position
