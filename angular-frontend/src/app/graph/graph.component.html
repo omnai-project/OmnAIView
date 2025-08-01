@@ -12,7 +12,7 @@
 </div>
 <svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" appZoomable [MINZOOM]="0.5"
     [MAXZOOM]="32" [onlyXZoom]="zoomXOnly()" [onlyYZoom]="zoomYOnly()" appGraphCursor #cursor="appGraphCursor"
-    (pointermove)="onPointerMove($event)">
+    (pointermove)="onPointerMove($event)" (click)="survey.onGraphClick()">
     <defs>
         <clipPath id="plotArea"> <!--PlotArea between the axis-->
             <rect [attr.width]="innerSize().w" [attr.height]="innerSize().h"></rect>
@@ -27,15 +27,25 @@
             <path [attr.d]="path.d" fill="none" stroke="steelblue" stroke-width="2" />
             }
         </g>
+        @for (p of [survey.firstPoint(), survey.secondPoint()]; track p?.x) {
+        @if (p) {
+        <g class="marker" [attr.transform]="survey.markerTransform(p)">
+            <line x1="-5" y1="0" x2="5" y2="0" stroke="red" />
+            <line x1="0" y1="-30" x2="0" y2="30" stroke="red" />
+        </g>
+        }
+        }
     </g>
 </svg>
 
 @if (cursor.xValue() !== null && cursor.yValue() !== null) { <!-- Set tooltip in graph-->
 <div class="tooltip" [style.left.px]="mousePos.x + 12" [style.top.px]="mousePos.y + 12">
-    X: {{ cursor.xValue() }}<br>
+    X: {{ cursor.xValue() | date:'HH:mm:ss.SSS':'UTC' }}<br>
     Y: {{ cursor.yValue() | number:'1.2-2' }}
 </div>
 }
+
+<app-graph-survey [cursor]="cursor" #survey></app-graph-survey>
 
 <div class="button-wrapper">
     <app-device-list />
