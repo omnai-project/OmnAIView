@@ -15,16 +15,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { transition } from 'd3';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
-import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devicelist.component";
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
-import { StartDataButtonComponent } from "../toolbar/start-data-button.component";
-import { SaveDataButtonComponent } from '../toolbar/save-data-button.component';
 import { DataSourceService } from './graph-data.service';
 import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils';
-import { DarkmodeComponent } from '../darkmode/darkmode.component';
-import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
 import { ZoomableDirective } from '../shared/graph-zoom.directive';
-import { SettingsMenuComponent } from '../settings/setting-menu.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { GraphCursorDirective } from '../shared/graph-cursor.directive';
 import { GraphSurveyComponent } from './graph-survey.component';
@@ -47,7 +41,7 @@ const MINZOOM = 0.5;
   templateUrl: './graph.component.html',
   providers: [DataSourceService],
   styleUrls: ['./graph.component.css'],
-  imports: [DarkmodeComponent, ResizeObserverDirective, JsonPipe, StartDataButtonComponent, SaveDataButtonComponent, DeviceListComponent, MatSlideToggleModule, ZoomableDirective, SettingsMenuComponent, MatCheckboxModule, GraphCursorDirective, DecimalPipe, DatePipe, GraphSurveyComponent],
+  imports: [ResizeObserverDirective, JsonPipe, MatSlideToggleModule, ZoomableDirective, MatCheckboxModule, GraphCursorDirective, DecimalPipe, DatePipe, GraphSurveyComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GraphComponent {
@@ -58,8 +52,6 @@ export class GraphComponent {
 
   zoomXOnly = signal(false);
   zoomYOnly = signal(false);
-
-  protected readonly advancedMode = inject(AdvancedModeService);
 
   private readonly platform = inject(PLATFORM_ID);
   isInBrowser = isPlatformBrowser(this.platform);

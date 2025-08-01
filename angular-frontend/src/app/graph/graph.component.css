@@ -15,25 +15,6 @@ svg {
     height: 50px;
 }
 
-.toolbar-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    height: 50px;
-}
-
-.toolbar-center {
-    display: flex;
-    gap: 20px;
-}
-
-.toolbar-right {
-    position: absolute;
-    right: 0;
-    margin-right: 10px;
-}
-
 .tooltip {
     position: fixed;
     background: #222;

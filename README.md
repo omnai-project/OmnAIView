@@ -87,7 +87,7 @@ OmnAIView is using different data sources. Some are started externally from the 
 ### OmnAIScope Dataserver
 
 To receive data from locally connected OmnAIScopes, the OmnAIScope Dataserver is integrated into the frontend as an autostart component.
-Version : v0.4.0
+Version : v1.3.0
 GitHub repository: https://github.com/AI-Gruppe/OmnAIScope-DataServer
 
 ## Information is missing?

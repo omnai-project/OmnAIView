@@ -1,0 +1,12 @@
+<div class="toolbar-wrapper">
+    <div class="toolbar-center">
+        <app-start-data-button />
+        <app-save-data-button />
+        <mat-slide-toggle [checked]="advancedMode.enabled()" (change)="advancedMode.toggle()">
+            Advanced Mode
+        </mat-slide-toggle>
+    </div>
+    <div class="toolbar-right">
+        <app-settings-menu />
+    </div>
+</div>
