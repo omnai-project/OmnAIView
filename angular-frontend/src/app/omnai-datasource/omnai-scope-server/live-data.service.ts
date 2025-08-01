@@ -11,6 +11,7 @@ import { SaveDataLocallyModalComponent } from '../../save-data-locally-modal/sav
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DownloadProgressComponent } from './downloadProgress.component';
+import { SourceColorService } from '../../source-selection/source-color.service';
 
 interface DeviceInformation {
   UUID: string;
@@ -53,6 +54,7 @@ export class OmnAIScopeDataService implements DataSource {
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
+  private readonly sourceColorService = inject(SourceColorService);
 
   constructor(private snackBar: MatSnackBar) {
     this.setupDevicePolling();
@@ -106,10 +108,12 @@ export class OmnAIScopeDataService implements DataSource {
         const devices = response.devices ?? [];
         const colors = response.colors ?? [];
 
-        return devices.map((device, index) => ({
+        const list = devices.map((device, id) => ({
           UUID: device.UUID,
-          color: colors[index]?.color ?? { r: 0, g: 0, b: 0 }
+          color: colors[id]?.color ?? { r: 0, g: 0, b: 0 }
         }));
+        this.sourceColorService.setColours(list);
+        return list;
       }),
       catchError(error => {
         console.warn('error while loading devices', error);

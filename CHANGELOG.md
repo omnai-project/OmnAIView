@@ -8,34 +8,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added 
 ### Changed
-- Refactor graph component into main, toolbar and graph component 
+### Removed 
+
+## [v1.11.0-alpha]
+### Added 
+- Use device colors for path color in graph (#148)
+### Changed
+- Refactor graph component into main, toolbar and graph component (#147)
 ### Removed 
 
 ## [v1.10.1-alpha]
 ### Changed 
-- Fix tooltip time to fit local time 
+- Fix tooltip time to fit local time (#146)
 
 ## [v1.10.0-alpha]
 ### Added 
-- Add survey tool calculating and showing delta between two selected graph points
+- Add survey tool calculating and showing delta between two selected graph points (#145)
 
 ## [v1.9.0-alpha]
 ### Added 
-- Add tooltip showing graph coordinates of mouse position
+- Add tooltip showing graph coordinates of mouse position (#144)
 
 ## [v1.8.0-alpha]
 ### Added 
-- Add selection checkboxes to zoom axis separatly 
+- Add selection checkboxes to zoom axis separatly (#143)
 
 ## [v1.7.2-alpha]
 ### Changed 
-- Update to OmnAIScope-DataServer v1.3.0
-- Fix x-Axis dates from OmnAIScope data by adding new v1.3.0 of OmnAIScope-Dataserver
+- Update to OmnAIScope-DataServer v1.3.0 (#142)
+- Fix x-Axis dates from OmnAIScope data by adding new v1.3.0 of OmnAIScope-Dataserver (#142)
 
 ## [v1.7.1-alpha]
 
 ### Changed 
-- Fix relative time calculation for new zoom possibility
+- Fix relative time calculation for new zoom possibility (#141)
 
 ## [v1.7.0-alpha]
 
