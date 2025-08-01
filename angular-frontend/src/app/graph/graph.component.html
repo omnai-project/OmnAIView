@@ -40,7 +40,7 @@
 
 @if (cursor.xValue() !== null && cursor.yValue() !== null) { <!-- Set tooltip in graph-->
 <div class="tooltip" [style.left.px]="mousePos.x + 12" [style.top.px]="mousePos.y + 12">
-    X: {{ cursor.xValue() | date:'HH:mm:ss.SSS':'UTC' }}<br>
+    X: {{ cursor.xValue() | date:'HH:mm:ss.SSS' }}<br>
     Y: {{ cursor.yValue() | number:'1.2-2' }}
 </div>
 }
