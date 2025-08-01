@@ -12,6 +12,7 @@ import { line as d3Line } from 'd3-shape';
 import { DataSourceSelectionService } from '../source-selection/data-source-selection.service';
 import { zoomIdentity, ZoomTransform } from 'd3-zoom';
 import type { UnwrapSignal } from '../utils/unwrap-signal.type';
+import { SourceColorService } from '../source-selection/source-color.service';
 
 /**
  * Describes the potential Domain values for the x-axis
@@ -39,6 +40,7 @@ export class DataSourceService {
   private readonly dataSourceSelectionService = inject(
     DataSourceSelectionService
   );
+  private readonly sourceColorService = inject(SourceColorService);
 
   private readonly dummySeries = computed(() => {
     const selectedSource = this.dataSourceSelectionService.currentSource();
@@ -180,8 +182,9 @@ export class DataSourceService {
       xScale: this.xScale(),
       yScale: this.yScale(),
       series: this.dummySeries(),
+      colours: this.sourceColorService.colour()
     }),
-    computation: ({ xScale, yScale, series }) => {
+    computation: ({ xScale, yScale, series, colours }) => {
       const lineGen = d3Line<{ time: Date; value: number }>()
         .x((d) => xScale(d.time))
         .y((d) => yScale(d.value));
@@ -196,6 +199,7 @@ export class DataSourceService {
         return {
           id: key,
           d: pathData,
+          stroke: colours[key] ?? 'steelblue'
         };
       });
     },
