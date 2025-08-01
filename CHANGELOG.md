@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added 
+### Changed
+### Removed 
+
+## [v1.11.0-alpha]
+### Added 
 - Use device colors for path color in graph (#148)
 ### Changed
 - Refactor graph component into main, toolbar and graph component (#147)
