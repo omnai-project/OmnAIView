@@ -1,21 +1,21 @@
 import { Routes } from '@angular/router';
-import { GraphComponent } from './graph/graph.component';
 import { RenderMode } from '@angular/ssr';
+import { mainComponent } from './main/main.component';
 
 export const routes: Routes = [
   {
-    path: 'graph',
+    path: 'main',
     children: [
       {
         path: 'main',
-        component: GraphComponent,
-        
+        component: mainComponent,
+
       }
     ],
   },
   {
-  path: '**',
-  redirectTo: 'graph/main'
-}
+    path: '**',
+    redirectTo: 'main/main'
+  }
 
 ];

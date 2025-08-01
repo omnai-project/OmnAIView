@@ -1,15 +1,3 @@
-<div class="toolbar-wrapper">
-    <div class="toolbar-center">
-        <app-start-data-button />
-        <app-save-data-button />
-        <mat-slide-toggle [checked]="advancedMode.enabled()" (change)="advancedMode.toggle()">
-            Advanced Mode
-        </mat-slide-toggle>
-    </div>
-    <div class="toolbar-right">
-        <app-settings-menu />
-    </div>
-</div>
 <svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" appZoomable [MINZOOM]="0.5"
     [MAXZOOM]="32" [onlyXZoom]="zoomXOnly()" [onlyYZoom]="zoomYOnly()" appGraphCursor #cursor="appGraphCursor"
     (pointermove)="onPointerMove($event)" (click)="survey.onGraphClick()">
@@ -45,14 +33,11 @@
 </div>
 }
 
-<app-graph-survey [cursor]="cursor" #survey></app-graph-survey>
-
 <div class="button-wrapper">
-    <app-device-list />
+    <app-graph-survey [cursor]="cursor" #survey></app-graph-survey>
     <mat-slide-toggle [checked]="xAxisTimeMode() === 'relative'" (change)="onXAxisTimeModeToggle($event.checked)">
         Relative Time
     </mat-slide-toggle>
-    <app-darkmode></app-darkmode>
     <mat-checkbox [checked]="zoomXOnly()" (change)="toggleXZoom($event.checked)"> X-Zoom</mat-checkbox>
     <mat-checkbox [checked]="zoomYOnly()" (change)="toggleYZoom($event.checked)"> Y-Zoom</mat-checkbox>
 </div>
