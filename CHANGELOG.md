@@ -6,9 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Added 
-### Changed
-### Removed 
+
+### Added
+- **Graph Selection Enhancement**: Smart click/drag detection with universal input support
+  - Movement-based threshold (5px) distinguishes clicks from drag operations
+  - Universal support for mouse, touch, and stylus input via Pointer Events
+  - Touch-optimized UI with larger tap targets on mobile devices
+  - Improved user experience: clicks clear selections, drags create new ones
+
+### Changed  
+- **BREAKING CHANGE**: Selection behavior - clicks now clear existing selections instead of starting new ones
+- Graph selection now uses Pointer Events instead of mouse events for better cross-platform support
+
+### Fixed
+- Graph selection no longer creates unwanted selections on simple clicks
+- Resolved event conflicts between selection and other graph interactions
+- Improved pointer tracking consistency across element boundaries
 
 ## [v1.11.0-alpha]
 ### Added 
