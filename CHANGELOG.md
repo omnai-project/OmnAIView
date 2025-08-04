@@ -8,22 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Add interactive graph selection analysis tool with statistical metrics calculation
-- Add universal support for mouse, touch and stylus input via Pointer Events for graph selection
-- Add movement-based click/drag detection (5px threshold) to distinguish user interactions
-- Add touch-optimized UI with larger tap targets on mobile devices for better accessibility
-- Add selection rectangle visualization with animated dashed borders
-- Add real-time statistical analysis (min/max/average/RMS/peak-to-peak) for selected data regions
-- Add device-specific color indicators using OmnAIScope hardware LED colors
-
-### Changed  
-- **BREAKING CHANGE**: Change selection behavior - clicks now clear existing selections instead of starting new ones
-- Replace mouse events with Pointer Events API for cross-platform input compatibility
-
-### Fixed
-- Fix unwanted selection creation on simple clicks in selection mode
-- Fix event conflicts between selection interactions and other graph functionality
-- Fix pointer tracking consistency across element boundaries
+- Add interactive graph selection analysis tool for time-series measurement data
+- Add universal input support (mouse/touch/stylus) for graph selection feature
 
 ## [v1.11.0-alpha]
 ### Added 
