@@ -11,9 +11,8 @@
      [class.selection-mode]="selectionService.isSelectionMode()"
      (pointermove)="onPointerMove($event)" 
      (click)="survey.onGraphClick()"
-     (mousedown)="onMouseDown($event)"
-     (mousemove)="onMouseMove($event)"
-     (mouseup)="onMouseUp($event)">
+     (pointerdown)="onPointerDown($event)"
+     (pointerup)="onPointerUp($event)">
     
     <defs>
         <clipPath id="plotArea"> <!--PlotArea between the axis-->
@@ -54,7 +53,7 @@
     </g>
 </svg>
 
-<!-- Selection toggle button -->
+<!-- Selection toggle button with touch support -->
 <button mat-fab 
         class="selection-toggle"
         (click)="selectionService.toggleSelectionMode()"

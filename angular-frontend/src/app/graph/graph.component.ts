@@ -106,11 +106,19 @@ export class GraphComponent {
   mousePos = { x: 0, y: 0 };
   
   /**
-   * Sets mouse position in screen coordinates 
-   * Used for tooltip coordinate calculation 
+   * Sets mouse position in screen coordinates and handles selection movement
+   * Used for tooltip coordinate calculation and selection updates
    */
   onPointerMove(evt: PointerEvent): void {
     this.mousePos = { x: evt.clientX, y: evt.clientY };
+    
+    // Handle selection movement if in selection mode
+    if (this.selectionService.isSelectionMode()) {
+      const rect = this.svgGraph().nativeElement.getBoundingClientRect();
+      const x = evt.clientX - rect.left;
+      const y = evt.clientY - rect.top;
+      this.selectionService.updateSelection(x, y);
+    }
   }
 
   marginTransform = computed(() => {
@@ -164,43 +172,50 @@ export class GraphComponent {
     select(g).transition(transition()).duration(300).call(axisLeft(y));
   });
 
-  // Selection event handlers
+  // Selection event handlers with unified pointer support
   /**
-   * Handles mouse down events for selection mode
+   * Handles pointer down events for selection mode (mouse, touch, stylus)
+   * Starts potential selection but waits for drag threshold before actual selection
    */
-  onMouseDown(event: MouseEvent): void {
+  onPointerDown(event: PointerEvent): void {
     if (!this.selectionService.isSelectionMode()) return;
     
+    // Prevent default behavior and event bubbling
     event.preventDefault();
+    event.stopPropagation();
+    
     const rect = this.svgGraph().nativeElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
     
     this.selectionService.setGraphHeight(
       this.dataservice.graphDimensions().height - this.dataservice.margin.top - this.dataservice.margin.bottom
     );
     
-    this.selectionService.startSelection(x);
+    this.selectionService.startPotentialSelection(x, y);
+    
+    // Capture pointer for consistent tracking across element boundaries
+    (event.target as Element).setPointerCapture(event.pointerId);
   }
 
   /**
-   * Handles mouse move events during selection
+   * Handles pointer up events to finalize or cancel selection
+   * Distinguishes between click (clear selection) and drag (finalize selection)
    */
-  onMouseMove(event: MouseEvent): void {
-    if (!this.selectionService.isSelecting()) return;
+  onPointerUp(event: PointerEvent): void {
+    if (!this.selectionService.isSelectionMode()) return;
     
     event.preventDefault();
-    const rect = this.svgGraph().nativeElement.getBoundingClientRect();
-    const x = event.clientX - rect.left;
+    event.stopPropagation();
     
-    this.selectionService.updateSelection(x);
-  }
-
-  /**
-   * Handles mouse up events to finalize selection
-   */
-  onMouseUp(event: MouseEvent): void {
-    if (this.selectionService.isSelecting()) {
-      this.selectionService.finishSelection();
+    const wasDragOperation = this.selectionService.finishSelection();
+    
+    // Release pointer capture
+    (event.target as Element).releasePointerCapture(event.pointerId);
+    
+    // Prevent click event from firing if this was a drag operation
+    if (wasDragOperation) {
+      event.preventDefault();
     }
   }
 }

@@ -15,6 +15,7 @@ export interface SelectionRect {
 /**
  * Service for managing graph selection state and interactions
  * Provides functionality for rectangular area selection on time-series graphs
+ * Supports both mouse and touch interactions with movement-based click/drag detection
  */
 @Injectable()
 export class GraphSelectionService {
@@ -23,6 +24,13 @@ export class GraphSelectionService {
   private readonly _selectionEndX = signal<number | null>(null);
   private readonly _isSelecting = signal(false);
   private readonly _graphHeight = signal<number>(600);
+  
+  // Track initial pointer position for drag detection
+  private _initialPointerX: number | null = null;
+  private _initialPointerY: number | null = null;
+  
+  // Minimum movement distance to distinguish drag from click (in pixels)
+  private readonly DRAG_THRESHOLD = 5;
   
   readonly isSelectionMode = this._isSelectionMode.asReadonly();
   readonly selectionStartX = this._selectionStartX.asReadonly();
@@ -63,28 +71,58 @@ export class GraphSelectionService {
   }
   
   /**
-   * Starts a new selection at the specified x-coordinate
+   * Starts a potential selection at the specified coordinates
+   * Stores initial position but doesn't start selection until drag threshold is exceeded
    */
-  startSelection(x: number): void {
-    this._selectionStartX.set(x);
-    this._selectionEndX.set(x);
-    this._isSelecting.set(true);
+  startPotentialSelection(x: number, y: number): void {
+    this._initialPointerX = x;
+    this._initialPointerY = y;
+    // Don't start actual selection yet - wait for drag threshold
   }
   
   /**
-   * Updates the selection end position during drag operation
+   * Updates the selection position and starts actual selection if drag threshold exceeded
    */
-  updateSelection(x: number): void {
+  updateSelection(x: number, y: number): void {
+    if (this._initialPointerX === null || this._initialPointerY === null) return;
+    
+    const deltaX = Math.abs(x - this._initialPointerX);
+    const deltaY = Math.abs(y - this._initialPointerY);
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    
+    // Start actual selection only if movement exceeds threshold
+    if (!this._isSelecting() && distance >= this.DRAG_THRESHOLD) {
+      this._selectionStartX.set(this._initialPointerX);
+      this._selectionEndX.set(this._initialPointerX);
+      this._isSelecting.set(true);
+    }
+    
+    // Update selection if we're already selecting
     if (this._isSelecting()) {
       this._selectionEndX.set(x);
     }
   }
   
   /**
-   * Finalizes the current selection
+   * Finishes the current selection or clears existing selection on simple click
+   * Returns true if this was a drag operation, false if it was a click
    */
-  finishSelection(): void {
-    this._isSelecting.set(false);
+  finishSelection(): boolean {
+    const wasDragging = this._isSelecting();
+    
+    if (wasDragging) {
+      // This was a drag operation - finalize selection
+      this._isSelecting.set(false);
+    } else {
+      // This was a click - clear any existing selection
+      this.clearSelection();
+    }
+    
+    // Reset initial position tracking
+    this._initialPointerX = null;
+    this._initialPointerY = null;
+    
+    return wasDragging;
   }
   
   /**

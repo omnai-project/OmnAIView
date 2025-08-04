@@ -10,6 +10,9 @@ svg {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  /* Touch-specific optimizations */
+  touch-action: none;
+  -webkit-touch-callout: none;
 }
 
 .button-wrapper {
@@ -49,13 +52,30 @@ svg {
   100% { stroke-dashoffset: 24; }
 }
 
-/* Cursor changes in selection mode */
+/* Cursor changes in selection mode - supports mouse and touch */
 svg.selection-mode {
-  cursor: col-resize;
+  cursor: crosshair;
 }
 
 svg.selection-mode:active {
-  cursor: col-resize;
+  cursor: crosshair;
+}
+
+/* Touch-specific selection feedback */
+@media (hover: none) and (pointer: coarse) {
+  /* On touch devices, provide stronger visual feedback */
+  svg.selection-mode {
+    cursor: crosshair;
+  }
+  
+  .selection-toggle {
+    min-width: 56px;
+    min-height: 56px;
+  }
+  
+  .selection-toggle:active {
+    transform: scale(0.95);
+  }
 }
 
 /* Selection Toggle Button */
