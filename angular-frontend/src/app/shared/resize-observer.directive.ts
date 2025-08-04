@@ -10,6 +10,10 @@ import {
     PLATFORM_ID,
 } from '@angular/core';
 
+/**
+ * Directive that observes element size changes using ResizeObserver API
+ * Emits resize events with the new dimensions
+ */
 @Directive({
     selector: '[appResizeObserver]',
     standalone: true,
