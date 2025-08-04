@@ -2,33 +2,164 @@
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
 
+// Font size custom properties setup
+:root {
+  --font-scale: 1;
+  --font-size-base: 16px;
+  --font-size-small: 14px;
+  --font-size-large: 18px;
+  --font-size-xl: 24px;
+}
+
 html {
-  @include mat.theme((color: (theme-type: light,
-        primary: mat.$red-palette,
-        tertiary: mat.$red-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    ));
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+
+  // Apply font scaling to root
+  font-size: var(--font-size-base);
 }
 
 body {
   background: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
+  
+  // Base font size scaling
+  font-size: var(--font-size-base);
+  
+  // Font size specific adjustments
+  &.font-size-small {
+    // Tighter spacing for smaller fonts
+    --spacing-scale: 0.9;
+  }
+  
+  &.font-size-large {
+    // More generous spacing for larger fonts
+    --spacing-scale: 1.1;
+  }
+  
+  &.font-size-extra-large {
+    // Even more generous spacing
+    --spacing-scale: 1.2;
+  }
 }
 
+// Material component font size overrides
 mat-card {
-  /* Override to color selected sources with tertiary color */
-  @include mat.card-overrides((elevated-container-color: var(--mat-sys-tertiary-container),
-    ));
+  @include mat.card-overrides((
+    elevated-container-color: var(--mat-sys-tertiary-container),
+  ));
+  
+  // Scale card text
+  .mat-mdc-card-title {
+    font-size: calc(var(--font-size-large) * 1.1);
+  }
+  
+  .mat-mdc-card-content {
+    font-size: var(--font-size-base);
+  }
+}
+
+// Button text scaling
+.mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-fab, .mat-mdc-mini-fab {
+  font-size: var(--font-size-base) !important;
+}
+
+// Dialog scaling
+.mat-mdc-dialog-title {
+  font-size: calc(var(--font-size-xl) * 1.1) !important;
+}
+
+.mat-mdc-dialog-content {
+  font-size: var(--font-size-base) !important;
+}
+
+// Form field scaling
+.mat-mdc-form-field {
+  .mat-mdc-form-field-label {
+    font-size: var(--font-size-small) !important;
+  }
+  
+  .mat-mdc-input-element {
+    font-size: var(--font-size-base) !important;
+  }
+}
+
+// Graph component specific scaling
+app-graph {
+  // Scale axis labels and tick marks
+  .tick text {
+    font-size: var(--font-size-small);
+  }
+  
+  .axis-label {
+    font-size: var(--font-size-base);
+  }
+  
+  // Scale measurement values
+  .measurement-value {
+    font-size: var(--font-size-large);
+    font-weight: 500;
+  }
+}
+
+// Menu and navigation scaling
+.mat-mdc-menu-panel {
+  .mat-mdc-menu-item {
+    font-size: var(--font-size-base) !important;
+  }
+}
+
+// Snackbar scaling
+.mat-mdc-snack-bar-container {
+  font-size: var(--font-size-base) !important;
+}
+
+// Tooltip scaling
+.mat-mdc-tooltip {
+  font-size: var(--font-size-small) !important;
 }
 
 .dark-theme {
-  @include mat.theme((color: (theme-type: dark,
-        primary: mat.$red-palette,
-        tertiary: mat.$red-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    ));
+  @include mat.theme((
+    color: (
+      theme-type: dark,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+  
+  // Dark theme inherits the same font scaling
+  font-size: var(--font-size-base);
+}
+
+// Responsive adjustments for font scaling
+@media (max-width: 768px) {
+  // On smaller screens, limit maximum font scaling
+  body.font-size-extra-large {
+    --font-scale: 1.125; // Reduce from 1.25 to 1.125 on mobile
+    --font-size-base: 18px;
+    --font-size-small: 16px;
+    --font-size-large: 20px;
+    --font-size-xl: 26px;
+  }
+}
+
+// Print-specific font sizing
+@media print {
+  :root {
+    --font-scale: 0.875; // Smaller fonts for print
+    --font-size-base: 14px;
+    --font-size-small: 12px;
+    --font-size-large: 16px;
+    --font-size-xl: 20px;
+  }
 }
