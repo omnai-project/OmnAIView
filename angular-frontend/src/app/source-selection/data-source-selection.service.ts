@@ -15,7 +15,7 @@ export interface DataSource {
     disconnect(): void;
     clearData(): void;
     save(): void;
-    record(): void;
+    record(dir: string, fileName: string, duration: number): void;
     data: Signal<Record<string, DataFormat[]>>
 }
 

@@ -12,7 +12,7 @@ import { ToolbarState, ToolbarStateManagerService } from './toolbarStateManager.
     standalone: true,
     imports: [MatDialogModule, MatIconModule],
     template: `
-        <button mat-icon-button (click)="toggleStartButton()" aria-label="Start Data" id="start-button">
+        <button mat-icon-button (click)="toggleStartButton()" aria-label="Start Data" id="start-button" [disabled]="this.toolbarState.getState() === ToolbarState.RECORD">
         <mat-icon>{{ (this.toolbarState.getState() === ToolbarState.STARTED ) ? 'stop' : 'play_arrow' }}</mat-icon>
         </button>
     `,
@@ -22,7 +22,7 @@ export class StartDataButtonComponent {
     private readonly dialog = inject(MatDialog);
     private readonly datasource = inject(DataSourceSelectionService);
     private readonly advancedMode = inject(AdvancedModeService);
-    readonly toolbarState = inject(ToolbarStateManagerService);
+    protected readonly toolbarState = inject(ToolbarStateManagerService);
     ToolbarState = ToolbarState;
 
     clearAllData(): void {

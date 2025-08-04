@@ -1,0 +1,38 @@
+<h2 mat-dialog-title>Record data</h2>
+<mat-dialog-content>
+    <mat-form-field>
+        <mat-label>Selected Source</mat-label>
+        <mat-select [(ngModel)]="selected">
+            @for (source of sources(); track source.id) {
+                <mat-option [value]="source.id" (click)="select(source)">
+                    <b>{{ source.name }}</b>
+                    @if (source.description) {
+                        <br><p>{{ source.description }}</p>
+                    }
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-content>
+    <mat-form-field>
+        <mat-label>Duration in seconds</mat-label>
+        <input matInput type="number" min="0.001" #numberInput="ngModel" [(ngModel)]="duration" />
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-content>
+    <button mat-raised-button (click)="fileInput.click()">Select folder</button>
+    <input #fileInput type="file" webkitdirectory style="display:none;" (change)="onFolderPicked($event)">
+    <p>{{ (filePath) ? filePath : 'No folder selected' }}</p>
+</mat-dialog-content>
+<mat-dialog-content>
+    <mat-form-field>
+        <mat-label>File Name</mat-label>
+        <input matInput [(ngModel)]="fileName" />
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button [disabled]="!filePath || !fileName || !selected || numberInput.invalid"
+        [mat-dialog-close]="{dir: filePath, fileName: fileName, duration: duration}">Ok</button>
+</mat-dialog-actions>

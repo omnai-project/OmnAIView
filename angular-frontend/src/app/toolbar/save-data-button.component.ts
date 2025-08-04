@@ -17,7 +17,7 @@ import { ToolbarState, ToolbarStateManagerService } from "./toolbarStateManager.
 })
 export class SaveDataButtonComponent {
     private readonly datasource = inject(DataSourceSelectionService);
-    readonly toolbarState = inject(ToolbarStateManagerService);
+    protected readonly toolbarState = inject(ToolbarStateManagerService);
     ToolbarState = ToolbarState;
 
     saveData(): void {

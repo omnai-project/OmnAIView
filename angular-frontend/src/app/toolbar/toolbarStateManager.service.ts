@@ -3,7 +3,8 @@ import { Injectable } from "@angular/core";
 export enum ToolbarState {
     IDLE = 'IDLE',
     STARTED = 'STARTED',
-    STOPPED = 'STOPPED'
+    STOPPED = 'STOPPED',
+    RECORD = 'RECORD'
 }
 @Injectable({
     providedIn: 'root'
