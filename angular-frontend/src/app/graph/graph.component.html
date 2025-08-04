@@ -42,7 +42,7 @@
         }
         
         <!-- Survey markers -->
-        @for (p of [survey.firstPoint(), survey.secondPoint()]; track p?.x) {
+        @for (p of [survey.firstPoint(), survey.secondPoint()]; track $index) {
         @if (p) {
         <g class="marker" [attr.transform]="survey.markerTransform(p)">
             <line x1="-5" y1="0" x2="5" y2="0" stroke="red" />
@@ -53,14 +53,8 @@
     </g>
 </svg>
 
-<!-- Selection toggle button with touch support -->
-<button mat-fab 
-        class="selection-toggle"
-        (click)="selectionService.toggleSelectionMode()"
-        [class.active]="selectionService.isSelectionMode()"
-        [attr.title]="selectionService.isSelectionMode() ? 'Disable selection' : 'Enable area selection'">
-  <mat-icon>crop_free</mat-icon>
-</button>
+<!-- Selection toggle button as separate component -->
+<app-selection-toggle></app-selection-toggle>
 
 <!-- Selection results component -->
 <app-selection-results></app-selection-results>

@@ -35,9 +35,7 @@ svg {
   z-index: 1001;
 }
 
-/* ===== SELECTION FUNCTIONALITY ===== */
-
-/* Selection Rectangle Styling */
+/* ===== SELECTION RECTANGLE STYLING ===== */
 .selection-rect {
   fill: rgba(33, 150, 243, 0.15);
   stroke: #2196f3;
@@ -67,77 +65,6 @@ svg.selection-mode:active {
   svg.selection-mode {
     cursor: crosshair;
   }
-  
-  .selection-toggle {
-    min-width: 56px;
-    min-height: 56px;
-  }
-  
-  .selection-toggle:active {
-    transform: scale(0.95);
-  }
-}
-
-/* Selection Toggle Button */
-.selection-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.2),
-    0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.selection-toggle.active {
-  background-color: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
-  box-shadow: 
-    0 4px 8px rgba(33, 150, 243, 0.3),
-    0 2px 4px rgba(33, 150, 243, 0.2);
-}
-
-.selection-toggle:hover {
-  transform: scale(1.05);
-  box-shadow: 
-    0 6px 12px rgba(0, 0, 0, 0.25),
-    0 3px 6px rgba(0, 0, 0, 0.15);
-}
-
-.selection-toggle.active:hover {
-  box-shadow: 
-    0 6px 12px rgba(33, 150, 243, 0.4),
-    0 3px 6px rgba(33, 150, 243, 0.3);
-}
-
-/* Dark mode support for selection toggle */
-:host-context(.dark-theme) .selection-toggle {
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.4),
-    0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-:host-context(.dark-theme) .selection-toggle.active {
-  background-color: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
-}
-
-:host-context(.dark-theme) .tooltip {
-  background: rgba(30, 30, 30, 0.95);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* ===== GRAPH CONTAINER LAYOUT ===== */
-:host {
-  position: relative;
-  display: block;
-  height: 80vh;
 }
 
 /* ===== SURVEY MARKERS ===== */
@@ -151,20 +78,27 @@ svg.selection-mode:active {
   opacity: 0.9;
 }
 
-/* Dark mode marker adjustments */
+/* Dark mode adjustments */
+:host-context(.dark-theme) .tooltip {
+  background: rgba(30, 30, 30, 0.95);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 :host-context(.dark-theme) .marker line {
   stroke: #ff6666;
   opacity: 1;
 }
 
+/* ===== GRAPH CONTAINER LAYOUT ===== */
+:host {
+  position: relative;
+  display: block;
+  height: 80vh;
+}
+
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
-  .selection-toggle {
-    top: 10px;
-    right: 10px;
-    transform: scale(0.9);
-  }
-  
   .button-wrapper {
     gap: 12px;
     margin-top: 16px;
@@ -176,22 +110,4 @@ svg.selection-mode:active {
   .selection-rect {
     animation: none;
   }
-  
-  .selection-toggle {
-    transition: none;
-  }
-  
-  .selection-toggle:hover {
-    transform: none;
-  }
-}
-
-/* ===== FOCUS STYLES ===== */
-.selection-toggle:focus-visible {
-  outline: 2px solid var(--mat-sys-primary);
-  outline-offset: 2px;
-}
-
-:host-context(.dark-theme) .selection-toggle:focus-visible {
-  outline-color: var(--mat-sys-primary);
 }

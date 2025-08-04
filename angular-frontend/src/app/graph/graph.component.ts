@@ -11,8 +11,6 @@ import {
   type ElementRef
 } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { transition } from 'd3';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
@@ -26,6 +24,7 @@ import { GraphSurveyComponent } from './graph-survey.component';
 import { GraphSelectionService } from '../shared/graph-selection.service';
 import { SelectionAnalysisService } from '../shared/selection-analysis.service';
 import { SelectionResultsComponent } from '../shared/selection-results/selection-results.component';
+import { SelectionToggleComponent } from '../shared/selection-toggle/selection-toggle.component';
 
 /**
  * How far the user can zoom *in*
@@ -60,9 +59,8 @@ const MINZOOM = 0.5;
     DecimalPipe, 
     DatePipe, 
     GraphSurveyComponent,
-    MatButtonModule,
-    MatIconModule,
-    SelectionResultsComponent
+    SelectionResultsComponent,
+    SelectionToggleComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -127,7 +125,7 @@ export class GraphComponent {
 
   xAxisTransformString = computed(() => {
     const yScale = this.dataservice.yScale();
-    return `translate(0, ${yScale.range()[0]})`;
+    return `translate(0, ${yScale.range()[0]})`; // for d3, (0,0) is the upper left hand corner. When looking at data, the lower left hand corner is (0,0)
   });
 
   yAxisTransformString = computed(() => {

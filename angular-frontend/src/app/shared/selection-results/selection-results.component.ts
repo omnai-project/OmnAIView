@@ -28,7 +28,7 @@ interface TimeRange {
             <mat-card-header>
               <mat-card-title>
                 <mat-icon>analytics</mat-icon>
-                Selection Analysis
+                Analyse
               </mat-card-title>
               <mat-card-subtitle>
                 {{formatTimeRange(result.timeRange)}} 
