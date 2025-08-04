@@ -17,6 +17,14 @@ export class SettingsMenuComponent {
     constructor(private dialog: MatDialog) { }
 
     openDialog(): void {
-        this.dialog.open(SettingsDialogComponent);
+        this.dialog.open(SettingsDialogComponent, {
+            width: '600px',
+            maxWidth: '90vw',
+            height: 'auto',
+            maxHeight: '90vh',
+            autoFocus: true,
+            restoreFocus: true,
+            panelClass: 'settings-dialog-panel'
+        });
     }
 }
