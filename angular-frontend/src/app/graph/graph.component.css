@@ -1,26 +1,113 @@
 svg {
-    min-width: 400px;
-    min-height: 300px;
-    width: 100%;
-    height: 80%;
-    border: 1px solid var(--mat-sys-outline);
-    display: block;
-    box-sizing: border-box;
+  min-width: 400px;
+  min-height: 300px;
+  width: 100%;
+  height: 80%;
+  border: 1px solid var(--mat-sys-outline);
+  display: block;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /* Touch-specific optimizations */
+  touch-action: none;
+  -webkit-touch-callout: none;
 }
 
 .button-wrapper {
-    display: flex;
-    justify-content: left;
-    align-items: center;
-    height: 50px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .tooltip {
-    position: fixed;
-    background: #222;
-    color: #fff;
-    padding: 4px 8px;
-    font-size: 12px;
-    border-radius: 4px;
-    pointer-events: none;
+  position: fixed;
+  background: #222;
+  color: #fff;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 1001;
+}
+
+/* ===== SELECTION RECTANGLE STYLING ===== */
+.selection-rect {
+  fill: rgba(33, 150, 243, 0.15);
+  stroke: #2196f3;
+  stroke-width: 2;
+  stroke-dasharray: 8, 4;
+  pointer-events: none;
+  animation: dashOffset 2s linear infinite;
+}
+
+@keyframes dashOffset {
+  0% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 24; }
+}
+
+/* Cursor changes in selection mode - supports mouse and touch */
+svg.selection-mode {
+  cursor: crosshair;
+}
+
+svg.selection-mode:active {
+  cursor: crosshair;
+}
+
+/* Touch-specific selection feedback */
+@media (hover: none) and (pointer: coarse) {
+  /* On touch devices, provide stronger visual feedback */
+  svg.selection-mode {
+    cursor: crosshair;
+  }
+}
+
+/* ===== SURVEY MARKERS ===== */
+.marker {
+  pointer-events: none;
+}
+
+.marker line {
+  stroke-width: 2;
+  stroke: #ff4444;
+  opacity: 0.9;
+}
+
+/* Dark mode adjustments */
+:host-context(.dark-theme) .tooltip {
+  background: rgba(30, 30, 30, 0.95);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:host-context(.dark-theme) .marker line {
+  stroke: #ff6666;
+  opacity: 1;
+}
+
+/* ===== GRAPH CONTAINER LAYOUT ===== */
+:host {
+  position: relative;
+  display: block;
+  height: 80vh;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .button-wrapper {
+    gap: 12px;
+    margin-top: 16px;
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  .selection-rect {
+    animation: none;
+  }
 }

@@ -1,0 +1,233 @@
+/* ===== LIGHT MODE (Standard) ===== */
+.results-container {
+  position: fixed;
+  top: 140px;
+  right: 20px;
+  width: 320px;
+  max-height: 70vh;
+  overflow-y: auto;
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { 
+    transform: translateX(100%); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateX(0); 
+    opacity: 1; 
+  }
+}
+
+/* Light Mode Glassmorphism */
+.analysis-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px) saturate(100%);
+  -webkit-backdrop-filter: blur(5px) saturate(100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+.device-analysis {
+  margin: 0 0;
+}
+
+.device-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.device-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.uuid-hint {
+  color: rgba(102, 102, 102, 0.8);
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+}
+
+.metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.metric-label {
+  font-size: 13px;
+  color: rgba(102, 102, 102, 0.9);
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(51, 51, 51, 0.95);
+  font-family: 'Roboto Mono', monospace;
+}
+
+mat-card-header {
+  margin-bottom: 8px;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-card-subtitle {
+  color: rgba(102, 102, 102, 0.8);
+}
+
+mat-card-content {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+/* ===== DARK MODE ===== */
+:host-context(.dark-theme) .analysis-card {
+  background: rgba(18, 18, 18, 0.2);
+  backdrop-filter: blur(5px) saturate(100%);
+  -webkit-backdrop-filter: blur(5px) saturate(100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+:host-context(.dark-theme) .device-title {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+:host-context(.dark-theme) .uuid-hint {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+:host-context(.dark-theme) .metric-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+:host-context(.dark-theme) .metric-value {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+:host-context(.dark-theme) mat-card-title {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+:host-context(.dark-theme) mat-card-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+:host-context(.dark-theme) mat-card-content {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Enhanced Device Indicators in Dark Mode */
+:host-context(.dark-theme) .device-indicator {
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    0 0 8px rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Smooth transitions for theme switching */
+.analysis-card,
+.device-title,
+.uuid-hint,
+.metric-label,
+.metric-value,
+mat-card-title,
+mat-card-subtitle,
+mat-card-content {
+  transition: all 0.3s ease;
+}
+
+/*
+===== HOVER EFFECTS =====
+.analysis-card:hover {
+  transform: translateY(-2px);
+}
+*/
+/* Light Mode Hover 
+.analysis-card:hover {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    0 4px 12px rgba(0, 0, 0, 0.1);
+}
+*/
+/* Dark Mode Hover 
+:host-context(.dark-theme) .analysis-card:hover {
+  background: rgba(28, 28, 28, 0.95);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+*/
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .results-container {
+    width: calc(100vw - 40px);
+    right: 20px;
+    left: 20px;
+    top: 60px;
+  }
+  
+  .analysis-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+  }
+  
+  :host-context(.dark-theme) .analysis-card {
+    background: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(15px);
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  .results-container {
+    animation: none;
+  }
+  
+  .analysis-card,
+  .device-title,
+  .uuid-hint,
+  .metric-label,
+  .metric-value,
+  mat-card-title,
+  mat-card-subtitle,
+  mat-card-content {
+    transition: none;
+  }
+}

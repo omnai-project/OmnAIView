@@ -1,21 +1,48 @@
-<svg #graphContainer appResizeObserver (resize)="updateGraphDimensions($event)" appZoomable [MINZOOM]="0.5"
-    [MAXZOOM]="32" [onlyXZoom]="zoomXOnly()" [onlyYZoom]="zoomYOnly()" appGraphCursor #cursor="appGraphCursor"
-    (pointermove)="onPointerMove($event)" (click)="survey.onGraphClick()">
+<svg #graphContainer 
+     appResizeObserver 
+     (resize)="updateGraphDimensions($event)" 
+     appZoomable 
+     [MINZOOM]="0.5"
+     [MAXZOOM]="32" 
+     [onlyXZoom]="zoomXOnly()" 
+     [onlyYZoom]="zoomYOnly()" 
+     appGraphCursor 
+     #cursor="appGraphCursor"
+     [class.selection-mode]="selectionService.isSelectionMode()"
+     (pointermove)="onPointerMove($event)" 
+     (click)="survey.onGraphClick()"
+     (pointerdown)="onPointerDown($event)"
+     (pointerup)="onPointerUp($event)">
+    
     <defs>
         <clipPath id="plotArea"> <!--PlotArea between the axis-->
             <rect [attr.width]="innerSize().w" [attr.height]="innerSize().h"></rect>
         </clipPath>
     </defs>
+    
     <g [attr.transform]="marginTransform()">
-
         <g #xAxis [attr.transform]="xAxisTransformString()"></g>
         <g #yAxis [attr.transform]="yAxisTransformString()"></g>
+        
         <g [attr.clip-path]="'url(#plotArea)'"> <!-- Keep path in plotArea when zooming-->
             @for (path of dataservice.paths(); track $index) {
             <path [attr.d]="path.d" [attr.stroke]="path.stroke" fill="none" stroke-width="2" />
             }
         </g>
-        @for (p of [survey.firstPoint(), survey.secondPoint()]; track p?.x) {
+        
+        <!-- Selection rectangle overlay -->
+        @if (selectionService.selectionRect(); as rect) {
+        <rect
+          class="selection-rect"
+          [attr.x]="rect.x - dataservice.margin.left"
+          [attr.y]="rect.y - dataservice.margin.top"
+          [attr.width]="rect.width"
+          [attr.height]="rect.height"
+        />
+        }
+        
+        <!-- Survey markers -->
+        @for (p of [survey.firstPoint(), survey.secondPoint()]; track $index) {
         @if (p) {
         <g class="marker" [attr.transform]="survey.markerTransform(p)">
             <line x1="-5" y1="0" x2="5" y2="0" stroke="red" />
@@ -26,13 +53,21 @@
     </g>
 </svg>
 
-@if (cursor.xValue() !== null && cursor.yValue() !== null) { <!-- Set tooltip in graph-->
+<!-- Selection toggle button as separate component -->
+<app-selection-toggle></app-selection-toggle>
+
+<!-- Selection results component -->
+<app-selection-results></app-selection-results>
+
+<!-- Cursor tooltip -->
+@if (cursor.xValue() !== null && cursor.yValue() !== null) {
 <div class="tooltip" [style.left.px]="mousePos.x + 12" [style.top.px]="mousePos.y + 12">
     X: {{ cursor.xValue() | date:'HH:mm:ss.SSS' }}<br>
     Y: {{ cursor.yValue() | number:'1.2-2' }}
 </div>
 }
 
+<!-- Control buttons -->
 <div class="button-wrapper">
     <app-graph-survey [cursor]="cursor" #survey></app-graph-survey>
     <mat-slide-toggle [checked]="xAxisTimeMode() === 'relative'" (change)="onXAxisTimeModeToggle($event.checked)">
@@ -41,6 +76,8 @@
     <mat-checkbox [checked]="zoomXOnly()" (change)="toggleXZoom($event.checked)"> X-Zoom</mat-checkbox>
     <mat-checkbox [checked]="zoomYOnly()" (change)="toggleYZoom($event.checked)"> Y-Zoom</mat-checkbox>
 </div>
+
+<!-- Debug output (hidden by default) -->
 <div style="display: none;">
     <h4>Debug Output</h4>
 
@@ -78,5 +115,4 @@
         <strong>Graph Dimensions:</strong>
         <pre>{{ dataservice.graphDimensions() | json }}</pre>
     </div>
-
 </div>
