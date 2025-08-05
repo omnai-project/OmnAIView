@@ -2,7 +2,7 @@
 // For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
 
-// Font size custom properties setup
+// Font Size Custom Properties - Initialize early
 :root {
   --font-scale: 1;
   --font-size-base: 16px;
@@ -12,16 +12,14 @@
 }
 
 html {
-  @include mat.theme((
-    color: (
-      theme-type: light,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
-
+  @include mat.theme((color: (theme-type: light,
+        primary: mat.$red-palette,
+        tertiary: mat.$red-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    ));
+  
   // Apply font scaling to root
   font-size: var(--font-size-base);
 }
@@ -35,26 +33,22 @@ body {
   
   // Font size specific adjustments
   &.font-size-small {
-    // Tighter spacing for smaller fonts
     --spacing-scale: 0.9;
   }
   
   &.font-size-large {
-    // More generous spacing for larger fonts
     --spacing-scale: 1.1;
   }
   
   &.font-size-extra-large {
-    // Even more generous spacing
     --spacing-scale: 1.2;
   }
 }
 
-// Material component font size overrides
 mat-card {
-  @include mat.card-overrides((
-    elevated-container-color: var(--mat-sys-tertiary-container),
-  ));
+  /* Override to color selected sources with tertiary color */
+  @include mat.card-overrides((elevated-container-color: var(--mat-sys-tertiary-container),
+    ));
   
   // Scale card text
   .mat-mdc-card-title {
@@ -66,8 +60,25 @@ mat-card {
   }
 }
 
-// Button text scaling
-.mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-fab, .mat-mdc-mini-fab {
+.dark-theme {
+  @include mat.theme((color: (theme-type: dark,
+        primary: mat.$red-palette,
+        tertiary: mat.$red-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    ));
+  
+  // Dark theme inherits the same font scaling
+  font-size: var(--font-size-base);
+}
+
+// ========================================
+// FONT SIZE SYSTEM EXTENSIONS
+// ========================================
+
+// Material component font size overrides
+.mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-stroked-button, .mat-mdc-fab, .mat-mdc-mini-fab {
   font-size: var(--font-size-base) !important;
 }
 
@@ -77,6 +88,15 @@ mat-card {
 }
 
 .mat-mdc-dialog-content {
+  font-size: var(--font-size-base) !important;
+}
+
+// Tab scaling
+.mat-mdc-tab {
+  font-size: var(--font-size-base) !important;
+}
+
+.mat-mdc-tab-label {
   font-size: var(--font-size-base) !important;
 }
 
@@ -91,7 +111,19 @@ mat-card {
   }
 }
 
-// Graph component specific scaling
+// Toolbar scaling (for your existing toolbar)
+.toolbar-wrapper {
+  .mat-slide-toggle .mat-slide-toggle-label {
+    font-size: var(--font-size-base);
+  }
+  
+  // Scale toolbar buttons
+  button {
+    font-size: var(--font-size-base);
+  }
+}
+
+// Graph component scaling
 app-graph {
   // Scale axis labels and tick marks
   .tick text {
@@ -126,19 +158,32 @@ app-graph {
   font-size: var(--font-size-small) !important;
 }
 
-.dark-theme {
-  @include mat.theme((
-    color: (
-      theme-type: dark,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
-  
-  // Dark theme inherits the same font scaling
-  font-size: var(--font-size-base);
+// Settings dialog specific styling
+.settings-content {
+  .mat-mdc-tab-header {
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  .mat-mdc-tab-label {
+    padding: 0 24px;
+    
+    @media (max-width: 768px) {
+      padding: 0 16px;
+    }
+  }
+
+  .mat-mdc-tab-body-content {
+    overflow: visible;
+    max-height: none;
+  }
+}
+
+// Dark theme adjustments for settings
+.dark-theme .settings-content {
+  .mat-mdc-tab-header {
+    background: var(--mat-sys-surface);
+    border-bottom-color: var(--mat-sys-outline-variant);
+  }
 }
 
 // Responsive adjustments for font scaling
@@ -151,6 +196,27 @@ app-graph {
     --font-size-large: 20px;
     --font-size-xl: 26px;
   }
+  
+  .settings-content .mat-mdc-tab-label {
+    font-size: var(--font-size-small);
+  }
+  
+  // Remove height restrictions on mobile
+  .settings-content .mat-mdc-tab-body-content {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 480px) {
+  // Even more conservative scaling on very small screens
+  body.font-size-extra-large {
+    --font-scale: 1.0;
+    --font-size-base: 16px;
+    --font-size-small: 14px;
+    --font-size-large: 18px;
+    --font-size-xl: 22px;
+  }
 }
 
 // Print-specific font sizing
@@ -161,5 +227,37 @@ app-graph {
     --font-size-small: 12px;
     --font-size-large: 16px;
     --font-size-xl: 20px;
+  }
+}
+
+// Accessibility improvements
+@media (prefers-contrast: high) {
+  // High contrast mode support - ensure text remains readable
+  body {
+    --font-size-base: calc(var(--font-size-base) * 1.1);
+  }
+}
+
+// Dialog panel specific styling to prevent scrollbars
+.settings-dialog-panel {
+  .mat-mdc-dialog-container {
+    overflow: visible;
+    max-height: 90vh;
+  }
+  
+  .mat-mdc-dialog-surface {
+    overflow: visible;
+  }
+  
+  .mat-mdc-dialog-content {
+    overflow: visible;
+    max-height: none;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .mat-mdc-tab-body-wrapper {
+    transition: none !important;
   }
 }
