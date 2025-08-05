@@ -66,7 +66,14 @@ export class DummyDataService implements DataSource {
 
     saveData(dir: string, fileName: string): void {
         if(window.electronAPI) {
-            const csv = ['# source: dummy data','# version: 1.0.0','timestamp,value', ...this._data()['dummy'].map(item => `${item.timestamp},${item.value}`)].join('\n');
+            const csv = [
+                '# source: dummy data',
+                '# version: 1.0.0',
+                'timestamp,value',
+                ...(this._data()['dummy']?.length
+                ? this._data()['dummy'].map(item => `${item.timestamp},${item.value}`) 
+                : ['-,-'])
+            ].join('\n');
             const progressRef = this.dialog.open(DownloadProgressComponent, {
                 disableClose: true
             });
@@ -87,10 +94,10 @@ export class DummyDataService implements DataSource {
             try {
                 const result = await new Promise((resolve, reject) => {
                     setTimeout(() => {
-                    if (!this.subscription) reject(new Error('Recording aborted'));
-                    this.disconnect();
-                    this.saveData(dir, fileName);
-                    resolve({ filePath: `${dir}/${fileName}`, duration, success: true });
+                        if (!this.subscription) reject(new Error('Recording aborted'));
+                        this.disconnect();
+                        this.saveData(dir, fileName);
+                        resolve({ filePath: `${dir}/${fileName}`, duration, success: true });
                     }, duration * 1000);
                 });
                 console.log('Recording done:', result);

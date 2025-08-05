@@ -6,12 +6,13 @@ import { SettingsDialogComponent } from "./settings-dialog.component";
 @Component({
     selector: `app-settings-menu`,
     standalone: true,
-    imports: [MatIcon, MatDialogModule, SettingsDialogComponent],
+    imports: [MatIcon, MatDialogModule],
     template: `
     <button mat-icon-button aria-label="Settings" (click)="openDialog()">
       <mat-icon>settings</mat-icon>
     </button>
-  `,
+    `,
+    styles: `button { display: flex; padding: .3em }`,
 })
 export class SettingsMenuComponent {
     constructor(private dialog: MatDialog) { }

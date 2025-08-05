@@ -23,7 +23,7 @@ export class StartDataButtonComponent {
     private readonly datasource = inject(DataSourceSelectionService);
     private readonly advancedMode = inject(AdvancedModeService);
     protected readonly toolbarState = inject(ToolbarStateManagerService);
-    ToolbarState = ToolbarState;
+    protected ToolbarState = ToolbarState;
 
     clearAllData(): void {
         this.datasource.availableSources().forEach((source) => {
@@ -37,12 +37,14 @@ export class StartDataButtonComponent {
             const dialogRef = this.dialog.open(SourceSelectModalComponent, {
                 width: '60vw'
             });
-            dialogRef.afterClosed().subscribe(() => {
-                if (this.datasource.hasSelection()) {
+            dialogRef.afterClosed().subscribe((result) => {
+                if (result) {
                     this.toolbarState.setState(ToolbarState.STARTED);
                     this.datasource.currentSource()?.connect();
+                } else {
+                    console.log("No source selected.");
+                    this.toolbarState.setState(ToolbarState.IDLE);
                 }
-                else this.toolbarState.setState(ToolbarState.IDLE);
             });
             return;
         }

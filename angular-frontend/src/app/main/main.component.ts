@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component } from "@angular/core";
 import { DarkmodeComponent } from '../darkmode/darkmode.component';
 import { GraphComponent } from "../graph/graph.component";
 import { ToolbarComponent } from "../toolbar/toolbar.component";
