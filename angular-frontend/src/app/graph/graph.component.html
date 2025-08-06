@@ -6,6 +6,7 @@
      [MAXZOOM]="32" 
      [onlyXZoom]="zoomXOnly()" 
      [onlyYZoom]="zoomYOnly()" 
+     [plotHost]="plot" 
      appGraphCursor 
      #cursor="appGraphCursor"
      [class.selection-mode]="selectionService.isSelectionMode()"
@@ -19,8 +20,7 @@
             <rect [attr.width]="innerSize().w" [attr.height]="innerSize().h"></rect>
         </clipPath>
     </defs>
-    
-    <g [attr.transform]="marginTransform()">
+    <g #plot [attr.transform]="marginTransform()">
         <g #xAxis [attr.transform]="xAxisTransformString()"></g>
         <g #yAxis [attr.transform]="yAxisTransformString()"></g>
         

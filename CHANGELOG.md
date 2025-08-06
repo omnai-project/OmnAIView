@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed 
 ### Removed 
 
+## [v1.12.2-alpha]
+### Changed 
+- Fix zoom behavior on axis switch to prevent resets/glitchs 
 
 ## [v1.12.1-alpha]
 

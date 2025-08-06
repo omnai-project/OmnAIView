@@ -26,23 +26,6 @@ import { SelectionAnalysisService } from '../shared/selection-analysis.service';
 import { SelectionResultsComponent } from '../shared/selection-results/selection-results.component';
 import { SelectionToggleComponent } from '../shared/selection-toggle/selection-toggle.component';
 
-/**
- * How far the user can zoom *in*
- * A zoom factor k means "one data‑pixel covers k canvas‑pixels".
- * User can magnify the graph up to MAXZOOM x 
- */
-const MAXZOOM = 32;
-/**
- * How far the user can zoom *out*
- * MINZOOM < 1 compresses multiple data‑pixels into one screen‑pixel.
- * User can shrink the graph up to MINZOOM x 
- */
-const MINZOOM = 0.5;
-
-/**
- * Main graph component with integrated selection, zoom, and cursor functionality
- * Displays time-series data with interactive selection areas for statistical analysis
- */
 @Component({
   selector: 'app-graph',
   standalone: true,
@@ -50,14 +33,14 @@ const MINZOOM = 0.5;
   providers: [DataSourceService, GraphSelectionService, SelectionAnalysisService],
   styleUrls: ['./graph.component.css'],
   imports: [
-    ResizeObserverDirective, 
-    JsonPipe, 
-    MatSlideToggleModule, 
-    ZoomableDirective, 
-    MatCheckboxModule, 
-    GraphCursorDirective, 
-    DecimalPipe, 
-    DatePipe, 
+    ResizeObserverDirective,
+    JsonPipe,
+    MatSlideToggleModule,
+    ZoomableDirective,
+    MatCheckboxModule,
+    GraphCursorDirective,
+    DecimalPipe,
+    DatePipe,
     GraphSurveyComponent,
     SelectionResultsComponent,
     SelectionToggleComponent
@@ -102,14 +85,14 @@ export class GraphComponent {
   });
 
   mousePos = { x: 0, y: 0 };
-  
+
   /**
    * Sets mouse position in screen coordinates and handles selection movement
    * Used for tooltip coordinate calculation and selection updates
    */
   onPointerMove(evt: PointerEvent): void {
     this.mousePos = { x: evt.clientX, y: evt.clientY };
-    
+
     // Handle selection movement if in selection mode
     if (this.selectionService.isSelectionMode()) {
       const rect = this.svgGraph().nativeElement.getBoundingClientRect();
@@ -136,11 +119,11 @@ export class GraphComponent {
   toggleXZoom($event: boolean): void {
     this.zoomXOnly.set($event);
   }
-  
+
   toggleYZoom($event: boolean): void {
     this.zoomYOnly.set($event);
   }
-  
+
   /**
    * Signal to control the x-axis time mode. Relative starts with 0, absolute reflects the time of day the data was recorded.
    */
@@ -177,21 +160,21 @@ export class GraphComponent {
    */
   onPointerDown(event: PointerEvent): void {
     if (!this.selectionService.isSelectionMode()) return;
-    
+
     // Prevent default behavior and event bubbling
     event.preventDefault();
     event.stopPropagation();
-    
+
     const rect = this.svgGraph().nativeElement.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    
+
     this.selectionService.setGraphHeight(
       this.dataservice.graphDimensions().height - this.dataservice.margin.top - this.dataservice.margin.bottom
     );
-    
+
     this.selectionService.startPotentialSelection(x, y);
-    
+
     // Capture pointer for consistent tracking across element boundaries
     (event.target as Element).setPointerCapture(event.pointerId);
   }
@@ -202,15 +185,15 @@ export class GraphComponent {
    */
   onPointerUp(event: PointerEvent): void {
     if (!this.selectionService.isSelectionMode()) return;
-    
+
     event.preventDefault();
     event.stopPropagation();
-    
+
     const wasDragOperation = this.selectionService.finishSelection();
-    
+
     // Release pointer capture
     (event.target as Element).releasePointerCapture(event.pointerId);
-    
+
     // Prevent click event from firing if this was a drag operation
     if (wasDragOperation) {
       event.preventDefault();

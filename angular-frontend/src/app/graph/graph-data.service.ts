@@ -51,14 +51,14 @@ export class DataSourceService {
 
   private $zoomX = signal<ZoomTransform>(zoomIdentity);
   private $zoomY = signal<ZoomTransform>(zoomIdentity);
-
+  
   /**
    * Set Zoom for Axis
    * @param axis Axis zoomed: x, y or both 
    */
-  setZoom(t: ZoomTransform, axis: 'x' | 'y' | 'both') {
-    if (axis !== 'y') this.$zoomX.set(t);
-    if (axis !== 'x') this.$zoomY.set(t);
+  setZoom(tx: ZoomTransform, ty: ZoomTransform) {
+    this.$zoomX.set(tx);
+    this.$zoomY.set(ty);
   }
 
   readonly margin = { top: 20, right: 30, bottom: 40, left: 60 };
