@@ -11,7 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed 
 ### Removed 
 
-## [v1.12.0]
+
+## [v1.12.1-alpha]
+
+### Fixed
+- Fix selection rectangle positioning to properly align with plot area boundaries
+
+## [v1.12.0-alpha]
 
 ### Added
 - Add interactive graph selection analysis tool for time-series measurement data
