@@ -1,13 +1,7 @@
 @for (device of devices(); track device.UUID) {
-<ul>
-    <li>
-        UUID: {{ device.UUID }} |
-        Color - R: {{ device.color.r }},
-        G: {{ device.color.g }},
-        B: {{ device.color.b }}
-    </li>
-
-</ul>
+<div class="scope-card">
+    <app-device-card [uuid]="device.UUID" [color]="device.color" [name]="name"></app-device-card>
+</div>
 } @empty {
-No known devices found
+<p>No known devices found</p>
 }

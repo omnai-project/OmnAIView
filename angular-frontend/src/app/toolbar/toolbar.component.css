@@ -16,3 +16,8 @@
     right: 0;
     margin-right: 10px;
 }
+
+.toolbar-left {
+    position: absolute;
+    left: 0;
+}

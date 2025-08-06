@@ -1,0 +1,18 @@
+import { Component } from "@angular/core";
+import { DeviceCardComponent } from "../../sidebar/devices/devicecard.component";
+
+/**
+ * Hardcoded mat-card showing random data as a source 
+ */
+@Component({
+    selector: 'app-device-list-random',
+    styleUrl: './devicelist-dummy.component.css',
+    imports: [DeviceCardComponent],
+    template: `
+    <div class="scope-card">
+        <app-device-card [uuid]="'testuuid'" [name]="'randomDataSource'" [color]="{r: 70, g:130, b:180}"></app-device-card>
+    </div>
+    `
+})
+export class DeviceListRandomComponent {
+}

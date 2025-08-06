@@ -1,0 +1,28 @@
+.card-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+.color-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-left: 4%;
+}
+
+.device-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.settings {
+    position: absolute;
+    padding-right: 2%;
+    right: 4%;
+}

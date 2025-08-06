@@ -1,0 +1,12 @@
+<div class="card-content">
+    <div class="color-indicator" [style.background-color]="colorString()"></div>
+
+    <div class="device-info">
+        <strong>{{ name() }}</strong>
+        <div>{{ uuid() }}</div>
+    </div>
+
+    <button mat-icon-button (click)="openModal()" aria-label="Device settings" class="settings">
+        <mat-icon>settings</mat-icon>
+    </button>
+</div>
