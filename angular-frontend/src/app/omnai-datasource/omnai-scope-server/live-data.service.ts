@@ -79,6 +79,8 @@ export class OmnAIScopeDataService implements DataSource {
   readonly #httpClient = inject(HttpClient);
   private readonly fileReady$ = new Subject<FileReadyMessage>();
 
+  private firstMessage: boolean = true;
+
   private setupDevicePolling(): void {
     const pollInterval_ms = 15 * 1000;
     timer(0, pollInterval_ms)
@@ -154,7 +156,6 @@ export class OmnAIScopeDataService implements DataSource {
           // send startMessage 
           console.log(JSON.stringify(startMessage));
           this.socket.send(JSON.stringify(startMessage));
-          resolve();
         });
 
         let ignoreCounter = 0;
@@ -169,6 +170,10 @@ export class OmnAIScopeDataService implements DataSource {
           } catch {
             console.warn("Wrong JSON format", event.data);
             return;
+          }
+          if (this.firstMessage) {
+            this.firstMessage = false;
+            resolve();
           }
 
           switch (parsedMessage.type) {
