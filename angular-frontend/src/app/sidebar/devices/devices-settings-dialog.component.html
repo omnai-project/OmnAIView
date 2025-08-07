@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Device Settings</h2>
+<mat-dialog-content>
+    <mat-form-field appearance="fill">
+        <mat-label>Device Name</mat-label>
+        <input matInput [(ngModel)]="name" />
+    </mat-form-field>
+    <!-- Später: Farbwahl etc. -->
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="dialog.close()">Cancel</button>
+    <button mat-button (click)="save()">Save</button>
+</mat-dialog-actions>

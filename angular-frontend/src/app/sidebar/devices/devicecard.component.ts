@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, input } from "@angular/core";
-import { Input, Output, EventEmitter } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { RGB } from "../../source-selection/source-color.service";
 import { computed } from "@angular/core";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { DevicesSettingsDialogComponent } from "./devices-settings-dialog.component";
 
 export interface Device {
     uuid: string;
@@ -14,7 +14,7 @@ export interface Device {
 @Component({
     selector: 'app-device-card',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatIconModule, MatButtonModule, MatMenuModule],
+    imports: [MatIconModule, MatButtonModule, MatMenuModule, MatDialogModule],
     host: {
         class: 'device-card'
     },
@@ -22,20 +22,27 @@ export interface Device {
     styleUrl: './devicecard.component.css'
 })
 export class DeviceCardComponent {
-    readonly uuid = input<string>();
-    readonly color = input<{ r: number; g: number; b: number }>();
-    readonly name = input<string>();
-    @Output() edit = new EventEmitter<string>();
+    private readonly dialog = inject(MatDialog);
+    readonly uuid = model<string>();
+    readonly color = model<{ r: number; g: number; b: number }>();
+    readonly name = model<string>();
 
     readonly colorString = computed(() =>
         this.color() ? `rgb(${this.color()?.r}, ${this.color()?.g}, ${this.color()?.b})` : 'transparent'
     );
 
-    editDeviceName() {
-        this.edit.emit(this.name());
-    }
+    openModal() {
+        const ref = this.dialog.open(DevicesSettingsDialogComponent, {
+            data: {
+                uuid: this.uuid(),
+                name: this.name(),
+            },
+        });
 
-    openModal(){
-        
+        ref.afterClosed().subscribe((result) => {
+            if (result && result.name !== this.name()) {
+                this.name.set(result.name);
+            }
+        });
     }
 }
