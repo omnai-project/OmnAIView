@@ -7,6 +7,14 @@
     gap: 1rem;
 }
 
+.card-collapsed {
+    display: flex;
+    margin-left: 0;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
 .color-indicator {
     width: 20px;
     height: 20px;
@@ -23,6 +31,5 @@
 
 .settings {
     position: absolute;
-    padding-right: 2%;
     right: 4%;
 }

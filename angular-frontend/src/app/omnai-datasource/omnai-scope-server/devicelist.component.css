@@ -1,18 +1,13 @@
-.color-indicator {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin: 1%;
-    margin-left: 4%;
-}
-
 .scope-card {
     display: flex;
     flex-direction: row;
     padding-left: 4%;
     width: 96%;
-    padding-bottom: 5%;
+    padding-bottom: 1rem;
     border-bottom: 1px solid rgba(128, 128, 128, 0.177);
     border-left: 0;
+}
+
+.scope-card-collapsed {
+    justify-content: center;
 }

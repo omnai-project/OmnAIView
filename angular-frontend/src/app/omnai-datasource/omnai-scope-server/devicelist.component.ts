@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { OmnAIScopeDataService } from './live-data.service';
 import { MatCardModule } from '@angular/material/card';
 import { DeviceCardComponent } from '../../sidebar/devices/devicecard.component';
+import { SideBarService } from '../../sidebar/sidebar.service';
 
 @Component({
     selector: 'app-device-list',
@@ -15,6 +16,6 @@ import { DeviceCardComponent } from '../../sidebar/devices/devicecard.component'
 export class DeviceListComponent {
     private readonly deviceHandler = inject(OmnAIScopeDataService);
     protected readonly devices = this.deviceHandler.devices;
-    name = "test";
+    readonly sideBarService = inject(SideBarService)
     getDevicesList = this.deviceHandler.getDevices.bind(this.deviceHandler);
 }

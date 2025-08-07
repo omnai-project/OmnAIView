@@ -1,12 +1,13 @@
-<div class="card-content">
+<div class="card-content" [class.card-collapsed]="sideBarService.collapsed()">
     <div class="color-indicator" [style.background-color]="colorString()"></div>
-
+    @if(!sideBarService.collapsed()){
     <div class="device-info">
-        <strong>{{ name() }}</strong>
+        <div>{{ name() }}</div>
         <div>{{ uuid() }}</div>
     </div>
 
     <button mat-icon-button (click)="openModal()" aria-label="Device settings" class="settings">
         <mat-icon>settings</mat-icon>
     </button>
+    }
 </div>

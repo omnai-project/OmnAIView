@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, model } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, model, input } from "@angular/core";
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { computed } from "@angular/core";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { DevicesSettingsDialogComponent } from "./devices-settings-dialog.component";
+import { SideBarService } from "../sidebar.service";
 
 export interface Device {
     uuid: string;
@@ -23,6 +24,7 @@ export interface Device {
 })
 export class DeviceCardComponent {
     private readonly dialog = inject(MatDialog);
+    readonly sideBarService = inject(SideBarService);
     readonly uuid = model<string>();
     readonly color = model<{ r: number; g: number; b: number }>();
     readonly name = model<string>();

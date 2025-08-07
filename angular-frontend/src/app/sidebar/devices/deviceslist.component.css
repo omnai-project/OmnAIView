@@ -5,8 +5,14 @@
     border-bottom: 1px solid grey;
 }
 
+.device-card-collapsed {
+    border-bottom: 1px solid transparent;
+    box-shadow: none;
+}
+
 .card-header {
     font-size: medium;
+    font-weight: normal;
     background-color: rgba(168, 159, 159, 0.279);
     padding: 10px;
     margin-bottom: 5%;

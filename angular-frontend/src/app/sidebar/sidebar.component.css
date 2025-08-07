@@ -1,11 +1,17 @@
 .sidenav {
     position: fixed;
-    height: 99%;
+    height: 100%;
     width: 17%;
-    border-radius: 0px 15px 15px 0px;
-    border: 1px solid var(--mat-sys-outline);
+    border-right: 1px solid var(--mat-sys-surface-container-highest);
     box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.3);
     align-items: center;
+    background-color: var(--mat-sys-primary-container);
+}
+
+.sidenav-collapsed {
+    width: 4%;
+    overflow: hidden;
+    background-color: var(--mat-sys-primary-container);
 }
 
 .sidebar-button {
@@ -36,12 +42,12 @@
 
 .sidebar-tabs button:hover {
     border-color: var(--mat-sys-primary);
-    color: #333;
+    color: var(--mat-sys-on-surface);
 }
 
 .sidebar-tabs button.active {
     border-color: var(--mat-sys-primary);
-    color: #333;
+    color: var(--mat-sys-on-surface);
 }
 
 .tab-content {
@@ -58,6 +64,18 @@
     color: var(--mat-sys-on-surface);
 }
 
-.header mat-icon {
+.header .button mat-icon {
     vertical-align: middle;
+}
+
+.header mat-icon {
+    color: var(--mat-sys-on-surface);
+}
+
+.sidenav-collapsed .header {
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.177);
 }
