@@ -1,6 +1,6 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 // Font Size Custom Properties - Initialize early
 :root {
@@ -12,14 +12,18 @@
 }
 
 html {
-  @include mat.theme((color: (theme-type: light,
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
         primary: mat.$red-palette,
         tertiary: mat.$red-palette,
       ),
       typography: Roboto,
       density: 0,
-    ));
-  
+    )
+  );
+
   // Apply font scaling to root
   font-size: var(--font-size-base);
 }
@@ -27,19 +31,19 @@ html {
 body {
   background: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
-  
+
   // Base font size scaling
   font-size: var(--font-size-base);
-  
+
   // Font size specific adjustments
   &.font-size-small {
     --spacing-scale: 0.9;
   }
-  
+
   &.font-size-large {
     --spacing-scale: 1.1;
   }
-  
+
   &.font-size-extra-large {
     --spacing-scale: 1.2;
   }
@@ -47,28 +51,35 @@ body {
 
 mat-card {
   /* Override to color selected sources with tertiary color */
-  @include mat.card-overrides((elevated-container-color: var(--mat-sys-tertiary-container),
-    ));
-  
+  @include mat.card-overrides(
+    (
+      elevated-container-color: var(--mat-sys-tertiary-container),
+    )
+  );
+
   // Scale card text
   .mat-mdc-card-title {
     font-size: calc(var(--font-size-large) * 1.1);
   }
-  
+
   .mat-mdc-card-content {
     font-size: var(--font-size-base);
   }
 }
 
 .dark-theme {
-  @include mat.theme((color: (theme-type: dark,
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
         primary: mat.$red-palette,
         tertiary: mat.$red-palette,
       ),
       typography: Roboto,
       density: 0,
-    ));
-  
+    )
+  );
+
   // Dark theme inherits the same font scaling
   font-size: var(--font-size-base);
 }
@@ -78,7 +89,11 @@ mat-card {
 // ========================================
 
 // Material component font size overrides
-.mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-stroked-button, .mat-mdc-fab, .mat-mdc-mini-fab {
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-stroked-button,
+.mat-mdc-fab,
+.mat-mdc-mini-fab {
   font-size: var(--font-size-base) !important;
 }
 
@@ -105,7 +120,7 @@ mat-card {
   .mat-mdc-form-field-label {
     font-size: var(--font-size-small) !important;
   }
-  
+
   .mat-mdc-input-element {
     font-size: var(--font-size-base) !important;
   }
@@ -116,7 +131,7 @@ mat-card {
   .mat-slide-toggle .mat-slide-toggle-label {
     font-size: var(--font-size-base);
   }
-  
+
   // Scale toolbar buttons
   button {
     font-size: var(--font-size-base);
@@ -129,11 +144,11 @@ app-graph {
   .tick text {
     font-size: var(--font-size-small);
   }
-  
+
   .axis-label {
     font-size: var(--font-size-base);
   }
-  
+
   // Scale measurement values
   .measurement-value {
     font-size: var(--font-size-large);
@@ -162,11 +177,12 @@ app-graph {
 .settings-content {
   .mat-mdc-tab-header {
     border-bottom: 1px solid var(--mat-sys-outline-variant);
+    background: var(--mat-sys-surface);
   }
 
   .mat-mdc-tab-label {
     padding: 0 24px;
-    
+
     @media (max-width: 768px) {
       padding: 0 16px;
     }
@@ -181,9 +197,110 @@ app-graph {
 // Dark theme adjustments for settings
 .dark-theme .settings-content {
   .mat-mdc-tab-header {
-    background: var(--mat-sys-surface);
+    background: #505050 !important;
     border-bottom-color: var(--mat-sys-outline-variant);
   }
+}
+
+// Ensure button toggle groups have consistent appearance
+.mat-button-toggle-group {
+  width: 100%;
+  display: flex;
+  border-radius: 24px;
+}
+
+.mat-button-toggle-group .mat-button-toggle {
+  flex: 1;
+  min-width: 0;
+}
+
+// Theme and Font toggles should look identical
+.theme-toggles,
+.font-size-toggles {
+  .mat-button-toggle {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+// ========================================
+// MODAL BACKGROUND FIX FOR DARK MODE
+// ========================================
+
+// Target ALL possible dialog containers and elements - WITH BORDER RADIUS
+.dark-theme .mat-mdc-dialog-container {
+  background: #505050 !important;
+  background-color: #505050 !important;
+  border-radius: 12px !important; // Keep rounded corners
+}
+
+.dark-theme .mat-mdc-dialog-surface {
+  background: #505050 !important;
+  background-color: #505050 !important;
+  border-radius: 12px !important;
+}
+
+.dark-theme .cdk-overlay-pane {
+  .mat-mdc-dialog-container {
+    background: #505050 !important;
+    background-color: #505050 !important;
+    border-radius: 12px !important;
+  }
+}
+
+// Target the dialog wrapper and any nested containers
+.dark-theme .cdk-dialog-container {
+  background: #505050 !important;
+  background-color: #505050 !important;
+  border-radius: 12px !important;
+}
+
+// Ensure all dialog content areas match
+.dark-theme .mat-mdc-dialog-title {
+  background: #505050 !important;
+  background-color: #505050 !important;
+}
+
+.dark-theme .mat-mdc-dialog-content {
+  background: transparent !important;
+}
+
+.dark-theme .mat-mdc-dialog-actions {
+  background: #505050 !important;
+  background-color: #505050 !important;
+}
+
+// Target any Material Design internal containers - WITH BORDER RADIUS
+.dark-theme .mdc-dialog {
+  background: #505050 !important;
+  background-color: #505050 !important;
+  border-radius: 12px !important;
+}
+
+.dark-theme .mdc-dialog__container {
+  background: #505050 !important;
+  background-color: #505050 !important;
+  border-radius: 12px !important;
+}
+
+.dark-theme .mdc-dialog__surface {
+  background: #505050 !important;
+  background-color: #505050 !important;
+  border-radius: 12px !important;
+}
+
+// Fix tab headers in dark mode
+.dark-theme .mat-mdc-tab-header {
+  background: #505050 !important;
+  background-color: #505050 !important;
+}
+
+.dark-theme .mat-mdc-tab-header-pagination {
+  background: #505050 !important;
+}
+
+.dark-theme .mat-mdc-tab-labels {
+  background: #505050 !important;
 }
 
 // Responsive adjustments for font scaling
@@ -196,11 +313,11 @@ app-graph {
     --font-size-large: 20px;
     --font-size-xl: 26px;
   }
-  
+
   .settings-content .mat-mdc-tab-label {
     font-size: var(--font-size-small);
   }
-  
+
   // Remove height restrictions on mobile
   .settings-content .mat-mdc-tab-body-content {
     max-height: none;
@@ -211,7 +328,7 @@ app-graph {
 @media (max-width: 480px) {
   // Even more conservative scaling on very small screens
   body.font-size-extra-large {
-    --font-scale: 1.0;
+    --font-scale: 1;
     --font-size-base: 16px;
     --font-size-small: 14px;
     --font-size-large: 18px;
@@ -235,23 +352,6 @@ app-graph {
   // High contrast mode support - ensure text remains readable
   body {
     --font-size-base: calc(var(--font-size-base) * 1.1);
-  }
-}
-
-// Dialog panel specific styling to prevent scrollbars
-.settings-dialog-panel {
-  .mat-mdc-dialog-container {
-    overflow: visible;
-    max-height: 90vh;
-  }
-  
-  .mat-mdc-dialog-surface {
-    overflow: visible;
-  }
-  
-  .mat-mdc-dialog-content {
-    overflow: visible;
-    max-height: none;
   }
 }
 
