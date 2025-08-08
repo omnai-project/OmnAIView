@@ -5,10 +5,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select'
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-recording-modal',
-  imports: [MatDialogContent, MatDialogTitle, MatDialogModule, MatButtonModule, MatInputModule, FormsModule, MatSelectModule],
+  imports: [MatDialogContent, MatDialogTitle, MatDialogModule, MatButtonModule, MatInputModule, FormsModule, MatSelectModule, MatIconModule],
   templateUrl: './recording-modal.component.html',
   styleUrl: './recording-modal.component.css'
 })
@@ -20,6 +21,7 @@ export class RecordingModalComponent {
   protected fileName = '';
   protected duration: number | null = null;
   private dialogRef = inject(MatDialogRef);
+  protected readonly selectedName = this.selected()?.name ?? '' ;
 
   onFolderPicked(ev: Event) {
     const input = ev.target as HTMLInputElement;

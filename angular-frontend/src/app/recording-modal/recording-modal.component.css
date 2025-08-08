@@ -1,0 +1,12 @@
+h1 {
+    display: flex;
+    align-items: center
+}
+
+h1 mat-icon {
+    padding-right: 0.2em
+}
+
+mat-form-field {
+    width: 100%
+}
