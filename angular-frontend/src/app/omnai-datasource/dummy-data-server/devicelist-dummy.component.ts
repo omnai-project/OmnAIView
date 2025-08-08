@@ -6,16 +6,16 @@ import { SideBarService } from "../../sidebar/sidebar.service";
  * Hardcoded mat-card showing random data as a source 
  */
 @Component({
-    selector: 'app-device-list-random',
+    selector: 'app-device-list-dummy',
     styleUrl: './devicelist-dummy.component.css',
     imports: [DeviceCardComponent],
     template: `
     <div class="scope-card" [class.scope-card-collapsed]="sideBarService.collapsed()">
-        <app-device-card [uuid]="'testuuid'" [name]="'randomDataSource'" [color]="{r: 70, g:130, b:180}"></app-device-card>
+        <app-device-card [uuid]="'testuuid'" [name]="'dummyDataSource'" [color]="{r: 70, g:130, b:180}"></app-device-card>
     </div>
     `
 })
-export class DeviceListRandomComponent {
+export class DeviceListDummyComponent {
 
     sideBarService = inject(SideBarService);
 }

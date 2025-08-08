@@ -17,8 +17,8 @@ import { ToolbarState, ToolbarStateManagerService } from "./toolbarStateManager.
 })
 export class SaveDataButtonComponent {
     private readonly datasource = inject(DataSourceSelectionService);
-    readonly toolbarState = inject(ToolbarStateManagerService);
-    ToolbarState = ToolbarState;
+    protected readonly toolbarState = inject(ToolbarStateManagerService);
+    protected ToolbarState = ToolbarState;
 
     saveData(): void {
         if (!this.datasource.currentSource()) console.log("No datasource connected.");

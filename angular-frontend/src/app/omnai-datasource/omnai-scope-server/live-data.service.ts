@@ -79,6 +79,8 @@ export class OmnAIScopeDataService implements DataSource {
   readonly #httpClient = inject(HttpClient);
   private readonly fileReady$ = new Subject<FileReadyMessage>();
 
+  private firstMessage: boolean = true;
+
   private setupDevicePolling(): void {
     const pollInterval_ms = 15 * 1000;
     timer(0, pollInterval_ms)
@@ -122,84 +124,95 @@ export class OmnAIScopeDataService implements DataSource {
     );
   }
 
-  connect(): void {
-    if (this.socket?.readyState === WebSocket.CLOSING) {
-      this.socket.addEventListener("close", () => this.connect(), { once: true });
-      return;
-    }
-    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      console.log('WebSocket is already connected');
-      return;
-    }
-
-    const wsUrl = `ws://${this.serverUrl()}/ws`;
-    this.socket = new WebSocket(wsUrl);
-
-    this.socket.addEventListener('open', () => {
-      this.isConnected.set(true);
-      this.data.set({});
-
-      // define start message 
-      const startMessage = {
-        type: `start`,
-        uuids: this.devices().map(device => device.UUID),
-        rate: 200
+  async connect(): Promise<void> {
+    return new Promise((resolve,reject) => {
+      if (this.socket?.readyState === WebSocket.CLOSING) {
+        this.socket.addEventListener("close", () => this.connect(), { once: true });
+        return;
       }
-      if (!this.socket) {
-        throw new Error("Websocket is not defined");
-      }
-      // send startMessage 
-      console.log(JSON.stringify(startMessage));
-      this.socket.send(JSON.stringify(startMessage));
-    });
-
-    let ignoreCounter = 0;
-    this.socket.addEventListener('message', (event) => {
-      const raw = (event.data as string).trim();
-
-      if (!raw.startsWith('{')) return;
-
-      let parsedMessage: WSMessage;
-      try {
-        parsedMessage = JSON.parse(event.data);
-      } catch {
-        console.warn("Wrong JSON format", event.data);
+      if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+        console.log('WebSocket is already connected');
+        resolve();
         return;
       }
 
-      switch (parsedMessage.type) {
-        case 'data':
-          this.data.update(records => {
-            parsedMessage.devices.forEach((uuid: string, index: number) => {
-              const existingData = records[uuid] ?? [];
-              const newDataPoints = parsedMessage.data.map((point: any) => ({
-                timestamp: point.timestamp,
-                value: point.value[index],
-              }));
-              records[uuid] = existingData.concat(newDataPoints);
-            });
+      try {
+        const wsUrl = `ws://${this.serverUrl()}/ws`;
+        this.socket = new WebSocket(wsUrl);
 
-            return { ...records };
-          });
-          break;
-        case 'file-ready':
-          console.log("File was ready");
-          this.fileReady$.next(parsedMessage);
-          break;
-        default:
-          console.warn("Not known message format");
-          console.log(parsedMessage);
+        this.socket.addEventListener('open', () => {
+          this.isConnected.set(true);
+          this.data.set({});
+
+          // define start message 
+          const startMessage = {
+            type: `start`,
+            uuids: this.devices().map(device => device.UUID),
+            rate: 200
+          }
+          if (!this.socket) {
+            throw new Error("Websocket is not defined");
+          }
+          // send startMessage 
+          console.log(JSON.stringify(startMessage));
+          this.socket.send(JSON.stringify(startMessage));
+        });
+
+        let ignoreCounter = 0;
+        this.socket.addEventListener('message', (event) => {
+          const raw = (event.data as string).trim();
+
+          if (!raw.startsWith('{')) return;
+
+          let parsedMessage: WSMessage;
+          try {
+            parsedMessage = JSON.parse(event.data);
+          } catch {
+            console.warn("Wrong JSON format", event.data);
+            return;
+          }
+          if (this.firstMessage) {
+            this.firstMessage = false;
+            resolve();
+          }
+
+          switch (parsedMessage.type) {
+            case 'data':
+              this.data.update(records => {
+                parsedMessage.devices.forEach((uuid: string, index: number) => {
+                  const existingData = records[uuid] ?? [];
+                  const newDataPoints = parsedMessage.data.map((point: any) => ({
+                    timestamp: point.timestamp,
+                    value: point.value[index],
+                  }));
+                  records[uuid] = existingData.concat(newDataPoints);
+                });
+
+                return { ...records };
+              });
+              break;
+            case 'file-ready':
+              console.log("File was ready");
+              this.fileReady$.next(parsedMessage);
+              break;
+            default:
+              console.warn("Not known message format");
+              console.log(parsedMessage);
+          }
+        });
+
+        this.socket.addEventListener('close', () => {
+          this.isConnected.set(false);
+          this.socket = null;
+        });
+
+        this.socket.addEventListener('error', (error) => {
+          console.error('WebSocket Fehler:', error);
+          this.isConnected.set(false);
+        });
+      } catch (error) {
+        reject(error);
       }
-    });
-
-    this.socket.addEventListener('close', () => {
-      this.isConnected.set(false);
-      this.socket = null;
-    });
-
-    this.socket.addEventListener('error', (error) => {
-      console.error('WebSocket Fehler:', error);
-      this.isConnected.set(false);
     });
   }
 
@@ -227,38 +240,62 @@ export class OmnAIScopeDataService implements DataSource {
     const dialogRef = this.dialog.open(SaveDataLocallyModalComponent, {
       width: '60vw'
     });
-    dialogRef.afterClosed().pipe(filter(Boolean)).subscribe(({ dir, fileName }) => {
-      let serverpath = `/download/${fileName}`;
-      const saveMessage = {
-        type: `save`,
-        uuids: this.devices().map(device => device.UUID),
-        path: `${fileName}`,
-        format: `csv`
+    dialogRef.afterClosed().pipe(filter(Boolean)).subscribe((result: {dir: string, fileName: string} | undefined) => {
+      if (result) {
+        const {dir, fileName} = result;
+        this.saveData(dir, fileName);
+      } else {
+        console.log('Saving dialog closed without saving')
       }
-      const progressRef = this.dialog.open(DownloadProgressComponent, {
-        disableClose: true
-      });
-      this.fileReady$
-        .pipe(
-          filter(m => m.url === serverpath),
-          take(1)
-        )
-        .subscribe(() => {
-          window.electronAPI?.downloadFile(serverpath, dir, fileName)
-            .then(() => {
-              this.snackBar.open('File sucessfully saved ✓', '', { duration: 4000 });
-            })
-            .catch(() => {
-              this.snackBar.open('Saving error', '', { duration: 4000 });
-            })
-            .finally(() => progressRef.close());
-        });
-      this.socket?.send(JSON.stringify(saveMessage));
-      console.log("dialog closed");
     });
   }
 
-  record(): void {
-    console.log('Start recording OmnAI data ...');
+  saveData(dir: string, fileName: string): void {
+    let serverpath = `/download/${fileName}`;
+    const saveMessage = {
+      type: `save`,
+      uuids: this.devices().map(device => device.UUID),
+      path: `${fileName}`,
+      format: `csv`
+    };
+    const progressRef = this.dialog.open(DownloadProgressComponent, {
+      disableClose: true
+    });
+    this.fileReady$
+      .pipe(
+        filter(m => m.url === serverpath),
+        take(1)
+      )
+      .subscribe(() => {
+        window.electronAPI?.downloadFile(serverpath, dir, fileName)
+          .then(() => {
+            this.snackBar.open('File sucessfully saved ✓', '', { duration: 4000 });
+          })
+          .catch(() => {
+            this.snackBar.open('Saving error', '', { duration: 4000 });
+          })
+          .finally(() => progressRef.close());
+      });
+    this.socket?.send(JSON.stringify(saveMessage));
+    console.log("dialog closed");
+  }
+
+  async record(dir: string, fileName: string, duration: number): Promise<any> {
+    await this.connect();
+    try {
+      const result = await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (!this.socket) reject(new Error('Recording aborted'));
+          this.disconnect();
+          this.saveData(dir, fileName);
+          resolve({ filePath: `${dir}/${fileName}`, duration, success: true });
+        }, duration * 1000);
+      });
+      console.log('Recording done:', result);
+    } catch (error) {
+      this.disconnect();
+      console.error('Recording error:', error);
+      throw error;
+    }
   }
 }

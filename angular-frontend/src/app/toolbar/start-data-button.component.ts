@@ -12,7 +12,7 @@ import { ToolbarState, ToolbarStateManagerService } from './toolbarStateManager.
     standalone: true,
     imports: [MatDialogModule, MatIconModule],
     template: `
-        <button mat-icon-button (click)="toggleStartButton()" aria-label="Start Data" id="start-button">
+        <button mat-icon-button (click)="toggleStartButton()" aria-label="Start Data" id="start-button" [disabled]="this.toolbarState.getState() === ToolbarState.RECORD">
         <mat-icon>{{ (this.toolbarState.getState() === ToolbarState.STARTED ) ? 'stop' : 'play_arrow' }}</mat-icon>
         </button>
     `,
@@ -22,8 +22,8 @@ export class StartDataButtonComponent {
     private readonly dialog = inject(MatDialog);
     private readonly datasource = inject(DataSourceSelectionService);
     private readonly advancedMode = inject(AdvancedModeService);
-    readonly toolbarState = inject(ToolbarStateManagerService);
-    ToolbarState = ToolbarState;
+    protected readonly toolbarState = inject(ToolbarStateManagerService);
+    protected ToolbarState = ToolbarState;
 
     clearAllData(): void {
         this.datasource.availableSources().forEach((source) => {
@@ -37,12 +37,14 @@ export class StartDataButtonComponent {
             const dialogRef = this.dialog.open(SourceSelectModalComponent, {
                 width: '60vw'
             });
-            dialogRef.afterClosed().subscribe(() => {
-                if (this.datasource.hasSelection()) {
+            dialogRef.afterClosed().subscribe((result) => {
+                if (result) {
                     this.toolbarState.setState(ToolbarState.STARTED);
                     this.datasource.currentSource()?.connect();
+                } else {
+                    console.log("No source selected.");
+                    this.toolbarState.setState(ToolbarState.IDLE);
                 }
-                else this.toolbarState.setState(ToolbarState.IDLE);
             });
             return;
         }
