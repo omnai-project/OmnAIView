@@ -58,10 +58,10 @@ export class FontSizeService {
    */
   getFontSizeOptions(): Array<{level: FontSizeLevel, label: string, scale: number}> {
     return [
-      { level: FontSizeLevel.SMALL, label: 'Klein', scale: this.fontSizeMap[FontSizeLevel.SMALL] },
-      { level: FontSizeLevel.MEDIUM, label: 'Normal', scale: this.fontSizeMap[FontSizeLevel.MEDIUM] },
-      { level: FontSizeLevel.LARGE, label: 'Groß', scale: this.fontSizeMap[FontSizeLevel.LARGE] },
-      { level: FontSizeLevel.EXTRA_LARGE, label: 'Sehr Groß', scale: this.fontSizeMap[FontSizeLevel.EXTRA_LARGE] }
+      { level: FontSizeLevel.SMALL, label: 'small', scale: this.fontSizeMap[FontSizeLevel.SMALL] },
+      { level: FontSizeLevel.MEDIUM, label: 'medium', scale: this.fontSizeMap[FontSizeLevel.MEDIUM] },
+      { level: FontSizeLevel.LARGE, label: 'large', scale: this.fontSizeMap[FontSizeLevel.LARGE] },
+      { level: FontSizeLevel.EXTRA_LARGE, label: 'extra large', scale: this.fontSizeMap[FontSizeLevel.EXTRA_LARGE] }
     ];
   }
 

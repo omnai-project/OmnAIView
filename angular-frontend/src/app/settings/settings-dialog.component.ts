@@ -112,21 +112,6 @@ import { FontSizeService, FontSizeLevel } from '../services/font-size.service';
                                 </p>
                             </div>
                         </div>
-
-                        <!-- Extra Section for Testing Scroll -->
-                        <div class="settings-section">
-                            <div class="section-container">
-                                <h3>Advanced Options</h3>
-                                <p class="section-description">
-                                    Additional configuration options for testing scroll behavior.
-                                    This section demonstrates how the content scrolls when there are many options.
-                                </p>
-                                
-                                <div style="height: 200px; background: var(--mat-sys-outline-variant); border-radius: 8px; display: flex; align-items: center; justify-content: center; opacity: 0.5;">
-                                    <span>Future Settings Content</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </mat-tab>
 
