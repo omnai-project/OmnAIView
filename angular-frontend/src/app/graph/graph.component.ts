@@ -116,12 +116,25 @@ export class GraphComponent {
     return `translate(${xScale.range()[0]}, 0)`;
   });
 
-  toggleXZoom($event: boolean): void {
-    this.zoomXOnly.set($event);
+  activateX(): void {
+    this.zoomXOnly.set(true), 
+    this.zoomYOnly.set(false); 
   }
 
-  toggleYZoom($event: boolean): void {
-    this.zoomYOnly.set($event);
+  activateY(): void {
+    this.zoomXOnly.set(false), 
+    this.zoomYOnly.set(true); 
+  }
+
+  activateXY(): void {
+    this.zoomXOnly.set(true), 
+    this.zoomYOnly.set(true); 
+  }
+
+
+  deactivateZoom(): void {
+    this.zoomXOnly.set(false); 
+    this.zoomYOnly.set(false); 
   }
 
   /**
