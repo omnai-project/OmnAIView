@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { SettingsModalService } from '../services/settings-modal.service';
+import { SettingsModalService } from './settings-modal.service';
 
 @Component({
   selector: 'app-settings-button',

@@ -1,0 +1,65 @@
+<mat-card class="font-size-settings-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>text_fields</mat-icon>
+      Font Size
+    </mat-card-title>
+    <mat-card-subtitle>
+      Adjust text size to your needs
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- Font Size Toggle Buttons -->
+    <div class="font-size-options">
+      <mat-button-toggle-group 
+        [value]="fontSizeService.currentFontSize()" 
+        (change)="onFontSizeChange($event.value)"
+        aria-label="Select font size">
+        
+        <mat-button-toggle 
+          *ngFor="let option of fontSizeOptions" 
+          [value]="option.level"
+          [attr.aria-label]="option.label + ' (' + (option.scale * 100) + '%)'">
+          <div class="font-option">
+            <span class="font-label">{{ option.label }}</span>
+            <small class="font-percentage">{{ (option.scale * 100) }}%</small>
+          </div>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <mat-divider class="settings-divider"></mat-divider>
+
+    <!-- Preview Section -->
+    <div class="font-preview">
+      <h4>Preview</h4>
+      <div class="preview-content">
+        <p class="preview-title">Measurement Display</p>
+        <p class="preview-measurement">12.34 V</p>
+        <p class="preview-normal">
+          This is sample text to demonstrate the selected font size. 
+          The setting will be applied to all text elements in the application.
+        </p>
+        <small class="preview-small">Small labels and hints</small>
+      </div>
+    </div>
+
+    <!-- Current Settings Info -->
+    <div class="current-settings">
+      <mat-icon>info</mat-icon>
+      <span>
+        Current setting: 
+        <strong>{{ getCurrentFontSizeLabel() }}</strong> 
+        ({{ (fontSizeService.getCurrentScale() * 100) | number:'1.0-0' }}%)
+      </span>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button mat-button (click)="resetToDefault()" [disabled]="isDefaultSize()">
+      <mat-icon>refresh</mat-icon>
+      Reset
+    </button>
+  </mat-card-actions>
+</mat-card>
