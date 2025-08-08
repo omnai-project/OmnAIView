@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed 
 ### Removed 
 
+## [v1.15.0-alpha]
+ - Add comprehensive font-size settings system with 4 scaling levels (87.5% - 125%)
+ - Add FontSizeService with reactive state management and localStorage persistence
+ - Add tabbed settings dialog with integrated theme controls (light/dark mode)
+### Changed 
+### Removed 
+
 ## [v1.14.0-alpha]
 ### Added
 - Add a record button with record functionaliy in toolbar
