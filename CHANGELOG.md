@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed 
 ### Removed 
 
+## [v1.14.0-alpha]
+### Added
+- Add a record button with record functionaliy in toolbar
+- Add a recording modal for settings of recording
+
 ## [v1.13.0-alpha]
 ### Added 
 - Add Control Panel showing devices, files and analysis 
