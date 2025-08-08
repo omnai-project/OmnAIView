@@ -11,7 +11,7 @@ import { RecordDataButtonComponent } from './record-data-button.component';
     selector: 'app-toolbar',
     templateUrl: './toolbar.component.html',
     styleUrl: './toolbar.component.css',
-    imports: [StartDataButtonComponent, SaveDataButtonComponent, SettingsMenuComponent, MatSlideToggle, SideBarComponent, RecordDataButtonComponent]
+    imports: [StartDataButtonComponent, SaveDataButtonComponent, SettingsMenuComponent, MatSlideToggle, RecordDataButtonComponent]
 })
 export class ToolbarComponent {
     protected readonly advancedMode = inject(AdvancedModeService);
