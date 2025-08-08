@@ -6,7 +6,7 @@ import { SettingsDialogComponent } from "./settings-dialog.component";
 @Component({
     selector: `app-settings-menu`,
     standalone: true,
-    imports: [MatIcon, MatDialogModule, SettingsDialogComponent],
+    imports: [MatIcon, MatDialogModule],
     template: `
     <button mat-icon-button aria-label="Settings" (click)="openDialog()">
       <mat-icon>settings</mat-icon>
@@ -17,6 +17,13 @@ export class SettingsMenuComponent {
     constructor(private dialog: MatDialog) { }
 
     openDialog(): void {
-        this.dialog.open(SettingsDialogComponent);
+        this.dialog.open(SettingsDialogComponent, {
+            width: '600px',
+            maxWidth: '90vw',
+            height: 'auto',
+            maxHeight: '90vh',
+            autoFocus: true,
+            restoreFocus: true,
+        });
     }
 }
