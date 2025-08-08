@@ -1,9 +1,8 @@
 import { Component, inject } from "@angular/core";
 import { DarkmodeComponent } from '../darkmode/darkmode.component';
-import { DeviceListComponent } from "../omnai-datasource/omnai-scope-server/devicelist.component";
-import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { GraphComponent } from "../graph/graph.component";
 import { ToolbarComponent } from "../toolbar/toolbar.component";
+import { SideBarComponent } from "../sidebar/sidebar.component";
 
 /**
  * Main Component containing all components shown on the main page 
@@ -11,7 +10,8 @@ import { ToolbarComponent } from "../toolbar/toolbar.component";
 @Component({
     selector: 'app-main',
     templateUrl: './main.component.html',
-    imports: [DarkmodeComponent, DeviceListComponent, MatSlideToggle, GraphComponent, ToolbarComponent]
+    styleUrl: './main.component.css',
+    imports: [DarkmodeComponent, GraphComponent, ToolbarComponent, SideBarComponent]
 })
 export class mainComponent {
 

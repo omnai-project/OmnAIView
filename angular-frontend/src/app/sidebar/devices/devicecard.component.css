@@ -1,0 +1,35 @@
+.card-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+.card-collapsed {
+    display: flex;
+    margin-left: 0;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.color-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-left: 4%;
+}
+
+.device-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.settings {
+    position: absolute;
+    right: 4%;
+}

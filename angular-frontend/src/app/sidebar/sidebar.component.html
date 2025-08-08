@@ -1,0 +1,32 @@
+<mat-drawer-container autosize>
+    <mat-drawer #drawer class="sidenav" mode="side" opened="true"
+        [class.sidenav-collapsed]="sideBarService.collapsed()">
+        <div class=" header">
+            <button mat-icon-button (click)="sideBarService.toggleSideBar()"> <mat-icon>{{ sideBarService.collapsed() ?
+                    'chevron_right' : 'chevron_left' }}</mat-icon></button>
+            @if(!sideBarService.collapsed()){
+            <h1>Control Panel</h1>
+            }
+        </div>
+        @if(!sideBarService.collapsed()){
+        <nav class="sidebar-tabs">
+            <button (click)="selectedTab.set('devices')" [class.active]="selectedTab() === 'devices'">Devices</button>
+            <button (click)="selectedTab.set('files')" [class.active]="selectedTab() === 'files'">Files</button>
+            <button (click)="selectedTab.set('analysis')"
+                [class.active]="selectedTab() === 'analysis'">Analysis</button>
+        </nav>
+        }
+        @switch(selectedTab()){
+        @case ('devices') {
+        <app-deviceslist></app-deviceslist>
+        }
+        @case ('files') {
+        <div class="tab-content">
+            Here will be future files. In development </div>
+        }
+        @case ('analysis') {
+        <div class="tab-content"> Here will be future analysis. In development.</div>
+        }
+        }
+    </mat-drawer>
+</mat-drawer-container>

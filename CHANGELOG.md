@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed 
 ### Removed 
 
+## [v1.13.0-alpha]
+### Added 
+- Add Control Panel showing devices, files and analysis 
+- Add settings menu to change device name 
+### Removed 
+- OmnAIScope devicelist below graph 
+
 ## [v1.12.2-alpha]
 ### Changed 
 - Fix zoom behavior on axis switch to prevent resets/glitchs 

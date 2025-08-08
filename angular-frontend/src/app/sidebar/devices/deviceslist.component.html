@@ -1,0 +1,12 @@
+<div class="device-card" [class.device-card-collapsed]="sideBarService.collapsed()">
+    @if(!sideBarService.collapsed()){
+    <h2 class="card-header">Connected OmnAIScopes</h2>
+    }
+    <app-device-list class="card-content"></app-device-list>
+</div>
+<div class="device-card" [class.device-card-collapsed]="sideBarService.collapsed()">
+    @if(!sideBarService.collapsed()){
+    <h2 class="card-header"> Random Data Source </h2>
+    }
+    <app-device-list-random class="card-content"></app-device-list-random>
+</div>

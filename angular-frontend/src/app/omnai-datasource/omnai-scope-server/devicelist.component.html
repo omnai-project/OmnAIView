@@ -1,13 +1,11 @@
 @for (device of devices(); track device.UUID) {
-<ul>
-    <li>
-        UUID: {{ device.UUID }} |
-        Color - R: {{ device.color.r }},
-        G: {{ device.color.g }},
-        B: {{ device.color.b }}
-    </li>
-
-</ul>
+<div class="scope-card" [class.scope-card-collapsed]="sideBarService.collapsed()">
+    <app-device-card [uuid]="device.UUID" [color]="device.color" [name]="'OmnAIScope'"></app-device-card>
+</div>
 } @empty {
-No known devices found
+@if(!sideBarService.collapsed()){
+<div class="scope-card" [class.scope-card-collapsed]="sideBarService.collapsed()">
+    <app-device-card [uuid]="''" [color]=" {r:255, b:255, g:255}" [name]="'Keine Geräte gefunden'"></app-device-card>
+</div>
+}
 }
