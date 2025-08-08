@@ -15,6 +15,10 @@ svg {
   -webkit-touch-callout: none;
 }
 
+.axis:hover{
+  fill: var(--mat-sys-surface-container-highest);
+}
+
 .button-wrapper {
   display: flex;
   justify-content: left;

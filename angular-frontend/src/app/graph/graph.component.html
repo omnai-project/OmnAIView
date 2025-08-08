@@ -21,10 +21,19 @@
         </clipPath>
     </defs>
     <g #plot [attr.transform]="marginTransform()">
-        <g #xAxis [attr.transform]="xAxisTransformString()"></g>
-        <g #yAxis [attr.transform]="yAxisTransformString()"></g>
+        <g #xAxis [attr.transform]="xAxisTransformString()" (pointerenter)="activateX()" (pointerleave)="deactivateZoom()">
+            <rect class="axis" x="0" y="0" [attr.width] = "innerSize().w" [attr.height]="dataservice.margin.bottom" 
+            fill="transparent" pointer-events="all"></rect> <!-- Hitbox for x-axis -->
+        </g>
+        <g #yAxis [attr.transform]="yAxisTransformString()" (pointerenter)="activateY()" (pointerleave)="deactivateZoom()">
+            <rect class="axis" [attr.x]="-dataservice.margin.left" y="0" [attr.width] = "dataservice.margin.left" [attr.height]="innerSize().h" 
+            fill="transparent" pointer-events="all"></rect> <!-- Hitbox for y-axis-->
+        </g>
+
+        <rect x="0" y="0" [attr.width]="innerSize().w" [attr.height]="innerSize().h" fill="transparent" 
+        pointer-events="all" (pointerenter)="activateXY()" (pointerleave)="deactivateZoom()"></rect> <!-- Hitbox for plotarea-->
         
-        <g [attr.clip-path]="'url(#plotArea)'"> <!-- Keep path in plotArea when zooming-->
+        <g [attr.clip-path]="'url(#plotArea)'" > <!-- Keep path in plotArea when zooming-->
             @for (path of dataservice.paths(); track $index) {
             <path [attr.d]="path.d" [attr.stroke]="path.stroke" fill="none" stroke-width="2" />
             }
@@ -73,8 +82,6 @@
     <mat-slide-toggle [checked]="xAxisTimeMode() === 'relative'" (change)="onXAxisTimeModeToggle($event.checked)">
         Relative Time
     </mat-slide-toggle>
-    <mat-checkbox [checked]="zoomXOnly()" (change)="toggleXZoom($event.checked)"> X-Zoom</mat-checkbox>
-    <mat-checkbox [checked]="zoomYOnly()" (change)="toggleYZoom($event.checked)"> Y-Zoom</mat-checkbox>
 </div>
 
 <!-- Debug output (hidden by default) -->
