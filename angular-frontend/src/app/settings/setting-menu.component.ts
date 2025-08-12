@@ -1,23 +1,28 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from "@angular/material/button";
+import { MatDialog } from '@angular/material/dialog';
 import { SettingsDialogComponent } from "./settings-dialog.component";
 
 @Component({
     selector: `app-settings-menu`,
     standalone: true,
-    imports: [MatIcon, MatDialogModule],
-    template: `
-    <button mat-icon-button aria-label="Settings" (click)="openDialog()">
-      <mat-icon>settings</mat-icon>
-    </button>
-    `,
-    styles: `button { display: flex; padding: .3em }`,
+    imports: [MatIcon, MatButtonModule],
+    templateUrl: './setting-menu.component.html',
+    styleUrls: ['./setting-menu.component.css']
 })
 export class SettingsMenuComponent {
-    constructor(private dialog: MatDialog) { }
+    private readonly dialog = inject(MatDialog);
 
     openDialog(): void {
-        this.dialog.open(SettingsDialogComponent);
+        this.dialog.open(SettingsDialogComponent, {
+            width: '600px',
+            maxWidth: '90vw',
+            height: 'auto',
+            maxHeight: '90vh',
+            autoFocus: true,
+            restoreFocus: true,
+            panelClass: 'settings-dialog-panel'
+        });
     }
 }
