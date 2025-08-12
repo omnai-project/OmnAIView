@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Add tabbed settings dialog with integrated theme controls (light/dark mode)
 ### Changed 
 ### Removed 
+ - old darkmode implementation and button
 
 ## [v1.14.0-alpha]
 ### Added
