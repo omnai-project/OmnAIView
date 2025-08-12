@@ -1,0 +1,126 @@
+<h1 mat-dialog-title>
+    <mat-icon>settings</mat-icon>
+    Settings
+</h1>
+
+<mat-dialog-content class="settings-content">
+    <!-- FIXED TABS - Always Visible -->
+    <mat-tab-group class="settings-tabs">
+        <!-- Appearance Tab -->
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon class="tab-icon">palette</mat-icon>
+                Display
+            </ng-template>
+            
+            <!-- SCROLLABLE CONTENT AREA -->
+            <div class="scrollable-content">
+                <!-- Design Theme Section -->
+                <div class="settings-section">
+                    <div class="section-container">
+                        <h3>Design Theme</h3>
+                        <p class="section-description">
+                            Switch between light and dark design
+                        </p>
+                        
+                        <mat-button-toggle-group 
+                            [value]="currentTheme()" 
+                            (change)="onThemeChange($event.value)"
+                            class="theme-toggles">
+                            
+                            <mat-button-toggle value="light">
+                                <div class="theme-option">
+                                    <mat-icon>wb_sunny</mat-icon>
+                                    <span class="theme-label">Light</span>
+                                </div>
+                            </mat-button-toggle>
+                            
+                            <mat-button-toggle value="dark">
+                                <div class="theme-option">
+                                    <mat-icon>nights_stay</mat-icon>
+                                    <span class="theme-label">Dark</span>
+                                </div>
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                </div>
+
+                <!-- Font Size Section -->
+                <div class="settings-section">
+                    <div class="section-container">
+                        <h3>Font Size</h3>
+                        <p class="section-description">
+                            Adjust text size to your needs
+                        </p>
+                        
+                        <mat-button-toggle-group 
+                            [value]="fontSizeService.currentFontSize()" 
+                            (change)="onFontSizeChange($event.value)"
+                            class="font-size-toggles">
+                            
+                            @for (option of fontSizeService.getFontSizeOptions(); track option.level) {
+                                <mat-button-toggle [value]="option.level">
+                                    <div class="font-option">
+                                        <span class="font-label">{{ option.label }}</span>
+                                        <small class="font-percentage">{{ (option.scale * 100) | number:'1.0-0' }}%</small>
+                                    </div>
+                                </mat-button-toggle>
+                            }
+                        </mat-button-toggle-group>
+
+                        <!-- Font Size Preview -->
+                        <div class="font-preview">
+                            <h4>Preview</h4>
+                            <div class="preview-content">
+                                <p class="preview-measurement">12.34 V</p>
+                                <p class="preview-normal">Sample text in selected font size</p>
+                                <small class="preview-small">Small labels and hints</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Language Section -->
+                <div class="settings-section">
+                    <div class="section-container">
+                        <h3>Language</h3>
+                        <p class="section-description">
+                            Language settings (to be implemented in future version)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+
+        <!-- Measurement Tab -->
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon class="tab-icon">timeline</mat-icon>
+                Measurement
+            </ng-template>
+            
+            <div class="scrollable-content">
+                <div class="settings-section">
+                    <div class="section-container">
+                        <h3>Measurement Settings</h3>
+                        <p class="section-description">
+                            Configuration for sampling rate and measurement parameters (future implementation)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</mat-dialog-content>
+
+<!-- FIXED BUTTONS - Always Visible -->
+<mat-dialog-actions align="end" class="fixed-actions">
+    <button mat-button (click)="resetFontSize()" [disabled]="isDefaultFontSize()">
+        <mat-icon>refresh</mat-icon>
+        Reset
+    </button>
+    <button mat-button mat-dialog-close color="primary">
+        <mat-icon>save</mat-icon>
+        Save
+    </button>
+</mat-dialog-actions>

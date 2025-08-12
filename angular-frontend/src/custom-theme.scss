@@ -3,14 +3,32 @@
 @use '@angular/material' as mat;
 
 html {
-  @include mat.theme((color: (theme-type: light,
-        primary: mat.$red-palette,
-        tertiary: mat.$red-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    ));
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$red-palette,
+      tertiary: mat.$red-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
 }
+
+/* ---- Runtime font scaling (reacts to body classes) ---- */
+/* Base size: 1em (16px). rem scales from <html>. */
+:root { --root-font-size: 1em; }
+html { font-size: var(--root-font-size); }
+
+/* When your service puts a class on <body>, adapt <html> via :has(...) */
+:root:has(body.font-size-small)        { --root-font-size: 0.875em; } /* ~14px */
+:root:has(body.font-size-large)        { --root-font-size: 1.125em; } /* ~18px */
+:root:has(body.font-size-extra-large)  { --root-font-size: 1.25em;  } /* ~20px */
+
+/* Optional: nudge MDC button text to follow root scaling */
+:root { --mdc-typography-button-font-size: 1rem; } /* 1rem already tracks html size */
+:root:has(body.font-size-small)        { --mdc-typography-button-font-size: 0.875rem; }
+:root:has(body.font-size-large)        { --mdc-typography-button-font-size: 1.125rem; }
+:root:has(body.font-size-extra-large)  { --mdc-typography-button-font-size: 1.25rem; }
 
 body {
   background: var(--mat-sys-surface);
@@ -19,16 +37,19 @@ body {
 
 mat-card {
   /* Override to color selected sources with tertiary color */
-  @include mat.card-overrides((elevated-container-color: var(--mat-sys-tertiary-container),
-    ));
+  @include mat.card-overrides((
+    elevated-container-color: var(--mat-sys-tertiary-container),
+  ));
 }
 
 .dark-theme {
-  @include mat.theme((color: (theme-type: dark,
-        primary: mat.$red-palette,
-        tertiary: mat.$red-palette,
-      ),
-      typography: Roboto,
-      density: 0,
-    ));
+  @include mat.theme((
+    color: (
+      theme-type: dark,
+      primary: mat.$red-palette,
+      tertiary: mat.$red-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
 }

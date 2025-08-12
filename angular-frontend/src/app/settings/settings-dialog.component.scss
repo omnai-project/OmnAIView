@@ -1,0 +1,360 @@
+// Settings Dialog Component Styles
+
+h1 {
+  display: flex;
+  align-items: center;
+}
+
+// DIALOG STRUCTURE - Fixed Layout
+.settings-content {
+  width: 600px;
+  max-width: 90vw;
+  height: 70vh;
+  max-height: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+// DARK MODE DIALOG BACKGROUND - Even lighter grey for better contrast
+.dark-theme ::ng-deep .mat-mdc-dialog-container {
+  background: #505050 !important;
+}
+
+.dark-theme ::ng-deep .mat-mdc-dialog-surface {
+  background: #505050 !important;
+}
+
+// Alternative approach - target the dialog directly
+::ng-deep .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+  background: var(--mat-sys-surface);
+}
+
+.dark-theme ::ng-deep .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+  background: #505050 !important;
+}
+
+// TABS - Fixed at top
+.settings-tabs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  ::ng-deep .mat-mdc-tab-body-wrapper {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  ::ng-deep .mat-mdc-tab-header {
+    background: var(--mat-sys-surface);
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+}
+
+.dark-theme .settings-tabs ::ng-deep .mat-mdc-tab-header {
+  background: #505050 !important;
+}
+
+.tab-icon {
+  margin-right: 8px;
+}
+
+// SCROLLABLE CONTENT AREA - This is where scroll happens
+.scrollable-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+
+  // SCROLL BAR STYLING - Theme-aware and wider
+  scrollbar-width: auto; // Firefox: auto for wider scrollbar
+  scrollbar-color: var(--mat-sys-primary) var(--mat-sys-surface-container);
+
+  // Webkit Scroll Bar Styling (Chrome, Safari, Edge) - WIDER & THEME-AWARE
+  &::-webkit-scrollbar {
+    width: 12px; // WIDER SCROLL BAR
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--mat-sys-surface-container);
+    border-radius: 6px;
+    border: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--mat-sys-primary);
+    border-radius: 6px;
+    border: 2px solid var(--mat-sys-surface-container);
+
+    &:hover {
+      background: var(--mat-sys-primary-container);
+    }
+
+    &:active {
+      background: var(--mat-sys-secondary);
+    }
+  }
+}
+
+// SIMPLIFIED SECTION DESIGN - No background, just separation
+.settings-section {
+  margin: 0 0 32px 0;
+  padding: 0 0 24px 0;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+}
+
+.section-container {
+  padding: 0;
+
+  h3 {
+    margin: 0 0 8px 0;
+    color: var(--mat-sys-primary);
+    font-size: var(--font-size-large);
+    font-weight: 600;
+  }
+}
+
+.section-description {
+  margin: 0 0 16px 0;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: var(--font-size-small);
+  opacity: 0.8;
+}
+
+// THEME CONTROLS - Full width like font-size
+.theme-toggles {
+  width: 100%;
+  margin: 16px 0;
+  display: flex;
+
+  .mat-button-toggle {
+    flex: 1 1 50%;
+    min-width: 0;
+    min-height: 64px; // Consistent height with font-size buttons
+  }
+
+  .mat-button-toggle .mat-button-toggle-label-content {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+.theme-option {
+  display: flex;
+  // flex-direction: column;
+  align-items: center;
+  justify-content: center; // Horizontal AND vertical centering
+  vertical-align: middle;
+  padding: 10px;
+  gap: 4px;
+  //width: 100%;
+  //height: 100%;
+
+  mat-icon {
+    margin: 0; // Remove all margins for perfect centering
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+  }
+}
+
+.theme-label {
+  font-weight: 500;
+  font-size: var(--font-size-small);
+  margin: 0; // Remove margins
+}
+
+// FONT SIZE CONTROLS
+.font-size-toggles {
+  width: 100%;
+  margin: 16px 0;
+  display: flex;
+
+  .mat-button-toggle {
+    flex: 1 1 25%; // Equal width for 4 buttons
+    min-width: 0;
+  }
+}
+
+.font-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+}
+
+.font-label {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.font-percentage {
+  opacity: 0.7;
+  font-size: 0.8em;
+}
+
+// FONT PREVIEW - Same color as selected buttons
+.font-preview {
+  margin: 20px 0 0 0;
+  padding: 16px;
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+  border-radius: 8px;
+  border: 1px solid var(--mat-sys-outline-variant);
+
+  h4 {
+    margin: 0 0 12px 0;
+    font-size: var(--font-size-base);
+    color: var(--mat-sys-primary);
+    font-weight: 500;
+  }
+}
+
+// DARK MODE PREVIEW STYLING - Same color as selected buttons
+.dark-theme .font-preview {
+  background: var(--mat-sys-primary-container); // Same as selected buttons
+  color: var(--mat-sys-on-primary-container);
+  border-color: var(--mat-sys-outline);
+
+  h4 {
+    color: var(--mat-sys-on-primary-container);
+  }
+
+  .preview-measurement {
+    color: var(--mat-sys-on-primary-container);
+  }
+}
+
+.preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.preview-measurement {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--mat-sys-primary);
+  font-family: monospace;
+  margin: 0;
+}
+
+.preview-normal {
+  font-size: var(--font-size-base);
+  margin: 0;
+}
+
+.preview-small {
+  font-size: var(--font-size-small);
+  opacity: 0.8;
+}
+
+// FIXED BUTTONS - Always visible at bottom
+.fixed-actions {
+  background: var(--mat-sys-surface);
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  padding: 16px 24px;
+  margin: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+
+  button mat-icon {
+    margin-right: 4px;
+  }
+}
+
+.dark-theme .fixed-actions {
+  background: #505050 !important;
+}
+
+// Dialog Title
+::ng-deep .mat-mdc-dialog-title {
+  margin: 0 0 8px 0;
+  padding: 24px 24px 16px 24px;
+  background: var(--mat-sys-surface);
+
+  mat-icon {
+    margin-right: 8px;
+  }
+}
+
+.dark-theme ::ng-deep .mat-mdc-dialog-title {
+  background: #505050 !important;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .settings-content {
+    width: 95vw;
+    height: 80vh;
+  }
+
+  .scrollable-content {
+    padding: 16px;
+
+    // MOBILE SCROLL BAR - Still wider than before
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+  }
+
+  .font-size-toggles,
+  .theme-toggles {
+    flex-direction: column;
+  }
+
+  .font-option,
+  .theme-option {
+    flex-direction: row;
+    justify-content: flex-start; // Left-align on mobile
+    padding: 12px 16px;
+    gap: 12px;
+
+    mat-icon {
+      vertical-align: middle;
+      margin: 0;
+    }
+  }
+
+  .font-option {
+    justify-content: space-between; // Keep percentage on right
+  }
+}
+
+// DARK THEME SCROLLBAR ADJUSTMENTS
+.dark-theme .scrollable-content {
+  &::-webkit-scrollbar-track {
+    background: var(--mat-sys-surface-container);
+    border-color: var(--mat-sys-outline);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--mat-sys-primary);
+
+    &:hover {
+      background: var(--mat-sys-primary-container);
+    }
+  }
+}
+
+// FALLBACK: Ensure modal background is lighter in dark mode
+// .dark-theme ::ng-deep .cdk-overlay-pane .mat-mdc-dialog-container {
+//   background: #505050 !important;
+// }
+
+// .dark-theme ::ng-deep .mat-mdc-dialog-container {
+//   background-color: #505050 !important;
+// }
