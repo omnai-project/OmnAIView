@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - Add FontSizeService with reactive state management and localStorage persistence
  - Add tabbed settings dialog with integrated theme controls (light/dark mode)
 ### Changed 
+ - Increased Angular `maximumError` budget from 1MB to 2MB to prevent build errors when bundle size slightly exceeds the previous limit
 ### Removed 
  - old darkmode implementation and button
 
