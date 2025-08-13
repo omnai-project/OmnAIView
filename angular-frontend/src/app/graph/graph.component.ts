@@ -1,14 +1,20 @@
-import { isPlatformBrowser, JsonPipe, DecimalPipe, DatePipe } from '@angular/common';
+import {
+  isPlatformBrowser,
+  JsonPipe,
+  DecimalPipe,
+  DatePipe,
+} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
   inject,
+  OnDestroy,
   PLATFORM_ID,
   signal,
   viewChild,
-  type ElementRef
+  type ElementRef,
 } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { transition } from 'd3';
@@ -16,7 +22,10 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { DataSourceService } from './graph-data.service';
-import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils';
+import {
+  makeXAxisTickFormatter,
+  type xAxisMode,
+} from './x-axis-formatter.utils';
 import { ZoomableDirective } from '../shared/graph-zoom.directive';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { GraphCursorDirective } from '../shared/graph-cursor.directive';
@@ -30,7 +39,11 @@ import { SelectionToggleComponent } from '../shared/selection-toggle/selection-t
   selector: 'app-graph',
   standalone: true,
   templateUrl: './graph.component.html',
-  providers: [DataSourceService, GraphSelectionService, SelectionAnalysisService],
+  providers: [
+    DataSourceService,
+    GraphSelectionService,
+    SelectionAnalysisService,
+  ],
   styleUrls: ['./graph.component.css'],
   imports: [
     ResizeObserverDirective,
@@ -43,16 +56,18 @@ import { SelectionToggleComponent } from '../shared/selection-toggle/selection-t
     DatePipe,
     GraphSurveyComponent,
     SelectionResultsComponent,
-    SelectionToggleComponent
+    SelectionToggleComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GraphComponent {
+export class GraphComponent implements OnDestroy {
   readonly dataservice = inject(DataSourceService);
   readonly selectionService = inject(GraphSelectionService);
-  readonly svgGraph = viewChild.required<ElementRef<SVGElement>>('graphContainer');
+  readonly svgGraph =
+    viewChild.required<ElementRef<SVGElement>>('graphContainer');
   readonly axesContainer = viewChild.required<ElementRef<SVGGElement>>('xAxis');
-  readonly axesYContainer = viewChild.required<ElementRef<SVGGElement>>('yAxis');
+  readonly axesYContainer =
+    viewChild.required<ElementRef<SVGGElement>>('yAxis');
 
   zoomXOnly = signal(false);
   zoomYOnly = signal(false);
@@ -60,14 +75,36 @@ export class GraphComponent {
   private readonly platform = inject(PLATFORM_ID);
   isInBrowser = isPlatformBrowser(this.platform);
 
+  // Event listener reference for cleanup
+  private clearSelectionListener = () => {
+    this.selectionService.clearSelection();
+  };
+
   constructor() {
     if (this.isInBrowser) {
       queueMicrotask(() => {
         const rect = this.svgGraph().nativeElement.getBoundingClientRect();
         if (rect.width > 0 && rect.height > 0) {
-          this.dataservice.updateGraphDimensions({ width: rect.width, height: rect.height });
+          this.dataservice.updateGraphDimensions({
+            width: rect.width,
+            height: rect.height,
+          });
         }
       });
+
+      window.addEventListener(
+        'clearGraphSelection',
+        this.clearSelectionListener
+      );
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.isInBrowser) {
+      window.removeEventListener(
+        'clearGraphSelection',
+        this.clearSelectionListener
+      );
     }
   }
 
@@ -117,30 +154,29 @@ export class GraphComponent {
   });
 
   activateX(): void {
-    this.zoomXOnly.set(true), 
-    this.zoomYOnly.set(false); 
+    this.zoomXOnly.set(true);
+    this.zoomYOnly.set(false);
   }
 
   activateY(): void {
-    this.zoomXOnly.set(false), 
-    this.zoomYOnly.set(true); 
+    this.zoomXOnly.set(false);
+    this.zoomYOnly.set(true);
   }
 
   activateXY(): void {
-    this.zoomXOnly.set(true), 
-    this.zoomYOnly.set(true); 
+    this.zoomXOnly.set(true);
+    this.zoomYOnly.set(true);
   }
 
-
   deactivateZoom(): void {
-    this.zoomXOnly.set(false); 
-    this.zoomYOnly.set(false); 
+    this.zoomXOnly.set(false);
+    this.zoomYOnly.set(false);
   }
 
   /**
    * Signal to control the x-axis time mode. Relative starts with 0, absolute reflects the time of day the data was recorded.
    */
-  readonly xAxisTimeMode = signal<xAxisMode>("absolute");
+  readonly xAxisTimeMode = signal<xAxisMode>('absolute');
 
   onXAxisTimeModeToggle(checked: boolean): void {
     this.xAxisTimeMode.set(checked ? 'relative' : 'absolute');
@@ -183,7 +219,9 @@ export class GraphComponent {
     const y = event.clientY - rect.top;
 
     this.selectionService.setGraphHeight(
-      this.dataservice.graphDimensions().height - this.dataservice.margin.top - this.dataservice.margin.bottom
+      this.dataservice.graphDimensions().height -
+        this.dataservice.margin.top -
+        this.dataservice.margin.bottom
     );
 
     this.selectionService.startPotentialSelection(x, y);
