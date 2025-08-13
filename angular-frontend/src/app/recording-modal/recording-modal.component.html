@@ -1,46 +1,54 @@
-<h1 mat-dialog-title>
-    <mat-icon>radio_button_checked</mat-icon>
-    Record data
-</h1>
- <!-- Show only the name in the drop done menu window -->
-<mat-dialog-content>
-    <h2>Select datasource</h2>
-    <mat-form-field>
-        <mat-label>Selected Source</mat-label>
-        <mat-select [(value)]="selectedName">
-            <mat-select-trigger>
-                {{ selectedName }}
-            </mat-select-trigger>
-            @for (source of sources(); track source.id) {
-                <mat-option [value]="source.name" (click)="select(source)">
-                    <b>{{ source.name }}</b>
-                    @if (source.description) {
-                        <br><p>{{ source.description }}</p>
+<div class="record-wrapper">
+    <h1 mat-dialog-title>
+        <mat-icon>radio_button_checked</mat-icon>
+        Record data
+    </h1>
+    <!-- Show only the name in the drop done menu window -->
+    <mat-dialog-content>
+        <div class="mat-dialog-field">
+            <h2>Select datasource</h2>
+            <mat-form-field>
+                <mat-label>Selected Source</mat-label>
+                <mat-select [(value)]="selectedName">
+                    <mat-select-trigger>
+                        {{ selectedName }}
+                    </mat-select-trigger>
+                    @for (source of sources(); track source.id) {
+                    <mat-option [value]="source.name" (click)="select(source)">
+                        <b>{{ source.name }}</b>
+                        @if (source.description) {
+                        <br>
+                        <p>{{ source.description }}</p>
+                        }
+                    </mat-option>
                     }
-                </mat-option>
-            }
-        </mat-select>
-    </mat-form-field>
-
-    <h2>Set measurement duration</h2>
-    <mat-form-field>
-        <mat-label>Duration in seconds</mat-label>
-        <input matInput type="number" min="0.001" #numberInput="ngModel" [(ngModel)]="duration" />
-    </mat-form-field>
-
-    <h2>Set file location</h2>
-    <button mat-raised-button (click)="fileInput.click()">Select folder</button>
-    <input #fileInput type="file" webkitdirectory style="display:none;" (change)="onFolderPicked($event)">
-    <p>{{ (filePath) ? filePath : 'No folder selected' }}</p>
-
-    <h2>Set file name</h2>
-    <mat-form-field>
-        <mat-label>File Name</mat-label>
-        <input matInput [(ngModel)]="fileName" />
-    </mat-form-field>
-</mat-dialog-content>
-<mat-dialog-actions>
-    <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-raised-button [disabled]="!filePath || !fileName || !selected || numberInput.invalid"
-        [mat-dialog-close]="{dir: filePath, fileName: fileName, duration: duration}">Ok</button>
-</mat-dialog-actions>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="mat-dialog-field">
+            <h2>Set measurement duration</h2>
+            <mat-form-field>
+                <mat-label>Duration in seconds</mat-label>
+                <input matInput type="number" min="0.001" #numberInput="ngModel" [(ngModel)]="duration" />
+            </mat-form-field>
+        </div>
+        <div class="mat-dialog-field">
+            <h2>Set file location</h2>
+            <button mat-raised-button (click)="fileInput.click()">Select folder</button>
+            <input #fileInput type="file" webkitdirectory style="display:none;" (change)="onFolderPicked($event)">
+            <p>{{ (filePath) ? filePath : 'No folder selected' }}</p>
+        </div>
+        <div class="mat-dialog-field">
+            <h2>Set file name</h2>
+            <mat-form-field>
+                <mat-label>File Name</mat-label>
+                <input matInput [(ngModel)]="fileName" />
+            </mat-form-field>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-button (click)="onCancel()">Cancel</button>
+        <button mat-raised-button [disabled]="!filePath || !fileName || !selected || numberInput.invalid"
+            [mat-dialog-close]="{dir: filePath, fileName: fileName, duration: duration}">Ok</button>
+    </mat-dialog-actions>
+</div>

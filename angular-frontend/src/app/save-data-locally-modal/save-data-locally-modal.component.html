@@ -1,16 +1,22 @@
-<h2 mat-dialog-title>Saving data locally</h2>
-<mat-dialog-content>
-    <button mat-raised-button (click)="fileInput.click()">Select folder</button>
-    <input #fileInput type="file" webkitdirectory style="display:none;" (change)="onFolderPicked($event)">
-</mat-dialog-content>
-<mat-dialog-content>
-    <mat-form-field>
-        <mat-label>File Name</mat-label>
-        <input matInput [(ngModel)]="fileName" />
-    </mat-form-field>
-</mat-dialog-content>
-<mat-dialog-actions>
-    <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-raised-button [disabled]="!filePath || !fileName"
-        [mat-dialog-close]="{dir: filePath, fileName: fileName}">Ok</button>
-</mat-dialog-actions>
+<div class="save-menu">
+    <h1 mat-dialog-title><mat-icon>save_as</mat-icon>Save data locally</h1>
+    <mat-dialog-content>
+        <div class="mat-dialog-field">
+            <h2> Select a folder </h2>
+            <button mat-raised-button (click)="fileInput.click()">Select folder</button>
+            <input #fileInput type="file" webkitdirectory style="display:none;" (change)="onFolderPicked($event)">
+        </div>
+        <div class="mat-dialog-field">
+            <h2> Enter a filename </h2>
+            <mat-form-field>
+                <mat-label>File Name</mat-label>
+                <input matInput [(ngModel)]="fileName" />
+            </mat-form-field>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button mat-button (click)="onCancel()">Cancel</button>
+        <button mat-raised-button [disabled]="!filePath || !fileName"
+            [mat-dialog-close]="{dir: filePath, fileName: fileName}">Ok</button>
+    </mat-dialog-actions>
+</div>

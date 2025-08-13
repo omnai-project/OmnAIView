@@ -1,0 +1,26 @@
+h1 {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+h1 mat-icon {
+    padding-right: 0.2em
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+.save-menu {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+    padding: 10px;
+}
+
+.mat-dialog-field {
+    padding-bottom: 4vh;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    margin-bottom: 4vh;
+}
