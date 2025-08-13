@@ -1,12 +1,7 @@
 /* Setting Menu Button Styles */
-
 button {
-  font-size: var(--font-size-large);
   color: var(--mat-sys-on-surface);
   transition: all 0.2s ease;
-
-  
-  
   display: flex;
   align-items: center;
   justify-content: center;
@@ -24,7 +19,6 @@ button:active {
 
 .mat-icon {
   font-size: var(--font-size-large);
-  
   display: flex;
   align-items: center;
   justify-content: center;

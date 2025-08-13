@@ -16,3 +16,25 @@
     right: 0;
     margin-right: 10px;
 }
+
+button {
+    display: flex;
+    padding: .3em;
+}
+
+button:hover {
+    color: var(--mat-sys-primary);
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.mat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 !important;
+    vertical-align: middle;
+}
