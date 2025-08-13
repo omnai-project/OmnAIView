@@ -8,8 +8,8 @@ import { SettingsDialogComponent } from "./settings-dialog.component";
     selector: `app-settings-menu`,
     standalone: true,
     imports: [MatIcon, MatButtonModule],
-    templateUrl: './setting-menu.component.html',
-    styleUrls: ['./setting-menu.component.css']
+    templateUrl: './settings-button.component.html',
+    styleUrls: ['./settings-button.component.css']
 })
 export class SettingsMenuComponent {
     private readonly dialog = inject(MatDialog);
