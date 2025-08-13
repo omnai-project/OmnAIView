@@ -1,15 +1,20 @@
-import { isPlatformBrowser, JsonPipe, DecimalPipe, DatePipe } from '@angular/common';
+import {
+  isPlatformBrowser,
+  JsonPipe,
+  DecimalPipe,
+  DatePipe,
+} from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
   inject,
-  OnDestroy,  
+  OnDestroy,
   PLATFORM_ID,
   signal,
   viewChild,
-  type ElementRef
+  type ElementRef,
 } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { transition } from 'd3';
@@ -17,7 +22,10 @@ import { axisBottom, axisLeft } from 'd3-axis';
 import { select } from 'd3-selection';
 import { ResizeObserverDirective } from '../shared/resize-observer.directive';
 import { DataSourceService } from './graph-data.service';
-import { makeXAxisTickFormatter, type xAxisMode } from './x-axis-formatter.utils';
+import {
+  makeXAxisTickFormatter,
+  type xAxisMode,
+} from './x-axis-formatter.utils';
 import { ZoomableDirective } from '../shared/graph-zoom.directive';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { GraphCursorDirective } from '../shared/graph-cursor.directive';
@@ -31,7 +39,11 @@ import { SelectionToggleComponent } from '../shared/selection-toggle/selection-t
   selector: 'app-graph',
   standalone: true,
   templateUrl: './graph.component.html',
-  providers: [DataSourceService, GraphSelectionService, SelectionAnalysisService],
+  providers: [
+    DataSourceService,
+    GraphSelectionService,
+    SelectionAnalysisService,
+  ],
   styleUrls: ['./graph.component.css'],
   imports: [
     ResizeObserverDirective,
@@ -44,16 +56,18 @@ import { SelectionToggleComponent } from '../shared/selection-toggle/selection-t
     DatePipe,
     GraphSurveyComponent,
     SelectionResultsComponent,
-    SelectionToggleComponent
+    SelectionToggleComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GraphComponent implements OnDestroy { // NEU: OnDestroy implementiert
+export class GraphComponent implements OnDestroy {
   readonly dataservice = inject(DataSourceService);
   readonly selectionService = inject(GraphSelectionService);
-  readonly svgGraph = viewChild.required<ElementRef<SVGElement>>('graphContainer');
+  readonly svgGraph =
+    viewChild.required<ElementRef<SVGElement>>('graphContainer');
   readonly axesContainer = viewChild.required<ElementRef<SVGGElement>>('xAxis');
-  readonly axesYContainer = viewChild.required<ElementRef<SVGGElement>>('yAxis');
+  readonly axesYContainer =
+    viewChild.required<ElementRef<SVGGElement>>('yAxis');
 
   zoomXOnly = signal(false);
   zoomYOnly = signal(false);
@@ -61,7 +75,7 @@ export class GraphComponent implements OnDestroy { // NEU: OnDestroy implementie
   private readonly platform = inject(PLATFORM_ID);
   isInBrowser = isPlatformBrowser(this.platform);
 
-  // NEU: Event-Listener Referenz für Cleanup
+  // Event listener reference for cleanup
   private clearSelectionListener = () => {
     this.selectionService.clearSelection();
   };
@@ -71,17 +85,26 @@ export class GraphComponent implements OnDestroy { // NEU: OnDestroy implementie
       queueMicrotask(() => {
         const rect = this.svgGraph().nativeElement.getBoundingClientRect();
         if (rect.width > 0 && rect.height > 0) {
-          this.dataservice.updateGraphDimensions({ width: rect.width, height: rect.height });
+          this.dataservice.updateGraphDimensions({
+            width: rect.width,
+            height: rect.height,
+          });
         }
       });
-      
-      window.addEventListener('clearGraphSelection', this.clearSelectionListener);
+
+      window.addEventListener(
+        'clearGraphSelection',
+        this.clearSelectionListener
+      );
     }
   }
 
   ngOnDestroy(): void {
     if (this.isInBrowser) {
-      window.removeEventListener('clearGraphSelection', this.clearSelectionListener);
+      window.removeEventListener(
+        'clearGraphSelection',
+        this.clearSelectionListener
+      );
     }
   }
 
@@ -99,7 +122,11 @@ export class GraphComponent implements OnDestroy { // NEU: OnDestroy implementie
   });
 
   mousePos = { x: 0, y: 0 };
-
+  
+  /**
+   * * Sets mouse position in screen coordinates and handles selection movement
+   * Used for tooltip coordinate calculation and selection updates
+   */
   onPointerMove(evt: PointerEvent): void {
     this.mousePos = { x: evt.clientX, y: evt.clientY };
     if (this.selectionService.isSelectionMode()) {
@@ -144,7 +171,7 @@ export class GraphComponent implements OnDestroy { // NEU: OnDestroy implementie
     this.zoomYOnly.set(false);
   }
 
-  readonly xAxisTimeMode = signal<xAxisMode>("absolute");
+  readonly xAxisTimeMode = signal<xAxisMode>('absolute');
 
   onXAxisTimeModeToggle(checked: boolean): void {
     this.xAxisTimeMode.set(checked ? 'relative' : 'absolute');
@@ -181,7 +208,9 @@ export class GraphComponent implements OnDestroy { // NEU: OnDestroy implementie
     const y = event.clientY - rect.top;
 
     this.selectionService.setGraphHeight(
-      this.dataservice.graphDimensions().height - this.dataservice.margin.top - this.dataservice.margin.bottom
+      this.dataservice.graphDimensions().height -
+        this.dataservice.margin.top -
+        this.dataservice.margin.bottom
     );
 
     this.selectionService.startPotentialSelection(x, y);
