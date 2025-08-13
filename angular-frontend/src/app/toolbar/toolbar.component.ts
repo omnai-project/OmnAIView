@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
 import { StartDataButtonComponent } from "../toolbar/start-data-button.component";
 import { SaveDataButtonComponent } from '../toolbar/save-data-button.component';
-import { SettingsMenuComponent } from '../settings/settings-button.component';
+import { SettingsMenuComponent } from './settings-button.component';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { SideBarComponent } from "../sidebar/sidebar.component";
 import { RecordDataButtonComponent } from './record-data-button.component';

@@ -18,8 +18,12 @@
 }
 
 button {
+    color: var(--mat-sys-on-surface);
+    transition: all 0.2s ease;
     display: flex;
-    padding: .3em;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
 }
 
 button:hover {
@@ -37,4 +41,12 @@ button:active {
     justify-content: center;
     margin: 0 !important;
     vertical-align: middle;
+}
+
+:host-context(.dark-theme) button {
+    color: var(--mat-sys-on-surface);
+}
+
+:host-context(.dark-theme) button:hover {
+    color: var(--mat-sys-primary);
 }
