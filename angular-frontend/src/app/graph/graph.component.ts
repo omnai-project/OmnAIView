@@ -122,13 +122,15 @@ export class GraphComponent implements OnDestroy {
   });
 
   mousePos = { x: 0, y: 0 };
-  
+
   /**
-   * * Sets mouse position in screen coordinates and handles selection movement
+   * Sets mouse position in screen coordinates and handles selection movement
    * Used for tooltip coordinate calculation and selection updates
    */
   onPointerMove(evt: PointerEvent): void {
     this.mousePos = { x: evt.clientX, y: evt.clientY };
+
+    // Handle selection movement if in selection mode
     if (this.selectionService.isSelectionMode()) {
       const rect = this.svgGraph().nativeElement.getBoundingClientRect();
       const x = evt.clientX - rect.left;
@@ -143,7 +145,7 @@ export class GraphComponent implements OnDestroy {
 
   xAxisTransformString = computed(() => {
     const yScale = this.dataservice.yScale();
-    return `translate(0, ${yScale.range()[0]})`;
+    return `translate(0, ${yScale.range()[0]})`; // for d3, (0,0) is the upper left hand corner. When looking at data, the lower left hand corner is (0,0)
   });
 
   yAxisTransformString = computed(() => {
@@ -171,6 +173,9 @@ export class GraphComponent implements OnDestroy {
     this.zoomYOnly.set(false);
   }
 
+  /**
+   * Signal to control the x-axis time mode. Relative starts with 0, absolute reflects the time of day the data was recorded.
+   */
   readonly xAxisTimeMode = signal<xAxisMode>('absolute');
 
   onXAxisTimeModeToggle(checked: boolean): void {
@@ -197,9 +202,15 @@ export class GraphComponent implements OnDestroy {
     select(g).transition(transition()).duration(300).call(axisLeft(y));
   });
 
+  // Selection event handlers with unified pointer support
+  /**
+   * Handles pointer down events for selection mode (mouse, touch, stylus)
+   * Starts potential selection but waits for drag threshold before actual selection
+   */
   onPointerDown(event: PointerEvent): void {
     if (!this.selectionService.isSelectionMode()) return;
 
+    // Prevent default behavior and event bubbling
     event.preventDefault();
     event.stopPropagation();
 
@@ -214,9 +225,15 @@ export class GraphComponent implements OnDestroy {
     );
 
     this.selectionService.startPotentialSelection(x, y);
+
+    // Capture pointer for consistent tracking across element boundaries
     (event.target as Element).setPointerCapture(event.pointerId);
   }
 
+  /**
+   * Handles pointer up events to finalize or cancel selection
+   * Distinguishes between click (clear selection) and drag (finalize selection)
+   */
   onPointerUp(event: PointerEvent): void {
     if (!this.selectionService.isSelectionMode()) return;
 
@@ -224,8 +241,11 @@ export class GraphComponent implements OnDestroy {
     event.stopPropagation();
 
     const wasDragOperation = this.selectionService.finishSelection();
+
+    // Release pointer capture
     (event.target as Element).releasePointerCapture(event.pointerId);
 
+    // Prevent click event from firing if this was a drag operation
     if (wasDragOperation) {
       event.preventDefault();
     }
