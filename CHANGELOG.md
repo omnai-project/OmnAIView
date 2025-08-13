@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed 
 ### Removed 
 
+## [v1.16.0]
+### Changed 
+- Change enabling graph zoom via checkboxes to enable zoom via hovering 
+
+
 ## [v1.15.0-alpha]
  - Add comprehensive font-size settings system with 4 scaling levels (87.5% - 125%)
  - Add FontSizeService with reactive state management and localStorage persistence
