@@ -9,12 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added 
 ### Changed 
-### Removed 
+### Removed
+
+## [v1.16.1]
+### Changed 
+- Fix graph selection rectangle persisting after starting new measurement or recording
+- Fix selection staying active when switching between data sources via toolbar buttons
 
 ## [v1.16.0]
 ### Changed 
 - Change enabling graph zoom via checkboxes to enable zoom via hovering 
-
 
 ## [v1.15.0-alpha]
  - Add comprehensive font-size settings system with 4 scaling levels (87.5% - 125%)
