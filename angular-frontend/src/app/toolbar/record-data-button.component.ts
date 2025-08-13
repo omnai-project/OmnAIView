@@ -26,6 +26,7 @@ export class RecordDataButtonComponent {
         this.datasource.availableSources().forEach((source) => {
             source.clearData();
         });
+        window.dispatchEvent(new CustomEvent('clearGraphSelection'));
     }
 
     recordData(): void {

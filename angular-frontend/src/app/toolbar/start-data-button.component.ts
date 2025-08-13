@@ -29,6 +29,7 @@ export class StartDataButtonComponent {
         this.datasource.availableSources().forEach((source) => {
             source.clearData();
         });
+        window.dispatchEvent(new CustomEvent('clearGraphSelection'));
     }
 
     openModal(): void {
