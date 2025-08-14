@@ -11,12 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed 
 ### Removed
 
-## [v1.16.1]
+## [v1.16.2-alpha]
+### Changed 
+- Change style of toolbar and control panel ( Angular Design + Responsiveness)
+- Move settings button component into toolbar folder 
+
+## [v1.16.1-alpha]
 ### Changed 
 - Fix graph selection rectangle persisting after starting new measurement or recording
 - Fix selection staying active when switching between data sources via toolbar buttons
 
-## [v1.16.0]
+## [v1.16.0-alpha]
 ### Changed 
 - Change enabling graph zoom via checkboxes to enable zoom via hovering 
 
