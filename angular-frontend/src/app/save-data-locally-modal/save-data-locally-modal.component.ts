@@ -1,16 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { 
-  MatDialogContent, 
+import {
+  MatDialogContent,
   MatDialogTitle,
-  MatDialogModule, 
-  MatDialogRef} from '@angular/material/dialog';
+  MatDialogModule,
+  MatDialogRef
+} from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-save-data-locally-modal',
-  imports: [MatDialogContent, MatDialogTitle, MatDialogModule, MatButtonModule, MatInputModule, FormsModule],
+  imports: [MatDialogContent, MatDialogTitle, MatDialogModule, MatButtonModule, MatInputModule, FormsModule, MatIcon],
   templateUrl: './save-data-locally-modal.component.html',
   styleUrl: './save-data-locally-modal.component.css'
 })

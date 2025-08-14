@@ -2,14 +2,14 @@ import { Component, inject } from "@angular/core";
 import { MatIcon } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialog } from '@angular/material/dialog';
-import { SettingsDialogComponent } from "./settings-dialog.component";
+import { SettingsDialogComponent } from "../settings/settings-dialog.component";
 
 @Component({
     selector: `app-settings-menu`,
     standalone: true,
     imports: [MatIcon, MatButtonModule],
-    templateUrl: './setting-menu.component.html',
-    styleUrls: ['./setting-menu.component.css']
+    templateUrl: './settings-button.component.html',
+    styleUrls: ['./toolbar.component.css']
 })
 export class SettingsMenuComponent {
     private readonly dialog = inject(MatDialog);

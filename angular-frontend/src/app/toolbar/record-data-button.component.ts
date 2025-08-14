@@ -1,32 +1,21 @@
-import { Component, inject } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import {
-  ToolbarState,
-  ToolbarStateManagerService,
-} from './toolbarStateManager.service';
-import { DataSourceSelectionService } from '../source-selection/data-source-selection.service';
-import { RecordingModalComponent } from '../recording-modal/recording-modal.component';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, inject } from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
+import { ToolbarState, ToolbarStateManagerService } from "./toolbarStateManager.service";
+import { DataSourceSelectionService } from "../source-selection/data-source-selection.service";
+import { RecordingModalComponent } from "../recording-modal/recording-modal.component";
+import { MatDialog } from "@angular/material/dialog";
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-record-data-button',
   standalone: true,
-  imports: [MatIconModule],
+  imports: [MatIconModule, MatIconButton],
   template: `
-    <button
-      mat-icon-button
-      (click)="recordData()"
-      aria-label="Record Data"
-      id="record-button"
-      [disabled]="
-        this.toolbarState.getState() === ToolbarState.STARTED ||
-        this.toolbarState.getState() === ToolbarState.RECORD
-      "
-    >
-      <mat-icon>radio_button_checked</mat-icon>
-    </button>
-  `,
-  styles: `button { display: flex; padding: .3em }`,
+        <button mat-icon-button (click)="recordData()" aria-label="Record Data" id="record-button" [disabled]="this.toolbarState.getState() === ToolbarState.STARTED || this.toolbarState.getState() === ToolbarState.RECORD">
+        <mat-icon>radio_button_checked</mat-icon>
+        </button>
+    `,
+  styleUrl: './toolbar.component.css'
 })
 export class RecordDataButtonComponent {
   private readonly datasource = inject(DataSourceSelectionService);
@@ -48,38 +37,25 @@ export class RecordDataButtonComponent {
   recordData(): void {
     if (this.toolbarState.getState() !== ToolbarState.RECORD) {
       this.clearAllData();
-      const dialogRef = this.dialog.open(RecordingModalComponent, {
-        width: '60vw',
-      });
-      dialogRef
-        .afterClosed()
-        .subscribe(
-          async (
-            result:
-              | { dir: string; fileName: string; duration: number }
-              | undefined
-          ) => {
-            if (result) {
-              const { dir, fileName, duration } = result;
-              try {
-                this.toolbarState.setState(ToolbarState.RECORD);
-                await this.datasource
-                  .currentSource()
-                  ?.record(dir, fileName, duration);
-                this.toolbarState.setState(ToolbarState.STOPPED);
-              } catch (error) {
-                console.error('Recording failed:', error);
-              }
-            } else {
-              console.log(
-                'Recording dialog closed without starting recording.'
-              );
-            }
+      const dialogRef = this.dialog.open(RecordingModalComponent, { width: '60vw' });
+      dialogRef.afterClosed().subscribe(async (result: { dir: string, fileName: string, duration: number } | undefined) => {
+        if (result) {
+          const { dir, fileName, duration } = result;
+          try {
+            this.toolbarState.setState(ToolbarState.RECORD);
+            await this.datasource.currentSource()?.record(dir, fileName, duration);
+            this.toolbarState.setState(ToolbarState.STOPPED);
+          } catch (error) {
+            console.error('Recording failed:', error);
           }
-        );
+        } else {
+          console.log('Recording dialog closed without starting recording.');
+        }
+      });
     } else {
       // Add stopping/aborting mechanism
       this.toolbarState.setState(ToolbarState.IDLE);
     }
+
   }
 }

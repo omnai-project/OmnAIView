@@ -4,31 +4,19 @@ import { DataSourceSelectionService } from '../source-selection/data-source-sele
 import { SourceSelectModalComponent } from '../source-selection/source-select-modal.component';
 import { MatIconModule } from '@angular/material/icon';
 import { AdvancedModeService } from '../advanced-mode/advanced-mode.service';
-import {
-  ToolbarState,
-  ToolbarStateManagerService,
-} from './toolbarStateManager.service';
+import { ToolbarState, ToolbarStateManagerService } from './toolbarStateManager.service';
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-start-data-button',
   standalone: true,
-  imports: [MatDialogModule, MatIconModule],
+  imports: [MatDialogModule, MatIconModule, MatIconButton],
   template: `
-    <button
-      mat-icon-button
-      (click)="toggleStartButton()"
-      aria-label="Start Data"
-      id="start-button"
-      [disabled]="this.toolbarState.getState() === ToolbarState.RECORD"
-    >
-      <mat-icon>{{
-        this.toolbarState.getState() === ToolbarState.STARTED
-          ? 'stop'
-          : 'play_arrow'
-      }}</mat-icon>
-    </button>
-  `,
-  styles: `button { display: flex; padding: .3em }`,
+        <button mat-icon-button (click)="toggleStartButton()" aria-label="Start Data" id="start-button" [disabled]="this.toolbarState.getState() === ToolbarState.RECORD">
+        <mat-icon>{{ (this.toolbarState.getState() === ToolbarState.STARTED ) ? 'stop' : 'play_arrow' }}</mat-icon>
+        </button>
+    `,
+  styleUrl: './toolbar.component.css',
 })
 export class StartDataButtonComponent {
   private readonly dialog = inject(MatDialog);
