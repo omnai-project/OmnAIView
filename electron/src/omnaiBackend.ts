@@ -66,7 +66,7 @@ export const omnaiscopeBackendManager = (() => { // singelton for only one possi
         port = await getFreePort();
 
         if (existsSync(exePath)) {
-            backendProcess = spawn(exePath, ["-w", "-p", port.toString()], {
+            backendProcess = spawn(exePath, ["-w", "-p", "8080"], {
                 stdio: ['ignore', 'pipe', 'pipe'],
             });
             // read console buffer from BE because the backend does not delete the console buffer by itself

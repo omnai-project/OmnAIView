@@ -140,7 +140,7 @@ export class SelectionAnalysisService {
     const devices = this.omnAIScopeService.devices();
     
     if (devices && devices.length > 0) {
-      const targetDevice = devices.find(device => device.UUID === uuid);
+      const targetDevice = devices.find(device => device.uuid === uuid);
       
       if (targetDevice) {
         const colorInfo = targetDevice.color ? 

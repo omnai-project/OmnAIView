@@ -109,12 +109,12 @@ export class SelectionResultsComponent {
    */
   getDeviceColor(uuid: string): string {
     const devices = this.omnAIScopeService.devices();
-    
+
     if (!devices || devices.length === 0) {
       return this.getFallbackColor(uuid);
     }
 
-    const targetDevice = devices.find(device => device.UUID === uuid);
+    const targetDevice = devices.find(device => device.uuid === uuid);
     if (!targetDevice) {
       return this.getFallbackColor(uuid);
     }
@@ -134,7 +134,7 @@ export class SelectionResultsComponent {
       const r = Math.max(0, Math.min(255, Math.round(colorObj.r)));
       const g = Math.max(0, Math.min(255, Math.round(colorObj.g)));
       const b = Math.max(0, Math.min(255, Math.round(colorObj.b)));
-      
+
       return `rgb(${r}, ${g}, ${b})`;
     } catch (error) {
       console.warn('Failed to parse OmnAIScope color:', colorObj, error);
@@ -157,7 +157,7 @@ export class SelectionResultsComponent {
       '#795548', // Brown 500
       '#607d8b'  // Blue Grey 500
     ];
-    
+
     const hash = uuid.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return fallbackColors[hash % fallbackColors.length];
   }

@@ -29,3 +29,16 @@
     gap: 1rem;
     padding-bottom: 1em;
 }
+
+.scope-card {
+    flex-direction: row;
+    padding-left: 4%;
+    width: 96%;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.177);
+    border-left: 0;
+}
+
+.scope-card-collapsed {
+    justify-content: center;
+}

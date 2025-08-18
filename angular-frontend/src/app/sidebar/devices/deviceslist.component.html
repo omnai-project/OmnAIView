@@ -1,12 +1,19 @@
+<!-- Create and update server cards automatically with header IP:Port via devicelist content from devicelist service -->
+<!-- Use devicecard component templates to create the inner app-device-cards -->
+@for(servercard of devicelistService.servercards(); track servercard.key){
 <div class="device-card" [class.device-card-collapsed]="sideBarService.collapsed()">
     @if(!sideBarService.collapsed()){
-    <h2 class="card-header">Connected OmnAIScopes</h2>
+    <h2 class="card-header">{{servercard.server.name || servercard.key}}</h2>
     }
-    <app-device-list class="card-content"></app-device-list>
+    <div class="card-content">
+        @if(servercard.devices.length === 0){
+        <div> No devices found ...</div>
+        }
+        @for (device of servercard.devices; track device.uuid){
+        <div class="scope-card" [class.scope-card-collapsed]="sideBarService.collapsed()">
+            <app-device-card [name]="'test'" [uuid]="device.uuid" [color]="device.color"></app-device-card>
+        </div>
+        }
+    </div>
 </div>
-<div class="device-card" [class.device-card-collapsed]="sideBarService.collapsed()">
-    @if(!sideBarService.collapsed()){
-    <h2 class="card-header"> Dummy Data Source </h2>
-    }
-    <app-device-list-dummy class="card-content"></app-device-list-dummy>
-</div>
+}
