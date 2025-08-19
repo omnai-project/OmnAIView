@@ -4,7 +4,6 @@ import { computed, inject, Injectable, signal, DestroyRef } from '@angular/core'
 import { DataSource } from '../../source-selection/data-source-selection.service';
 import { catchError, Observable, of, Subject } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { BackendPortService } from './backend-port.service';
 import { take } from 'rxjs/operators';
 import { SaveDataLocallyModalComponent } from '../../save-data-locally-modal/save-data-locally-modal.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -72,13 +71,6 @@ export class OmnAIScopeDataService implements DataSource {
   private readonly fileReady$ = new Subject<FileReadyMessage>();
 
   private firstMessage: boolean = true;
-
-  readonly port = inject(BackendPortService).port;
-  readonly serverUrlLocal = computed(() => {
-    const port = this.port();
-    if (port === null) throw new Error('Port not initialized');
-    return `127.0.0.1:${port}`;
-  });
 
   public overviewToDevices(deviceOverview: DeviceOverview): Device[] {
     const devs = deviceOverview?.devices ?? [];

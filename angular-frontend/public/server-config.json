@@ -2,12 +2,6 @@
     "servers": [
         {
             "ip": "127.0.0.1",
-            "port": 8080,
-            "name": "testserver1",
-            "type": "omnaiscope"
-        },
-        {
-            "ip": "127.0.0.1",
             "port": 8090,
             "name": "testserver2",
             "type": "omnaiscope"
