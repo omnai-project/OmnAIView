@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
+import { interval, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DataSource } from '../../source-selection/data-source-selection.service';
 import { DataFormat } from '../omnai-scope-server/live-data.service';
@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DownloadProgressComponent } from '../omnai-scope-server/downloadProgress.component';
 import { Device } from '../../sidebar/devices/devicecard.component';
 import { of } from 'rxjs';
+import { DeviceFetch } from '../../sidebar/devices/devicelist.service';
 
 
 @Injectable({ providedIn: 'root' })
@@ -115,12 +116,12 @@ export class DummyDataService implements DataSource {
      * @param serverUrl dummy url for interface
      * @returns dummy device for random data server 
      */
-    getDevices(serverUrl: string) {
+    getDevices(serverUrl: string): Observable<DeviceFetch> {
         console.log("getdevices was called");
-        const device: Device = {
+        const device: Device[] = [{
             uuid: "1234",
             color: { r: 0, g: 0, b: 255 }
-        }
-        return of([device]);
+        }]
+        return of({ devices: device, status: 200 });
     }
 }

@@ -10,7 +10,10 @@
 
     }
     <div class="card-content">
-        @if(servercard.devices.length === 0){
+        @if(servercard.status !== 200){
+        <div> Server offline</div>
+        }
+        @else if(servercard.devices.length === 0){
         <div> No devices found ...</div>
         }
         @for (device of servercard.devices; track device.uuid){

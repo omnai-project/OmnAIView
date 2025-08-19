@@ -11,6 +11,15 @@ import { timer, switchMap, of } from "rxjs";
 
 const POLL_MS = 15000;
 
+export interface DeviceFetch {
+    devices: Device[],
+    status: number
+}
+type ServerContent = {
+    devices: Device[];
+    status: number;
+};
+
 /**
  * Injection will start to 
  * 1. Load servers from server service from public/server-config.json 
@@ -27,7 +36,8 @@ export class DeviceListService {
     private readonly randomService = inject(DummyDataService);
 
     private polling = new Map<string, Subscription>();
-    private readonly _devicesByServer = signal<Record<string, Device[]>>({});
+    private readonly _serverContent = signal<Record<string, ServerContent>>({});
+
 
     constructor() {
         this.onInit();
@@ -52,16 +62,18 @@ export class DeviceListService {
      */
     readonly servercards = computed(() => {
         const servers = this.serverService.serverlist();
-        const devices = this._devicesByServer();
+        const serverContents = this._serverContent();
         return servers.map(server => {
-            const serverUrl = this.serverService.urlOf(server);
+            const key = this.serverService.urlOf(server);
+            const serverContent = serverContents[key] ?? { devices: [], status: 0, lastUpdated: 0 };
             return {
-                server: server,
-                key: serverUrl,
-                devices: devices[serverUrl] ?? []
-            }
-        })
-    })
+                server,
+                key,
+                devices: serverContent.devices,
+                status: serverContent.status
+            };
+        });
+    });
 
     /**
      * Starts fetching devices from given Server.
@@ -71,8 +83,8 @@ export class DeviceListService {
     private startPollingFor(server: Server): Subscription {
         const key = this.serverService.urlOf(server);
         return timer(0, POLL_MS).pipe(switchMap(() => this.fetchDevicesFor(server))) // fetch devices every 15 seconds 
-            .subscribe(deviceList => {
-                this.patchDevices(key, deviceList); // update devicesByServer with new device list 
+            .subscribe(response => {
+                this.patchDevices(key, response); // update devicesByServer with new device list 
             });
     }
 
@@ -86,14 +98,14 @@ export class DeviceListService {
         switch (server.type) {
             case 'omnaiscope': return this.omnaiscopeService.getDevices(base);
             case 'random': return this.randomService.getDevices(base);
-            default: return of([] as Device[]);
+            default: return of({ devices: [], status: 0 } as DeviceFetch);
         }
     }
 
     /**
      * Update devicesByServer signal to update UI 
      */
-    private patchDevices(key: string, deviceList: Device[]) {
-        this._devicesByServer.update(prev => ({ ...prev, [key]: deviceList }));
+    private patchDevices(key: string, deviceList: DeviceFetch) {
+        this._serverContent.update(prev => ({ ...prev, [key]: deviceList }));
     }
 }

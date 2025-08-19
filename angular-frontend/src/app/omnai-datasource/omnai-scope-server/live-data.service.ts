@@ -1,5 +1,5 @@
 // server-communication.service.ts
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal, DestroyRef } from '@angular/core';
 import { DataSource } from '../../source-selection/data-source-selection.service';
 import { catchError, Observable, of, Subject } from 'rxjs';
@@ -12,6 +12,7 @@ import { DownloadProgressComponent } from './downloadProgress.component';
 import { SourceColorService } from '../../source-selection/source-color.service';
 import { Device } from '../../sidebar/devices/devicecard.component';
 import { tap } from 'rxjs/operators';
+import { DeviceFetch } from '../../sidebar/devices/devicelist.service';
 
 export interface DataFormat {
   timestamp: number;
@@ -86,20 +87,19 @@ export class OmnAIScopeDataService implements DataSource {
    * @param serverUrl 
    * @returns List of Devices 
    */
-  public getDevices(serverUrl: string): Observable<Device[]> {
+  public getDevices(serverUrl: string): Observable<DeviceFetch> {
     console.log("called getDevices")
     const url = `${serverUrl}/UUID`;
 
-    return this.#httpClient.get<DeviceOverview>(url).pipe(
-      map(this.overviewToDevices),
-      tap(list => {
-        this.sourceColorService.setColours(
-          list.map(device => ({ UUID: device.uuid, color: device.color }))
-        );
+    return this.#httpClient.get<DeviceOverview>(url, { observe: 'response' }).pipe(
+      map(response => {
+        const devices = this.overviewToDevices(response.body ?? { devices: [], colors: [] });
+        this.sourceColorService.setColours(devices.map(device => ({ UUID: device.uuid, color: device.color })));
+        return { devices, status: response.status };
       }),
-      catchError(error => {
+      catchError((error: HttpErrorResponse) => {
         console.warn('error while loading devices', error);
-        return of([] as Device[]);
+        return of({ devices: [], status: error.status } as DeviceFetch);
       })
     );
   }
