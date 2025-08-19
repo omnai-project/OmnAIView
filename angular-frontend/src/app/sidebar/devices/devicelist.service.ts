@@ -33,8 +33,6 @@ export class DeviceListService {
         this.onInit();
         const eff = effect(() => { // trigger when serverlist changes 
             const servers = this.serverService.serverlist();
-            const desiredKeys = new Set(servers.map(server => this.serverService.urlOf(server)));
-
             for (const server of servers) { // connects server if not already connected 
                 const key = this.serverService.urlOf(server);
                 if (!this.polling.has(key)) { // start polling server endpoint for each new server

@@ -3,7 +3,11 @@
 @for(servercard of devicelistService.servercards(); track servercard.key){
 <div class="device-card" [class.device-card-collapsed]="sideBarService.collapsed()">
     @if(!sideBarService.collapsed()){
-    <h2 class="card-header">{{servercard.server.name || servercard.key}}</h2>
+    <div class="card-header">
+        <h2>{{servercard.server.name}}</h2>
+        <p>Adress: {{servercard.key}}</p>
+    </div>
+
     }
     <div class="card-content">
         @if(servercard.devices.length === 0){
