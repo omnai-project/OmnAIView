@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed 
 ### Removed
 
+## [v1.17.0-alpha]
+### Added 
+- Add automatic device polling for multiple servers via server-config.json
+- Add serverurl based devicelists for control panel 
+### Changed 
+### Removed
+- Remove device polling based on hardcoded serveradresses
+- Remove device list shown via control panel 
+
 ## [v1.16.2-alpha]
 ### Changed 
 - Change style of toolbar and control panel ( Angular Design + Responsiveness)
