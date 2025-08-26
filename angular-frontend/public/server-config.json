@@ -1,0 +1,16 @@
+{
+    "servers": [
+        {
+            "ip": "127.0.0.1",
+            "port": 8090,
+            "name": "testserver2",
+            "type": "omnaiscope"
+        },
+        {
+            "ip": "127.0.0.2",
+            "port": 8010,
+            "name": "Randomdataserver",
+            "type": "random"
+        }
+    ]
+}

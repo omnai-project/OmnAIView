@@ -11,13 +11,25 @@
 }
 
 .card-header {
-    font-size: medium;
-    font-weight: normal;
+    vertical-align: center;
     background-color: rgba(168, 159, 159, 0.279);
     padding: 10px;
     margin-bottom: 5%;
     text-align: left;
     padding-bottom: 1em;
+}
+
+.card-header h2 {
+    font-size: medium;
+    font-weight: normal;
+    color: var(--mat-sys-on-background);
+}
+
+.card-header p {
+    padding: 0px;
+    margin: 0px;
+    font-size: small;
+    color: var(mat-sys-outline);
 }
 
 .card-content {
@@ -28,4 +40,17 @@
     align-items: center;
     gap: 1rem;
     padding-bottom: 1em;
+}
+
+.scope-card {
+    flex-direction: row;
+    padding-left: 4%;
+    width: 96%;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.177);
+    border-left: 0;
+}
+
+.scope-card-collapsed {
+    justify-content: center;
 }

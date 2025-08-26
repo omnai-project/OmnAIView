@@ -1,14 +1,15 @@
 import { Component, inject } from "@angular/core";
-import { DeviceListComponent } from "../../omnai-datasource/omnai-scope-server/devicelist.component";
-import { DeviceListDummyComponent } from "../../omnai-datasource/dummy-data-server/devicelist-dummy.component";
 import { SideBarService } from "../sidebar.service";
+import { DeviceListService } from "./devicelist.service";
+import { DeviceCardComponent } from "./devicecard.component";
 
 @Component({
     selector: 'app-deviceslist',
     templateUrl: './deviceslist.component.html',
     styleUrl: './deviceslist.component.css',
-    imports: [DeviceListComponent, DeviceListDummyComponent]
+    imports: [DeviceCardComponent]
 })
 export class DevicesList {
     readonly sideBarService = inject(SideBarService);
+    readonly devicelistService = inject(DeviceListService);
 }

@@ -1,22 +1,18 @@
 // server-communication.service.ts
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal, DestroyRef } from '@angular/core';
 import { DataSource } from '../../source-selection/data-source-selection.service';
-import { catchError, Observable, of, Subject, switchMap, takeUntil, timer } from 'rxjs';
+import { catchError, Observable, of, Subject } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
-import { BackendPortService } from './backend-port.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs/operators';
 import { SaveDataLocallyModalComponent } from '../../save-data-locally-modal/save-data-locally-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DownloadProgressComponent } from './downloadProgress.component';
 import { SourceColorService } from '../../source-selection/source-color.service';
-
-interface DeviceInformation {
-  UUID: string;
-  color: { r: number; g: number; b: number };
-}
+import { Device } from '../../sidebar/devices/devicecard.component';
+import { tap } from 'rxjs/operators';
+import { DeviceFetch } from '../../sidebar/devices/devicelist.service';
 
 export interface DataFormat {
   timestamp: number;
@@ -52,18 +48,14 @@ type WSMessage = DataMessage | FileReadyMessage;
 })
 export class OmnAIScopeDataService implements DataSource {
 
-  private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
   private readonly sourceColorService = inject(SourceColorService);
 
-  constructor(private snackBar: MatSnackBar) {
-    this.setupDevicePolling();
-  }
+  constructor(private snackBar: MatSnackBar) { }
   private socket: WebSocket | null = null;
 
-
   readonly isConnected = signal<boolean>(false);
-  readonly devices = signal<DeviceInformation[]>([]);
+  readonly devices = signal<Device[]>([]);
   readonly data = signal<Record<string, DataFormat[]>>({});
   readonly dataAsList = computed(() => {
     const allDataPoints: DataFormat[] = [];
@@ -81,51 +73,40 @@ export class OmnAIScopeDataService implements DataSource {
 
   private firstMessage: boolean = true;
 
-  private setupDevicePolling(): void {
-    const pollInterval_ms = 15 * 1000;
-    timer(0, pollInterval_ms)
-      .pipe(
-        filter(() => !this.isConnected() && this.port() !== null),
-        switchMap(() => this.getDevices()),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe((devices: DeviceInformation[]) => {
-        this.devices.set(devices);
-      });
+  public overviewToDevices(deviceOverview: DeviceOverview): Device[] {
+    const devs = deviceOverview?.devices ?? [];
+    const cols = deviceOverview?.colors ?? [];
+    return devs.map((devices, i) => ({
+      uuid: devices.UUID,
+      color: cols[i]?.color
+    }));
   }
-  readonly port = inject(BackendPortService).port;
-  readonly serverUrl = computed(() => {
-    const port = this.port();
-    if (port === null) throw new Error('Port not initialized');
-    return `127.0.0.1:${port}`;
-  });
 
-  // Abrufen der verfügbaren Geräte vom Server
-  public getDevices(): Observable<DeviceInformation[]> {
+  /**
+   * Request the list of devices from given serverurl/UUID endpoint. 
+   * @param serverUrl 
+   * @returns List of Devices 
+   */
+  public getDevices(serverUrl: string): Observable<DeviceFetch> {
     console.log("called getDevices")
-    const url = `http://${this.serverUrl()}/UUID`;
+    const url = `${serverUrl}/UUID`;
 
-    return this.#httpClient.get<Partial<DeviceOverview>>(url).pipe(
+    return this.#httpClient.get<DeviceOverview>(url, { observe: 'response' }).pipe(
       map(response => {
-        const devices = response.devices ?? [];
-        const colors = response.colors ?? [];
-
-        const list = devices.map((device, id) => ({
-          UUID: device.UUID,
-          color: colors[id]?.color ?? { r: 0, g: 0, b: 0 }
-        }));
-        this.sourceColorService.setColours(list);
-        return list;
+        const devices = this.overviewToDevices(response.body ?? { devices: [], colors: [] });
+        this.sourceColorService.setColours(devices.map(device => ({ UUID: device.uuid, color: device.color })));
+        return { devices, status: response.status };
       }),
-      catchError(error => {
+      catchError((error: HttpErrorResponse) => {
         console.warn('error while loading devices', error);
-        return of([]);
+        return of({ devices: [], status: error.status } as DeviceFetch);
       })
     );
   }
 
+  // this is not working with the current changes right now as the function is not dependend on the serverurl --> Will only call devices from hardcoded backend on port 8080
   async connect(): Promise<void> {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
       if (this.socket?.readyState === WebSocket.CLOSING) {
         this.socket.addEventListener("close", () => this.connect(), { once: true });
         return;
@@ -137,7 +118,7 @@ export class OmnAIScopeDataService implements DataSource {
       }
 
       try {
-        const wsUrl = `ws://${this.serverUrl()}/ws`;
+        const wsUrl = `ws://127.0.0.1:8080/ws`;
         this.socket = new WebSocket(wsUrl);
 
         this.socket.addEventListener('open', () => {
@@ -147,7 +128,7 @@ export class OmnAIScopeDataService implements DataSource {
           // define start message 
           const startMessage = {
             type: `start`,
-            uuids: this.devices().map(device => device.UUID),
+            uuids: this.devices().map(device => device.uuid),
             rate: 200
           }
           if (!this.socket) {
@@ -240,9 +221,9 @@ export class OmnAIScopeDataService implements DataSource {
     const dialogRef = this.dialog.open(SaveDataLocallyModalComponent, {
       width: '60vw'
     });
-    dialogRef.afterClosed().pipe(filter(Boolean)).subscribe((result: {dir: string, fileName: string} | undefined) => {
+    dialogRef.afterClosed().pipe(filter(Boolean)).subscribe((result: { dir: string, fileName: string } | undefined) => {
       if (result) {
-        const {dir, fileName} = result;
+        const { dir, fileName } = result;
         this.saveData(dir, fileName);
       } else {
         console.log('Saving dialog closed without saving')
@@ -254,7 +235,7 @@ export class OmnAIScopeDataService implements DataSource {
     let serverpath = `/download/${fileName}`;
     const saveMessage = {
       type: `save`,
-      uuids: this.devices().map(device => device.UUID),
+      uuids: this.devices().map(device => device.uuid),
       path: `${fileName}`,
       format: `csv`
     };
